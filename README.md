@@ -125,6 +125,7 @@ npm run export   # builds out/ and lavigne-games*.zip
 
 ## Docs
 
+- [docs/CONTEXT.md](docs/CONTEXT.md) — **project status & handoff** (read this first to pick up where we left off; auto-loaded by Claude Code via `CLAUDE.md`)
 - [docs/CONTENT.md](docs/CONTENT.md) — editing copy, projects, articles, tools, FAQ, levels
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — static export + WordPress-freeze + games rollout
 - [docs/GAMES.md](docs/GAMES.md) — how the games were ported, asset provenance, adding levels
