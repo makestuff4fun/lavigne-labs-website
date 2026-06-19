@@ -410,25 +410,31 @@ export default function Shiverwing() {
     };
   }, []);
 
+  // Transparent screen cutout in the badge artwork (fractions of the image),
+  // measured from badge-bezel.png. Its aspect ~0.748 ≈ the game's 240/320.
+  const SCREEN = { left: "16.83%", top: "8.43%", width: "67.74%", height: "57.59%" };
   return (
     <div className="flex flex-col items-center">
-      <div className="relative inline-block overflow-hidden rounded-2xl bg-ink ring-1 ring-white/10 shadow-card">
+      {/* The real Shiverwing badge as the frame; the game shows through the
+          transparent screen cutout. Outer corners rounded (20px) → transparent. */}
+      <div className="relative" style={{ width: "min(92vw, 54vh)", maxWidth: 440 }}>
         <canvas
           ref={canvasRef}
           width={SCREEN_W}
           height={SCREEN_H}
-          className="block touch-none select-none"
-          style={{
-            imageRendering: "pixelated",
-            // portrait game — height is the budget on a monitor, width on a phone.
-            // Driving width off both keeps it as big as fits, always crisp.
-            width: "min(92vw, 62vh)",
-            maxWidth: "640px",
-            aspectRatio: "240 / 320",
-          }}
+          className="absolute block touch-none select-none"
+          style={{ ...SCREEN, objectFit: "fill", imageRendering: "pixelated" }}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/games/shiverwing/badge-bezel.png"
+          alt="Shiverwing badge"
+          draggable={false}
+          className="pointer-events-none relative block w-full select-none"
+          style={{ borderRadius: 20 }}
         />
         {loading && (
-          <div className="absolute inset-0 grid place-items-center bg-ink">
+          <div className="absolute grid place-items-center bg-ink" style={SCREEN}>
             <p className="font-mono text-sm text-white/60">Loading…</p>
           </div>
         )}
