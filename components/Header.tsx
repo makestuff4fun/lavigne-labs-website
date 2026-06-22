@@ -32,7 +32,7 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Button href="/contact" className="px-5 py-2.5">
+          <Button href="/contact/" className="px-5 py-2.5">
             Start a project
           </Button>
         </nav>
@@ -67,7 +67,7 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Button href="/contact" className="mt-2 w-full" onClick={() => setOpen(false)}>
+            <Button href="/contact/" className="mt-2 w-full" onClick={() => setOpen(false)}>
               Start a project
             </Button>
           </div>

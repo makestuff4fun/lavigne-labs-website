@@ -10,27 +10,24 @@ export const site = {
   hours: "Mon–Fri, 9am–6pm CST",
 } as const;
 
+// NOTE: only the games (/play) are deployed from this Next.js app — bolted onto
+// the static WordPress freeze. So the nav/footer point at the *freeze's* live
+// pages (/, /portfolio/, /contact/), not this app's /work, /articles, /tools,
+// which aren't deployed. If the full Next.js site is launched later, restore the
+// richer nav (see git history) — those pages exist again then.
 export const nav = [
-  { label: "Services", href: "/#services" },
-  { label: "Work", href: "/work" },
-  { label: "Articles", href: "/articles" },
-  { label: "Tools", href: "/tools" },
-  { label: "Play", href: "/play" },
+  { label: "Home", href: "/" },
+  { label: "Portfolio", href: "/portfolio/" },
+  { label: "Play", href: "/play/" },
+  { label: "Contact", href: "/contact/" },
 ] as const;
 
 export const footerLinks = {
-  Company: [
-    { label: "Services", href: "/#services" },
-    { label: "How I work", href: "/#how-i-work" },
-    { label: "Work", href: "/work" },
-    { label: "FAQ", href: "/faq" },
-    { label: "Contact", href: "/contact" },
-  ],
-  Resources: [
-    { label: "Articles", href: "/articles" },
-    { label: "Engineering Tools", href: "/tools" },
-    { label: "Lab Notes", href: "/lab" },
-    { label: "Play", href: "/play" },
+  Site: [
+    { label: "Home", href: "/" },
+    { label: "Portfolio", href: "/portfolio/" },
+    { label: "Play", href: "/play/" },
+    { label: "Contact", href: "/contact/" },
   ],
 } as const;
 
