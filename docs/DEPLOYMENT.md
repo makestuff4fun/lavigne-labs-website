@@ -76,6 +76,64 @@ Point it at a free service — **Formspree** or **Web3Forms** — or a `mailto:`
 For the Next.js app's own contact page, swap the `fetch('/api/contact')` call for
 the form-service endpoint before exporting.
 
+## Option D — current go-live: flat apex site + games on a subdomain
+
+The chosen rollout: the **WP static freeze** serves `lavignelabs.com` (replacing
+WordPress), and the **games** get their own subdomain **`play.lavignelabs.com`**.
+The frozen site's nav gets a **Play** item linking to that subdomain.
+
+Artifacts (regenerate as below; both are git-ignored and land in the repo root):
+
+| Artifact | What | Goes where |
+|---|---|---|
+| `lavigne-site-flat.zip` | the freeze **with "Play" added to the menu** | `public_html` (apex) |
+| `lavigne-games.zip` | games + root redirect to `/play` | the subdomain's doc root |
+
+### 1. Build the artifacts
+
+```bash
+npm run export                                  # rebuilds lavigne-games.zip (subdomain bundle)
+python3 scripts/freeze-add-play-menu.py         # lavigne-labs-static-slim.zip -> lavigne-site-flat.zip
+```
+
+`freeze-add-play-menu.py` injects `<li>…<a href="https://play.lavignelabs.com/">Play</a></li>`
+before **Contact** in both the desktop and mobile menus of every page (idempotent).
+Re-run it whenever you regenerate the freeze.
+
+### 2. Create the subdomain (cPanel) — do this BEFORE wiping WordPress
+
+1. **cPanel → Domains → Create A New Domain** → `play.lavignelabs.com`. Set the
+   document root to a folder **OUTSIDE `public_html`** (cPanel's default, e.g.
+   `/home/USER/play.lavignelabs.com`). Keeping it outside `public_html` means
+   replacing the apex site later can't clobber the games.
+2. **DNS** — if DNS is on cPanel, the `A` record is auto-created. If it's managed
+   elsewhere (registrar/Cloudflare), add `play` → the server's IP (or a `CNAME`
+   to `lavignelabs.com`).
+3. **SSL** — let **AutoSSL** issue a Let's Encrypt cert for the subdomain (run it
+   manually if it doesn't appear within a few minutes).
+
+### 3. Deploy the games to the subdomain
+
+- FTP **`lavigne-games.zip`** into the subdomain's doc root → **Extract**.
+- Visit **`https://play.lavignelabs.com`** → it redirects to the games hub at
+  `/play`, with Shiverwing and Freezing Fortress under `/play/…`.
+
+### 4. Swap WordPress → flat site at the apex (reversible)
+
+1. **Back up WordPress first**: cPanel full backup, or zip `public_html` + export
+   the WP database (phpMyAdmin). Keep it safe.
+2. Clear `public_html` (move the WP files to a backup folder, or delete after the
+   backup). Leave the subdomain's doc root alone (it's outside `public_html`).
+3. FTP **`lavigne-site-flat.zip`** into `public_html` → **Extract** (extraction
+   isn't subject to the File-Manager upload cap).
+4. Visit **`https://lavignelabs.com`** → the frozen design with
+   **Home · Portfolio · Play · Contact**; **Play** → `play.lavignelabs.com`.
+
+### 5. Loose end — contact form
+
+Still open: the frozen Contact page has no PHP backend. Wire it to **Formspree /
+Web3Forms** or a `mailto:` (see Option B §4).
+
 ## Option C — deploy the Next.js app as-is
 
 Host on **Vercel / Netlify / Cloudflare Pages** (connect this repo). These run the

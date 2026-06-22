@@ -24,22 +24,27 @@ Black & Decker LED factory; two EV startups).
 | **Games** (Shiverwing, Freezing Fortress) | Done, in repo. Faithful ports; synth SFX + mute toggle wired. |
 | **Game sounds** | **Synth placeholders.** Real WAVs pending — Brian's cousin has the original files (away on vacation). Swap-in is one call (`sfx.useSamples`, see docs/SOUNDS.md). The WT588F `.bin` decode was abandoned (the chip tool obfuscates the audio; a known-plaintext probe confirmed it). |
 | **Static WordPress freeze** | Done **locally**, **not in the repo** (it's a 168 MB deploy artifact). Made with **Simply Static**, trimmed 825 MB→168 MB (unreferenced media removed), and the "Our Projects" grid rebuilt as a plain static grid (the theme's AJAX infinite-scroll can't work statically). Regenerate via docs/DEPLOYMENT.md. |
-| **Deployment** | **Not live yet.** Plan below. |
+| **Deployment** | **Not live yet.** Artifacts built (`lavigne-site-flat.zip` = freeze + Play menu; `lavigne-games.zip` = subdomain games). Server steps (subdomain, WP backup/swap) pending — user executes via cPanel. Plan below. |
 
 ## Deployment plan (current decision)
 
-Freeze the existing WordPress design to static + bolt on the games, served from
-`lavignelabs.com` (no subdomain needed — existing SSL covers paths).
+Flat **WP static freeze** serves `lavignelabs.com` (replacing WordPress); the
+**games** get their own subdomain **`play.lavignelabs.com`**; the frozen site's
+nav gets a **Play** item linking there. Full runbook: **docs/DEPLOYMENT.md →
+Option D**.
 
-1. **Games** → extract `lavigne-games-folder.zip` into **`public_html`** root →
-   games at `lavignelabs.com/play`. (Must be at root: bundle uses `/_next`,
-   `/games` absolute paths.)
-2. **Frozen site** → back up WordPress first, then extract the freeze ZIP into
-   `public_html`.
-3. **Contact form** → static has no PHP; point it at Formspree/Web3Forms or a
-   `mailto:`. **(Still open.)**
+Artifacts are prepared (git-ignored, in repo root + copied to Downloads):
+- **`lavigne-site-flat.zip`** — the freeze **with "Play" added to the menu**
+  (Home · Portfolio · Play · Contact, desktop + mobile). → `public_html`.
+- **`lavigne-games.zip`** — games + root redirect to `/play`. → the subdomain
+  doc root (create it **outside `public_html`** so the apex swap can't clobber it).
 
-Run `npm run export` to regenerate the game bundles. See **docs/DEPLOYMENT.md**.
+Regenerate: `npm run export` (games bundle) + `python3
+scripts/freeze-add-play-menu.py` (re-injects the Play link into a fresh freeze).
+
+Order: (1) create `play.` subdomain + deploy games, (2) back up WP, (3) replace
+`public_html` with the flat site. **Contact form** is still open (static has no
+PHP → Formspree/Web3Forms/`mailto:`).
 
 ## Key positioning decisions (reflected in the site copy)
 
@@ -57,9 +62,10 @@ Run `npm run export` to regenerate the game bundles. See **docs/DEPLOYMENT.md**.
 
 ## Open / next steps (rough priority)
 
-1. **Contact form** → wire to a form service before go-live.
-2. **Go-live swap** — WordPress → static at `public_html` (+ games at root), with
-   a backup so it's reversible.
+1. **Go-live** (artifacts ready, see Deployment plan / DEPLOYMENT.md Option D):
+   create `play.lavignelabs.com` + deploy `lavigne-games.zip`; back up WP; replace
+   `public_html` with `lavigne-site-flat.zip`.
+2. **Contact form** → wire the frozen Contact page to a form service (still open).
 3. **Swap real game SFX** when the cousin's WAVs arrive (docs/SOUNDS.md).
 4. **Review portfolio descriptions** — 8 items in the static grid have *inferred*
    blurbs flagged for Brian to verify (Smart Fire Alarm, Teleprompter, Special
