@@ -22,6 +22,21 @@ import { sfx } from "@/lib/sfx";
 const SCREEN_W = 240;
 const SCREEN_H = 320;
 
+// --- badge bezel geometry (badge-bezel.png is BADGE_W x BADGE_H px) ---
+const BADGE_W = 1147;
+const BADGE_H = 1804;
+// the LCD screen cutout, as fractions of the badge image
+const LCD = { left: 0.1683, top: 0.0843, width: 0.6774, height: 0.5759 };
+// zoom modes — crop rectangles (fractions of the badge). 0: full badge,
+// 1: full WIDTH, cropped height (LCD framed with equal top/bottom bezel),
+// 2: LCD only.
+const ZOOM_MODES = [
+  { fx: 0, fy: 0, fw: 1, fh: 1 },
+  { fx: 0, fy: 0, fw: 1, fh: LCD.top * 2 + LCD.height },
+  { fx: LCD.left, fy: LCD.top, fw: LCD.width, fh: LCD.height },
+];
+const ZOOM_KEY = "shiverwing-zoom";
+
 // --- constants lifted verbatim from the firmware ---
 const GRAVITY = 0.125;
 const JUMP_FORCE = 3.0;
@@ -103,7 +118,14 @@ function rand(a: number, b: number) {
 
 export default function Shiverwing() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null); // whole badge = the tap/click region
   const [loading, setLoading] = useState(true);
+  const [zoom, setZoom] = useState(0); // 0 full badge · 1 LCD+border · 2 LCD only
+
+  useEffect(() => {
+    const z = Number(localStorage.getItem(ZOOM_KEY));
+    if (z === 1 || z === 2) setZoom(z);
+  }, []);
 
   const g = useRef({
     phase: "loading" as Phase,
@@ -393,11 +415,15 @@ export default function Shiverwing() {
       }
     };
     const onPointer = (e: Event) => {
+      if ((e.target as Element | null)?.closest?.("[data-noflap]")) return; // zoom button
       e.preventDefault();
       press();
     };
     window.addEventListener("keydown", onKey);
-    const el = canvasRef.current;
+    // Press anywhere on the badge (incl. the physical-button area) to flap — not
+    // just the screen. The bezel img is pointer-events-none so taps fall through
+    // to this wrapper.
+    const el = wrapRef.current;
     el?.addEventListener("mousedown", onPointer);
     el?.addEventListener("touchstart", onPointer, { passive: false });
 
@@ -410,37 +436,82 @@ export default function Shiverwing() {
     };
   }, []);
 
-  // Transparent screen cutout in the badge artwork (fractions of the image),
-  // measured from badge-bezel.png. Its aspect ~0.748 ≈ the game's 240/320.
-  const SCREEN = { left: "16.83%", top: "8.43%", width: "67.74%", height: "57.59%" };
+  const z = ZOOM_MODES[zoom];
+  // canvas covers the LCD (+ a hair of overlap so no edge gap when zoomed)
+  const lcdStyle = {
+    left: `${(LCD.left - 0.004) * 100}%`,
+    top: `${(LCD.top - 0.004) * 100}%`,
+    width: `${(LCD.width + 0.008) * 100}%`,
+    height: `${(LCD.height + 0.008) * 100}%`,
+  } as const;
   return (
     <div className="flex flex-col items-center">
-      {/* The real Shiverwing badge as the frame; the game shows through the
-          transparent screen cutout. Outer corners rounded (20px) → transparent. */}
-      <div className="relative" style={{ width: "min(92vw, 54vh)", maxWidth: 440 }}>
-        <canvas
-          ref={canvasRef}
-          width={SCREEN_W}
-          height={SCREEN_H}
-          className="absolute block touch-none select-none"
-          style={{ ...SCREEN, objectFit: "fill", imageRendering: "pixelated" }}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/games/shiverwing/badge-bezel.png"
-          alt="Shiverwing badge"
-          draggable={false}
-          className="pointer-events-none relative block w-full select-none"
-          style={{ borderRadius: 20 }}
-        />
-        {loading && (
-          <div className="absolute grid place-items-center bg-ink" style={SCREEN}>
-            <p className="font-mono text-sm text-white/60">Loading…</p>
-          </div>
-        )}
+      {/* The viewport crops to the current zoom mode; the badge "stage" is sized
+          and shifted so the crop fills it. Tap anywhere = flap (the screen and the
+          physical-button area); the zoom button is excluded. Corners rounded 20px. */}
+      <div
+        ref={wrapRef}
+        className="relative cursor-pointer select-none touch-none overflow-hidden"
+        style={{
+          width: "min(94vw, 52dvh)",
+          aspectRatio: `${z.fw * BADGE_W} / ${z.fh * BADGE_H}`,
+          borderRadius: 20,
+        }}
+      >
+        <div
+          className="absolute"
+          style={{
+            width: `${100 / z.fw}%`,
+            left: `${-(z.fx / z.fw) * 100}%`,
+            top: `${-(z.fy / z.fh) * 100}%`,
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            width={SCREEN_W}
+            height={SCREEN_H}
+            className="absolute block"
+            style={{ ...lcdStyle, objectFit: "fill", imageRendering: "pixelated" }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/games/shiverwing/badge-bezel.png"
+            alt="Shiverwing badge"
+            draggable={false}
+            className="pointer-events-none relative block w-full select-none"
+          />
+          {loading && (
+            <div className="absolute grid place-items-center bg-ink" style={lcdStyle}>
+              <p className="font-mono text-sm text-white/60">Loading…</p>
+            </div>
+          )}
+        </div>
+
+        {/* zoom toggle — full badge → LCD+border → LCD only */}
+        <button
+          type="button"
+          data-noflap
+          aria-label="Change zoom"
+          onClick={() =>
+            setZoom((m) => {
+              const n = (m + 1) % 3;
+              try {
+                localStorage.setItem(ZOOM_KEY, String(n));
+              } catch {}
+              return n;
+            })
+          }
+          className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/45 text-white backdrop-blur-sm transition hover:bg-black/65"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.2-4.2M8 11h6M11 8v6" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
       <p className="mt-4 text-center text-sm text-slate">
-        Tap / click / Space to fly. The real badge game — exact sprites, fonts, physics &amp; screens.
+        Tap / click / Space to fly · the zoom icon (top-right) frames the badge. The real
+        badge game — exact sprites, fonts, physics &amp; screens.
       </p>
     </div>
   );
