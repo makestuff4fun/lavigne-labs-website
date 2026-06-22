@@ -42,12 +42,13 @@ src, out, *skip = sys.argv[1:]
 if os.path.exists(out): os.remove(out)
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     for dp, _, fs in os.walk(src):
-        top = os.path.relpath(dp, src).split(os.sep)[0]
-        if top in skip:
-            continue
         for f in fs:
             full = os.path.join(dp, f)
-            z.write(full, os.path.relpath(full, src))
+            rel = os.path.relpath(full, src)
+            # skip by exact relative path (e.g. index.html) or top-level dir
+            if rel in skip or rel.split(os.sep)[0] in skip:
+                continue
+            z.write(full, rel)
 print(f"  {out}  {round(os.path.getsize(out)/1024/1024, 2)} MB")
 PY
 }
