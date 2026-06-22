@@ -22,19 +22,28 @@ export type SfxName =
   | "button";
 
 const MUTE_KEY = "sfx-muted";
+const VOL_KEY = "sfx-volume";
+const MAXGAIN = 0.5; // master gain at full volume
 
 type Ctx = AudioContext;
 
 let ctx: Ctx | null = null;
 let master: GainNode | null = null;
 let muted = false;
+let volume = 1; // 0..1
 const samples: Partial<Record<SfxName, AudioBuffer>> = {};
 const listeners = new Set<(m: boolean) => void>();
+
+function applyGain() {
+  if (master) master.gain.value = muted ? 0 : volume * MAXGAIN;
+}
 
 function load() {
   if (typeof window === "undefined") return;
   try {
     muted = localStorage.getItem(MUTE_KEY) === "1";
+    const v = Number(localStorage.getItem(VOL_KEY));
+    if (Number.isFinite(v) && v >= 0 && v <= 1) volume = v;
   } catch {}
 }
 load();
@@ -46,7 +55,7 @@ function ensure(): Ctx | null {
     if (!AC) return null;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.5;
+    master.gain.value = muted ? 0 : volume * MAXGAIN;
     master.connect(ctx.destination);
   }
   return ctx;
@@ -156,10 +165,19 @@ function play(name: SfxName) {
 
 function setMuted(m: boolean) {
   muted = m;
+  applyGain();
   try {
     localStorage.setItem(MUTE_KEY, m ? "1" : "0");
   } catch {}
   listeners.forEach((fn) => fn(m));
+}
+
+function setVolume(v: number) {
+  volume = Math.max(0, Math.min(1, v));
+  applyGain();
+  try {
+    localStorage.setItem(VOL_KEY, String(volume));
+  } catch {}
 }
 
 /** Override synth voices with real audio files when you have them. */
@@ -183,6 +201,8 @@ export const sfx = {
   isMuted: () => muted,
   setMuted,
   toggle: () => setMuted(!muted),
+  getVolume: () => volume,
+  setVolume,
   subscribe: (fn: (m: boolean) => void) => {
     listeners.add(fn);
     return () => {

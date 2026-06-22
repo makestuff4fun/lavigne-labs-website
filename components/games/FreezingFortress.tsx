@@ -10,6 +10,15 @@ import {
   shiverwingFrames,
   cubeMeltFrames,
   digitGlyphs,
+  menuFrames,
+  menuGrey,
+  menuRed,
+  barGreen,
+  barYellow,
+  barBlue,
+  volumeBar,
+  brightBar,
+  vibBar,
 } from "./ffData";
 
 /*
@@ -42,9 +51,25 @@ const PIT_MS = 70; // fire flicker frame time
 const MELT_MS = 45; // cube-melt frame time on solve
 const SHIM_MS = 55; // dragon shimmer frame time (one-shot per move)
 const INTRO_MS = 1100; // level-number readout duration
-// Cutout rectangle of the snowflake bezel.png (fractions of its size), measured
-// from the artwork. The LED board is seated here.
-const BEZEL_CUT = { left: 5.95, top: 6.98, width: 88.0, height: 85.91 };
+// zoom modes — each is a self-contained bezel + board composition. The LED board
+// is seated in the bezel's cutout (fractions of the bezel image).
+//   0: no border (board only) · 1: original snowflake bezel (its previous size)
+//   2: full landscape bezel
+const ZOOM_MODES = [
+  { bezel: null, bw: BOARD_W, bh: BOARD_H, maxW: 600, round: 14,
+    cut: { left: 0, top: 0, width: 1, height: 1 } },
+  { bezel: "/games/freezing-fortress/bezel-snowflake.png?v=5", bw: 1092, bh: 802, maxW: 680, round: 0,
+    cut: { left: 0.0595, top: 0.0698, width: 0.88, height: 0.8591 } },
+  { bezel: "/games/freezing-fortress/bezel.png?v=5", bw: 995, bh: 468, maxW: 600, round: 0,
+    cut: { left: 0.2362, top: 0.0855, width: 0.5256, height: 0.8248 } },
+];
+const ZOOM_KEY = "ff-zoom";
+
+// --- device settings (faithful to the firmware menu) ---
+const BRIGHT_KEY = "ff-brightness"; // 0..2 (default 2 = max)
+const SOUND_KEY = "ff-sound"; // 0..5 (default 5 = max)
+const VIB_KEY = "ff-vibration"; // 0..2 (default 0 = off)
+const BRIGHT_FILTER = [0.5, 0.73, 1]; // CSS brightness per level
 const LEVELS_URL = "/games/freezing-fortress/levels.txt";
 const PROGRESS_KEY = "ff-max-level";
 
@@ -122,6 +147,15 @@ export default function FreezingFortress() {
   const [pushes, setPushes] = useState(0);
   const [total, setTotal] = useState(0);
   const [canUndo, setCanUndo] = useState(false);
+  const [zoom, setZoom] = useState(0); // 0 board · 1 snowflake · 2 full bezel
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [brightness, setBrightness] = useState(2); // 0..2
+  const [soundLevel, setSoundLevel] = useState(5); // 0..5
+  const [vibration, setVibration] = useState(0); // 0..2
+  const [menuPage, setMenuPage] = useState(0); // 0 level · 1 vol · 2 bright · 3 vib · 4 reset · 5 confirm
+  const [newLevel, setNewLevel] = useState(0); // level previewed in the menu (applied on close)
+  const [resetArmed, setResetArmed] = useState(false);
+  const [confirmYes, setConfirmYes] = useState(false);
 
   const g = useRef({
     levels: [] as Uint8Array[],
@@ -135,6 +169,22 @@ export default function FreezingFortress() {
     phaseStart: 0,
     clock: 0,
     shimmerStart: -1e9, // dragon shimmer trigger time (one-shot per move)
+    vibration: 0, // 0..2 haptic intensity (mobile only)
+    // --- LED menu (rendered on the board, like the real device) ---
+    menuOpen: false,
+    menuPage: 0, // 0 level · 1 volume · 2 brightness · 3 vibration · 4 reset · 5 confirm
+    newLevel: 0, // level being previewed in the menu (applied on exit)
+    resetArmed: false,
+    confirmYes: false,
+    volumeV: 5,
+    brightnessV: 2,
+  });
+  const menuRef = useRef(false); // gate game keyboard while the menu is open
+  const menuApi = useRef({
+    pageDelta: (_d: number) => {},
+    adjust: (_up: boolean) => {},
+    ok: () => {},
+    toggle: () => {},
   });
 
   // ---- engine actions exposed to the keyboard + on-screen controls ----
@@ -143,7 +193,115 @@ export default function FreezingFortress() {
     undo: () => {},
     reset: () => {},
     go: (_n: number) => {},
+    goto: (_n: number) => {},
   });
+
+  useEffect(() => {
+    const z = Number(localStorage.getItem(ZOOM_KEY));
+    if (z === 1 || z === 2) setZoom(z);
+    const clamp = (v: number, max: number, fb: number) =>
+      Number.isFinite(v) && v >= 0 && v <= max ? v : fb;
+    setBrightness(clamp(Number(localStorage.getItem(BRIGHT_KEY)), 2, 2));
+    setSoundLevel(clamp(Number(localStorage.getItem(SOUND_KEY)), 5, 5));
+    setVibration(clamp(Number(localStorage.getItem(VIB_KEY)), 2, 0));
+  }, []);
+
+  // sound level → master volume (0..5 → 0..1)
+  useEffect(() => {
+    sfx.setVolume(soundLevel / 5);
+  }, [soundLevel]);
+
+  // keep the engine's vibration intensity in sync (read inside the loop ref)
+  useEffect(() => {
+    g.current.vibration = vibration;
+  }, [vibration]);
+
+  // mirror the menu/setting state into the engine ref so the render loop can draw it
+  useEffect(() => {
+    const s = g.current;
+    s.menuOpen = menuOpen;
+    s.menuPage = menuPage;
+    s.newLevel = newLevel;
+    s.resetArmed = resetArmed;
+    s.confirmYes = confirmYes;
+    s.volumeV = soundLevel;
+    s.brightnessV = brightness;
+    menuRef.current = menuOpen;
+  }, [menuOpen, menuPage, newLevel, resetArmed, confirmYes, soundLevel, brightness]);
+
+  const persistSet =
+    (key: string, set: (v: number) => void) => (v: number) => {
+      set(v);
+      try {
+        localStorage.setItem(key, String(v));
+      } catch {}
+    };
+  const setBright = persistSet(BRIGHT_KEY, setBrightness);
+  const setSound = persistSet(SOUND_KEY, setSoundLevel);
+  const setVib = persistSet(VIB_KEY, setVibration);
+  const clamp = (v: number, hi: number) => Math.max(0, Math.min(hi, v));
+
+  // ---- LED menu navigation (mirrors the firmware's do_menu) ----
+  const openMenu = () => {
+    setNewLevel(levelNo);
+    setMenuPage(0);
+    setResetArmed(false);
+    setConfirmYes(false);
+    setMenuOpen(true);
+    sfx.unlock();
+  };
+  const exitMenu = () => {
+    setMenuOpen(false);
+    if (newLevel !== levelNo) api.current.goto(newLevel);
+  };
+  const menuPageDelta = (d: number) => {
+    setResetArmed(false);
+    setConfirmYes(false);
+    setMenuPage((p) => ((p === 5 ? 4 : p) + d + 5) % 5); // cycle pages 0..4
+    sfx.play("button");
+  };
+  const menuAdjust = (up: boolean) => {
+    if (menuPage === 0) setNewLevel((n) => (up ? Math.min(total - 1, n + 1) : Math.max(0, n - 1)));
+    else if (menuPage === 1) setSound(clamp(soundLevel + (up ? 1 : -1), 5));
+    else if (menuPage === 2) setBright(clamp(brightness + (up ? 1 : -1), 2));
+    else if (menuPage === 3) {
+      setVib(clamp(vibration + (up ? 1 : -1), 2));
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(60);
+    } else if (menuPage === 4) setResetArmed(up); // right arms (red), left disarms
+    else if (menuPage === 5) setConfirmYes(!up); // left → Yes, right → No
+    sfx.play("button");
+  };
+  const menuOk = () => {
+    if (menuPage === 4 && resetArmed) {
+      setMenuPage(5);
+      setConfirmYes(false);
+      sfx.play("button");
+    } else if (menuPage === 5 && confirmYes) {
+      try {
+        localStorage.removeItem(PROGRESS_KEY);
+      } catch {}
+      sfx.play("levelComplete");
+      setMenuOpen(false);
+      api.current.goto(0);
+    }
+  };
+  const toggleMenu = () => (menuOpen ? exitMenu() : openMenu());
+
+  menuApi.current.pageDelta = menuPageDelta;
+  menuApi.current.adjust = menuAdjust;
+  menuApi.current.ok = menuOk;
+  menuApi.current.toggle = toggleMenu;
+
+  const onDir = (dx: number, dy: number) => {
+    if (menuOpen) {
+      if (dy < 0) menuPageDelta(-1);
+      else if (dy > 0) menuPageDelta(1);
+      else if (dx < 0) menuAdjust(false);
+      else if (dx > 0) menuAdjust(true);
+    } else {
+      api.current.move(dy !== 0 ? dy * COLS : dx);
+    }
+  };
 
   useEffect(() => {
     let raf = 0;
@@ -187,6 +345,15 @@ export default function FreezingFortress() {
       return true;
     }
 
+    // haptic buzz on mobile, scaled by the vibration setting (no-op elsewhere)
+    function buzz(strong = false) {
+      if (!s.vibration) return;
+      const nav = typeof navigator !== "undefined" ? navigator : null;
+      if (nav && typeof nav.vibrate === "function") {
+        nav.vibrate((strong ? 18 : 8) * s.vibration);
+      }
+    }
+
     // dir: -COLS up, +COLS down, -1 left, +1 right
     function move(dir: number) {
       if (s.phase !== "play") return;
@@ -209,6 +376,7 @@ export default function FreezingFortress() {
         s.moves++;
         setMoves(s.moves);
         sfx.play("move");
+        buzz();
         return;
       }
       if (b[t] === 3 || b[t] === 5) {
@@ -231,11 +399,13 @@ export default function FreezingFortress() {
           setMoves(s.moves);
           setPushes(s.pushes);
           sfx.play(b[u] === 5 ? "iceFire" : "push"); // ice cube into a fire pit vs onto floor
+          buzz(b[u] === 5);
           if (checkWin()) {
             s.phase = "solved";
             s.phaseStart = s.clock;
             setPhase("solved");
             sfx.play("levelComplete");
+            buzz(true);
           }
         }
       }
@@ -263,7 +433,11 @@ export default function FreezingFortress() {
       loadLevel(n);
     }
 
-    api.current = { move, undo, reset, go };
+    function goto(n: number) {
+      loadLevel(Math.min(s.levels.length - 1, Math.max(0, n)));
+    }
+
+    api.current = { move, undo, reset, go, goto };
 
     // ---------- rendering ----------
     function cellXY(i: number) {
@@ -371,6 +545,52 @@ export default function FreezingFortress() {
       drawBoard(ctx, null);
     }
 
+    // The device's on-LED settings menu (Holtek ff_500_levels: menus.h / main.c)
+    function renderMenu(ctx: CanvasRenderingContext2D) {
+      ctx.fillStyle = "#04060a";
+      ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+      const page = s.menuPage;
+      if (page === 0) {
+        drawDigits(ctx, s.newLevel + 1); // level select shows the level number
+        return;
+      }
+      const key =
+        page === 1 ? "volume" : page === 2 ? "brightness" : page === 3 ? "vibration" : page === 4 ? "clearAll" : "confirm";
+      const bmp = menuFrames[key];
+      const armed = page === 4 && s.resetArmed;
+      for (let i = 0; i < N; i++) {
+        const [x, y] = cellXY(i);
+        const v = bmp[i];
+        if (v > 0) drawLED(ctx, x, y, (armed ? menuRed : menuGrey)[v]);
+        else drawOff(ctx, x, y);
+      }
+      // value bar on rows 7 & 8 (green volume / yellow brightness / blue vibration)
+      if (page >= 1 && page <= 3) {
+        const len = page === 1 ? volumeBar[s.volumeV] : page === 2 ? brightBar[s.brightnessV] : vibBar[s.vibration];
+        const color = page === 1 ? barGreen : page === 2 ? barYellow : barBlue;
+        for (let c = 0; c < len; c++) {
+          for (const r of [7, 8]) {
+            const [x, y] = cellXY(r * COLS + c);
+            drawLED(ctx, x, y, color);
+          }
+        }
+      }
+      // confirm: highlight Y (cols 0-4) or N (cols 10-13) red over rows 6-9
+      if (page === 5) {
+        const cols = s.confirmYes ? [0, 1, 2, 3, 4] : [10, 11, 12, 13];
+        for (let r = 6; r < 10; r++) {
+          for (const c of cols) {
+            const i = r * COLS + c;
+            const v = bmp[i];
+            if (v > 0) {
+              const [x, y] = cellXY(i);
+              drawLED(ctx, x, y, menuRed[v]);
+            }
+          }
+        }
+      }
+    }
+
     function loop(now: number) {
       if (!mounted) return;
       s.clock += now - last;
@@ -391,7 +611,10 @@ export default function FreezingFortress() {
       // throttle the (glow-heavy) draw to ~30fps; the flicker frame time is 70ms
       if (now - lastRender >= 32) {
         const ctx = canvasRef.current?.getContext("2d");
-        if (ctx) render(ctx);
+        if (ctx) {
+          if (s.menuOpen) renderMenu(ctx);
+          else render(ctx);
+        }
         lastRender = now;
       }
       raf = requestAnimationFrame(loop);
@@ -419,6 +642,18 @@ export default function FreezingFortress() {
     const onKey = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
       sfx.unlock();
+      if (menuRef.current) {
+        // menu navigation: ▲▼ page · ◀▶ adjust · Enter/B select · Esc/M close
+        if (k === "arrowup" || k === "w") menuApi.current.pageDelta(-1);
+        else if (k === "arrowdown" || k === "s") menuApi.current.pageDelta(1);
+        else if (k === "arrowleft" || k === "a") menuApi.current.adjust(false);
+        else if (k === "arrowright" || k === "d") menuApi.current.adjust(true);
+        else if (k === "enter" || k === "b" || k === " ") menuApi.current.ok();
+        else if (k === "escape" || k === "m") menuApi.current.toggle();
+        else return;
+        e.preventDefault();
+        return;
+      }
       const map: Record<string, number> = {
         arrowup: -COLS, w: -COLS,
         arrowdown: COLS, s: COLS,
@@ -434,6 +669,9 @@ export default function FreezingFortress() {
       } else if (k === "r") {
         e.preventDefault();
         api.current.reset();
+      } else if (k === "m") {
+        e.preventDefault();
+        menuApi.current.toggle(); // open the menu
       } else if (k === "[") {
         api.current.go(-1);
       } else if (k === "]") {
@@ -453,56 +691,98 @@ export default function FreezingFortress() {
   const DPad = () => (
     <div className="grid grid-cols-3 grid-rows-3 gap-1.5" style={{ width: 168 }}>
       <span />
-      <PadBtn label="▲" onPress={() => api.current.move(-COLS)} />
+      <PadBtn label="▲" onPress={() => onDir(0, -1)} />
       <span />
-      <PadBtn label="◀" onPress={() => api.current.move(-1)} />
+      <PadBtn label="◀" onPress={() => onDir(-1, 0)} />
       <span />
-      <PadBtn label="▶" onPress={() => api.current.move(1)} />
+      <PadBtn label="▶" onPress={() => onDir(1, 0)} />
       <span />
-      <PadBtn label="▼" onPress={() => api.current.move(COLS)} />
+      <PadBtn label="▼" onPress={() => onDir(0, 1)} />
       <span />
     </div>
   );
 
+  const m = ZOOM_MODES[zoom];
+  const cut = m.cut;
+  // canvas covers the cutout (+ a hair of overlap so no edge gap)
+  const cutStyle = {
+    left: `${(cut.left - 0.004) * 100}%`,
+    top: `${(cut.top - 0.004) * 100}%`,
+    width: `${(cut.width + 0.008) * 100}%`,
+    height: `${(cut.height + 0.008) * 100}%`,
+  } as const;
   return (
-    <div className="flex flex-col items-center">
-      {/* Snowflake bezel from the real device, with the LED board seated in the cutout */}
-      <div className="relative" style={{ width: "min(92vw, 680px)" }}>
-        {/* Black backstop behind the bezel: any sub-pixel cutout gap shows black,
-            not the white page. It stays hidden under the opaque blue frame elsewhere. */}
-        <div
-          className="absolute bg-black"
-          style={{ left: "4.5%", top: "5.5%", width: "91%", height: "89%" }}
+    <div className="relative flex flex-col items-center">
+      {/* Each zoom mode is a self-contained bezel + board: no border, the original
+          snowflake bezel, or the full landscape bezel. The board sits in the cutout
+          over a black backstop (any sub-pixel gap reads black, not the page). */}
+      <div
+        className="relative select-none overflow-hidden"
+        style={{
+          width: `min(92vw, ${m.maxW}px)`,
+          aspectRatio: `${m.bw} / ${m.bh}`,
+          borderRadius: m.round,
+        }}
+      >
+        <div className="absolute bg-black" style={cutStyle} />
+        <canvas
+          ref={canvasRef}
+          width={BOARD_W}
+          height={BOARD_H}
+          className="absolute block"
+          style={{ ...cutStyle, objectFit: "fill", filter: `brightness(${BRIGHT_FILTER[brightness]})` }}
         />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/games/freezing-fortress/bezel.png?v=4"
-          alt="Freezing Fortress bezel"
-          draggable={false}
-          className="pointer-events-none relative z-10 block w-full select-none"
-        />
-        <div
-          className="absolute z-20 overflow-hidden bg-black"
-          style={{
-            left: `${BEZEL_CUT.left}%`,
-            top: `${BEZEL_CUT.top}%`,
-            width: `${BEZEL_CUT.width}%`,
-            height: `${BEZEL_CUT.height}%`,
-          }}
-        >
-          <canvas
-            ref={canvasRef}
-            width={BOARD_W}
-            height={BOARD_H}
-            className="block h-full w-full select-none"
-            style={{ objectFit: "fill" }}
+        {m.bezel && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={m.bezel}
+            alt="Freezing Fortress bezel"
+            draggable={false}
+            className="pointer-events-none absolute inset-0 block h-full w-full select-none"
           />
-          {phase === "loading" && (
-            <div className="absolute inset-0 grid place-items-center">
-              <p className="font-mono text-sm text-white/60">Loading…</p>
-            </div>
-          )}
-        </div>
+        )}
+        {phase === "loading" && (
+          <div className="absolute grid place-items-center bg-black" style={cutStyle}>
+            <p className="font-mono text-sm text-white/60">Loading…</p>
+          </div>
+        )}
+
+        {/* menu / settings (the device's on-LED menu) */}
+        <button
+          type="button"
+          aria-label="Menu"
+          onClick={toggleMenu}
+          className={`absolute left-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full text-white backdrop-blur-sm transition ${menuOpen ? "bg-accent" : "bg-black/45 hover:bg-black/65"}`}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="3.2" />
+            <path
+              d="M12 2.5v2.4M12 19.1v2.4M21.5 12h-2.4M4.9 12H2.5M18.7 5.3l-1.7 1.7M7 17l-1.7 1.7M18.7 18.7L17 17M7 7L5.3 5.3"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+
+        {/* zoom toggle — no border → snowflake bezel → full bezel */}
+        <button
+          type="button"
+          aria-label="Change zoom"
+          onClick={() =>
+            setZoom((prev) => {
+              const n = (prev + 1) % 3;
+              try {
+                localStorage.setItem(ZOOM_KEY, String(n));
+              } catch {}
+              return n;
+            })
+          }
+          className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/45 text-white backdrop-blur-sm transition hover:bg-black/65"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.2-4.2M8 11h6M11 8v6" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
 
       {/* HUD */}
@@ -515,25 +795,37 @@ export default function FreezingFortress() {
         <span>Pushes <span className="text-ink">{pushes}</span></span>
       </div>
 
-      {/* Controls */}
+      {/* Controls — the D-pad drives the game, or the menu when it's open */}
       <div className="mt-5 flex w-full max-w-md flex-wrap items-center justify-center gap-x-8 gap-y-5">
         <DPad />
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <ActionBtn label="Undo" onClick={() => api.current.undo()} disabled={!canUndo} />
-            <ActionBtn label="Reset" onClick={() => api.current.reset()} />
+        {menuOpen ? (
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex gap-2">
+              <ActionBtn label="OK" onClick={menuOk} />
+              <ActionBtn label="Close" onClick={exitMenu} />
+            </div>
+            <p className="max-w-[160px] text-center text-[11px] leading-snug text-slate">
+              ▲▼ page · ◀▶ adjust · OK to confirm reset
+            </p>
           </div>
-          <div className="flex gap-2">
-            <ActionBtn label="◀ Prev" onClick={() => api.current.go(-1)} disabled={levelNo === 0} />
-            <ActionBtn label="Next ▶" onClick={() => api.current.go(1)} disabled={levelNo >= total - 1} />
+        ) : (
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <ActionBtn label="Undo" onClick={() => api.current.undo()} disabled={!canUndo} />
+              <ActionBtn label="Reset" onClick={() => api.current.reset()} />
+            </div>
+            <div className="flex gap-2">
+              <ActionBtn label="◀ Prev" onClick={() => api.current.go(-1)} disabled={levelNo === 0} />
+              <ActionBtn label="Next ▶" onClick={() => api.current.go(1)} disabled={levelNo >= total - 1} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <p className="mt-4 max-w-md text-center text-xs leading-relaxed text-slate">
         Push every ice cube into a fire pit. Arrow keys / WASD to move, U to undo,
-        R to reset. The real 14×10 LED game — exact colours, fire-flicker, and
-        cube-melt straight from the firmware.
+        R to reset, M for the menu. The real 14×10 LED game — exact colours,
+        fire-flicker, cube-melt, and the on-screen menu straight from the firmware.
       </p>
     </div>
   );
