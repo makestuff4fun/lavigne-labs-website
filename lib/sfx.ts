@@ -32,6 +32,7 @@ let master: GainNode | null = null;
 let muted = false;
 let volume = 1; // 0..1
 const samples: Partial<Record<SfxName, AudioBuffer>> = {};
+const fetched: Partial<Record<SfxName, ArrayBuffer>> = {}; // bytes awaiting decode (after unlock)
 const listeners = new Set<(m: boolean) => void>();
 
 function applyGain() {
@@ -61,9 +62,29 @@ function ensure(): Ctx | null {
   return ctx;
 }
 
+// Called from the first user gesture. Creating the AudioContext here (not earlier)
+// is required for iOS/Safari — a context made outside a gesture can't be resumed.
 function unlock() {
   const ac = ensure();
-  if (ac && ac.state === "suspended") ac.resume().catch(() => {});
+  if (!ac) return;
+  if (ac.state === "suspended") ac.resume().catch(() => {});
+  decodePending();
+}
+
+// Decode any pre-fetched sample bytes, once the context exists (i.e. after unlock).
+function decodePending() {
+  if (!ctx) return;
+  for (const key of Object.keys(fetched) as SfxName[]) {
+    const buf = fetched[key];
+    if (!buf || samples[key]) continue;
+    delete fetched[key];
+    ctx
+      .decodeAudioData(buf)
+      .then((b) => {
+        samples[key] = b;
+      })
+      .catch(() => {});
+  }
 }
 
 // ---------- synth primitives ----------
@@ -146,20 +167,20 @@ const synth: Record<SfxName, (ac: Ctx, out: AudioNode) => void> = {
 };
 
 function play(name: SfxName) {
-  if (muted) return;
-  const ac = ensure();
-  if (!ac || !master) return;
-  if (ac.state === "suspended") ac.resume().catch(() => {});
+  // No-op until the first gesture has created the context (don't create it here —
+  // a context made outside a gesture is silent on iOS).
+  if (muted || !ctx || !master) return;
+  if (ctx.state === "suspended") ctx.resume().catch(() => {});
   const sample = samples[name];
   if (sample) {
-    const src = ac.createBufferSource();
+    const src = ctx.createBufferSource();
     src.buffer = sample;
     src.connect(master);
     src.start();
     return;
   }
   try {
-    synth[name](ac, master);
+    synth[name](ctx, master);
   } catch {}
 }
 
@@ -180,19 +201,18 @@ function setVolume(v: number) {
   } catch {}
 }
 
-/** Override synth voices with real audio files when you have them. */
+/** Override synth voices with real audio files. The bytes are fetched now, but
+ *  decoding waits until the first gesture (unlock) so the AudioContext is created
+ *  in-gesture — required for audio to work on iOS/Safari. */
 async function useSamples(map: Partial<Record<SfxName, string>>) {
-  const ac = ensure();
-  if (!ac) return;
   await Promise.all(
     (Object.entries(map) as [SfxName, string][]).map(async ([name, url]) => {
       try {
-        const res = await fetch(url);
-        const buf = await res.arrayBuffer();
-        samples[name] = await ac.decodeAudioData(buf);
+        fetched[name] = await (await fetch(url)).arrayBuffer();
       } catch {}
     }),
   );
+  decodePending(); // decode now if already unlocked; otherwise unlock() will
 }
 
 export const sfx = {
