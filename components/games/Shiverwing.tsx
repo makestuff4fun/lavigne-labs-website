@@ -119,6 +119,7 @@ function rand(a: number, b: number) {
 export default function Shiverwing() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null); // whole badge = the tap/click region
+  const btnRef = useRef<HTMLImageElement>(null); // the "button pressed" overlay
   const [loading, setLoading] = useState(true);
   const [zoom, setZoom] = useState(0); // 0 full badge · 1 LCD+border · 2 LCD only
 
@@ -161,6 +162,7 @@ export default function Shiverwing() {
     let acc = 0;
     let last = performance.now();
     let mounted = true;
+    let btnTimer: ReturnType<typeof setTimeout>;
     type Imgs = Record<keyof typeof A, HTMLImageElement>;
     let img: Imgs | null = null;
     let frames: HTMLImageElement[] = []; // [sw1, sw2, sw3, sw2]
@@ -189,9 +191,21 @@ export default function Shiverwing() {
       g.current.phaseStart = g.current.clockMs;
     }
 
+    // briefly show the pressed-button overlay on every press (physical feedback)
+    function flashButton() {
+      const el = btnRef.current;
+      if (!el) return;
+      el.style.opacity = "1";
+      clearTimeout(btnTimer);
+      btnTimer = setTimeout(() => {
+        if (btnRef.current) btnRef.current.style.opacity = "0";
+      }, 110);
+    }
+
     function press() {
       const s = g.current;
       sfx.unlock();
+      flashButton();
       switch (s.phase) {
         case "attract":
           toPlay();
@@ -439,6 +453,7 @@ export default function Shiverwing() {
     return () => {
       mounted = false;
       cancelAnimationFrame(raf);
+      clearTimeout(btnTimer);
       window.removeEventListener("keydown", onKey);
       el?.removeEventListener("mousedown", onPointer);
       el?.removeEventListener("touchstart", onPointer);
@@ -488,6 +503,17 @@ export default function Shiverwing() {
             alt="Shiverwing badge"
             draggable={false}
             className="pointer-events-none relative block w-full select-none"
+          />
+          {/* pressed-button overlay (same 1147x1804 canvas, transparent except the
+              button in its down state); flashed on each press */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={btnRef}
+            src="/games/shiverwing/badge-bezel-down.png"
+            alt=""
+            draggable={false}
+            className="pointer-events-none absolute inset-0 block h-full w-full select-none"
+            style={{ opacity: 0, transition: "opacity 80ms ease-out" }}
           />
           {loading && (
             <div className="absolute grid place-items-center bg-ink" style={lcdStyle}>
