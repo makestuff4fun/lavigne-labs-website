@@ -211,6 +211,19 @@ export default function FreezingFortress() {
     sfx.setVolume(soundLevel / 5);
   }, [soundLevel]);
 
+  // Real device sound effects (recorded from the WT588F voice chip), overriding
+  // the synth placeholders for these events.
+  useEffect(() => {
+    sfx.useSamples({
+      move: "/games/sfx/move_dragon.mp3", // id 7
+      push: "/games/sfx/push_ice.mp3", // id 4
+      iceFire: "/games/sfx/ice_cube_fire.mp3", // id 9
+      levelStart: "/games/sfx/level_start.mp3", // id 14
+      levelComplete: "/games/sfx/level_complete.mp3", // id 13
+      button: "/games/sfx/menu_up.mp3", // id 2 (menu navigation)
+    });
+  }, []);
+
   // keep the engine's vibration intensity in sync (read inside the loop ref)
   useEffect(() => {
     g.current.vibration = vibration;

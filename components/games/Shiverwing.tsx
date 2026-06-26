@@ -127,6 +127,16 @@ export default function Shiverwing() {
     if (z === 1 || z === 2) setZoom(z);
   }, []);
 
+  // Real badge sound effects (recorded from the WT588F voice chip). These
+  // override the synth placeholders for these events; everything else is unchanged.
+  useEffect(() => {
+    sfx.useSamples({
+      flap: "/games/sfx/move_dragon.mp3", // id 7
+      score: "/games/sfx/bell.mp3", // id 12
+      crash: "/games/sfx/spare_cymbal.mp3", // id 3
+    });
+  }, []);
+
   const g = useRef({
     phase: "loading" as Phase,
     clockMs: 0,

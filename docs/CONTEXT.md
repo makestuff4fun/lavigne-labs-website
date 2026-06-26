@@ -22,7 +22,7 @@ Black & Decker LED factory; two EV startups).
 |---|---|
 | **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in repo. Home is the new positioning overhaul. **Not deployed yet.** |
 | **Games** (Shiverwing, Freezing Fortress) | Done, in repo. Faithful ports; synth SFX + mute toggle wired. |
-| **Game sounds** | **Synth placeholders.** Real WAVs pending — Brian's cousin has the original files (away on vacation). Swap-in is one call (`sfx.useSamples`, see docs/SOUNDS.md). The WT588F `.bin` decode was abandoned (the chip tool obfuscates the audio; a known-plaintext probe confirmed it). |
+| **Game sounds** | **Real device SFX wired** (recovered WT588F recordings → `public/games/sfx/*.mp3`, registered via `sfx.useSamples` in each game). Synth voices remain as fallback. `score` (pipe-pass) uses `bell` as a chosen cue — badge was silent there. See docs/SOUNDS.md. |
 | **Static WordPress freeze** | Done **locally**, **not in the repo** (it's a 168 MB deploy artifact). Made with **Simply Static**, trimmed 825 MB→168 MB (unreferenced media removed), and the "Our Projects" grid rebuilt as a plain static grid (the theme's AJAX infinite-scroll can't work statically). Regenerate via docs/DEPLOYMENT.md. |
 | **Deployment** | **Not live yet.** Artifacts built (`lavigne-site-flat.zip` = freeze + Play menu → `/play/`; `lavigne-games-folder.zip` = games for `public_html`). Both extract into `public_html` → games at `lavignelabs.com/play` (no subdomain). WP backup/swap pending — user executes via cPanel. Plan below. |
 
@@ -66,7 +66,7 @@ has no PHP → Formspree/Web3Forms/`mailto:`).
    back up WP; extract `lavigne-site-flat.zip` + `lavigne-games-folder.zip` into
    `public_html` → site + games at `lavignelabs.com/play`.
 2. **Contact form** → wire the frozen Contact page to a form service (still open).
-3. **Swap real game SFX** when the cousin's WAVs arrive (docs/SOUNDS.md).
+3. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
 4. **Review portfolio descriptions** — 8 items in the static grid have *inferred*
    blurbs flagged for Brian to verify (Smart Fire Alarm, Teleprompter, Special
    Action Camera, Custom Motorcycle Parts, Dog Backpack, Oculus Earphones,
