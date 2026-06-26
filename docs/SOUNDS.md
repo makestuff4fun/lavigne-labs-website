@@ -21,7 +21,6 @@ sample.
 | Effect | Event | Real sample (`public/games/sfx/`) |
 |---|---|---|
 | `flap` | Shiverwing: every flap (incl. the start press) | `move_dragon.mp3` (id 7) |
-| `score` | Shiverwing: pipe passed | `bell.mp3` (id 12) ⚠️ |
 | `crash` | Shiverwing: death | `spare_cymbal.mp3` (id 3) |
 | `move` | Freezing Fortress: step | `move_dragon.mp3` (id 7) |
 | `push` | FF: push a cube onto floor | `push_ice.mp3` (id 4) |
@@ -30,9 +29,9 @@ sample.
 | `levelComplete` | FF: level solved | `level_complete.mp3` (id 13) |
 | `button` | FF: menu navigation | `menu_up.mp3` (id 2) |
 
-⚠️ **`score`**: the badge firmware plays *no* sound on passing a pipe (it only
-fires `move_dragon` on flap and `cymbal` on crash). `bell.mp3` is a chosen
-point-cue, not original — set `score` to silence it if you want it badge-faithful.
+**Pipe-pass is silent**, matching the badge: the firmware only fires
+`move_dragon` on flap and `cymbal` on crash, so Shiverwing doesn't call
+`sfx.play("score")` at all (the score still counts, just no sound).
 
 ## The full sample set
 

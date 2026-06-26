@@ -132,8 +132,8 @@ export default function Shiverwing() {
   useEffect(() => {
     sfx.useSamples({
       flap: "/games/sfx/move_dragon.mp3", // id 7
-      score: "/games/sfx/bell.mp3", // id 12
       crash: "/games/sfx/spare_cymbal.mp3", // id 3
+      // no `score`: the badge plays nothing on passing a pipe
     });
   }, []);
 
@@ -265,8 +265,7 @@ export default function Shiverwing() {
         if (col.x < -FC_WIDTH) {
           col.x = SCREEN_W;
           col.gapY = rand(GAP_MIN, GAP_MAX);
-          s.score++;
-          sfx.play("score");
+          s.score++; // badge is silent on passing a pipe — no score sound, by design
         }
       }
 
