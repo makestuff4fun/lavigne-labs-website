@@ -43,9 +43,12 @@ export default function ShiverwingPage() {
         <div className="mx-auto mt-12 max-w-xl rounded-2xl border border-line bg-mist p-6 text-center text-sm text-slate">
           Curious how it&apos;s built? The badge bring-up — driving that LCD at
           60fps — is the kind of hands-on work I bring to client hardware.{" "}
-          <Link href="/articles" className="font-semibold text-accent hover:underline">
-            Read the articles
-          </Link>{" "}
+          <a
+            href="https://lavignelabs.com/2024/11/08/digital-badge-pcb-layout/"
+            className="font-semibold text-accent hover:underline"
+          >
+            Read the article
+          </a>{" "}
           or{" "}
           <Link href="/contact" className="font-semibold text-accent hover:underline">
             start a project
