@@ -67,7 +67,7 @@ const ZOOM_KEY = "ff-zoom";
 
 // --- device settings (faithful to the firmware menu) ---
 const BRIGHT_KEY = "ff-brightness"; // 0..2 (default 2 = max)
-const SOUND_KEY = "ff-sound"; // 0..5 (default 5 = max)
+const SOUND_KEY = "ff-sound-v2"; // 0..5 (default 5 = max); -v2 discards 0s from the old null-parse bug
 const VIB_KEY = "ff-vibration"; // 0..2 (default 0 = off)
 const BRIGHT_FILTER = [0.5, 0.73, 1]; // CSS brightness per level
 const LEVELS_URL = "/games/freezing-fortress/levels.txt";
@@ -199,11 +199,17 @@ export default function FreezingFortress() {
   useEffect(() => {
     const z = Number(localStorage.getItem(ZOOM_KEY));
     if (z === 1 || z === 2) setZoom(z);
-    const clamp = (v: number, max: number, fb: number) =>
-      Number.isFinite(v) && v >= 0 && v <= max ? v : fb;
-    setBrightness(clamp(Number(localStorage.getItem(BRIGHT_KEY)), 2, 2));
-    setSoundLevel(clamp(Number(localStorage.getItem(SOUND_KEY)), 5, 5));
-    setVibration(clamp(Number(localStorage.getItem(VIB_KEY)), 2, 0));
+    // read a 0..max setting, falling back to `fb` when unset (null) or invalid.
+    // (Number(null) is 0, so a plain Number() parse would wrongly default to 0.)
+    const get = (key: string, max: number, fb: number) => {
+      const raw = localStorage.getItem(key);
+      if (raw === null) return fb;
+      const v = Number(raw);
+      return Number.isFinite(v) && v >= 0 && v <= max ? v : fb;
+    };
+    setBrightness(get(BRIGHT_KEY, 2, 2));
+    setSoundLevel(get(SOUND_KEY, 5, 5));
+    setVibration(get(VIB_KEY, 2, 0));
   }, []);
 
   // sound level → master volume (0..5 → 0..1)

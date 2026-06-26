@@ -22,7 +22,8 @@ export type SfxName =
   | "button";
 
 const MUTE_KEY = "sfx-muted";
-const VOL_KEY = "sfx-volume";
+// "-v2": discard volumes wrongly persisted as 0 by the old Number(null)===0 bug.
+const VOL_KEY = "sfx-volume-v2";
 const MAXGAIN = 0.5; // master gain at full volume
 
 type Ctx = AudioContext;
@@ -43,8 +44,11 @@ function load() {
   if (typeof window === "undefined") return;
   try {
     muted = localStorage.getItem(MUTE_KEY) === "1";
-    const v = Number(localStorage.getItem(VOL_KEY));
-    if (Number.isFinite(v) && v >= 0 && v <= 1) volume = v;
+    const raw = localStorage.getItem(VOL_KEY); // null when unset — keep default 1
+    if (raw !== null) {
+      const v = Number(raw);
+      if (Number.isFinite(v) && v >= 0 && v <= 1) volume = v;
+    }
   } catch {}
 }
 load();
