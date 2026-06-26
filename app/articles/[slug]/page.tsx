@@ -67,12 +67,13 @@ export default async function ArticlePage({
         />
 
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">
-          <p className="text-lg font-semibold">Manufacturing in China soon?</p>
+          <p className="text-lg font-semibold">Building hardware?</p>
           <p className="mt-2 text-slate">
-            I help US &amp; Canadian teams do it without the costly mistakes.
+            I&apos;m a hardware engineer in Shenzhen — open to full-time roles and
+            focused projects.
           </p>
           <Button href="/contact" className="mt-5">
-            Start a project <ArrowIcon />
+            Get in touch <ArrowIcon />
           </Button>
         </div>
       </Container>

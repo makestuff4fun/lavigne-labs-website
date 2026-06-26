@@ -25,11 +25,11 @@ export function About() {
             </h2>
             <div className="mt-5 space-y-4 text-lg leading-relaxed text-slate">
               <p>
-                I&apos;m Brian Barrett — an engineer based in China with over 13
-                years in product design, prototyping, and manufacturing. I spent
-                six years running an LED lighting factory for Black &amp; Decker,
-                and worked with two EV startups building tilting vehicles and
-                electric motorcycles.
+                I&apos;m Brian Barrett — a hardware engineer based in Shenzhen
+                with over 13 years in product design, prototyping, and
+                manufacturing. I spent six years running an LED lighting factory
+                for Black &amp; Decker, and worked with two EV startups building
+                tilting vehicles and electric motorcycles.
               </p>
               <p>
                 That mix matters: I understand your design <em>and</em> the

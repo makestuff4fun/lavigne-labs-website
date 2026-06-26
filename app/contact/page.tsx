@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Tell Brian about your hardware product. Start a conversation about manufacturing it in China — by form, email, or WeChat.",
+    "Get in touch with Brian Barrett — hardware engineer in Shenzhen, open to full-time roles and projects. Reach out by email, WeChat, or the form.",
 };
 
 export default function ContactPage() {

@@ -54,6 +54,7 @@ PY
 }
 
 echo "Bundles:"
+zip_dir out lavigne-site-full.zip                               # the WHOLE site (home, work, articles, tools, faq, contact, lab, play, games) -> public_html
 zip_dir dist-games lavigne-games.zip                            # subdomain root (keeps index.html + favicon)
 zip_dir dist-games lavigne-games-folder.zip index.html favicon.ico  # main-domain /play folder: the freeze owns the root index.html + favicon.ico
 echo "Done."

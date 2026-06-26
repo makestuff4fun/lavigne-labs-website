@@ -2,37 +2,26 @@
 
 import { useState } from "react";
 import { ArrowIcon } from "./ui";
+import { site } from "@/content/site";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sent";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
-  const [error, setError] = useState<string | null>(null);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // Static site (no backend): compose an email from the fields and hand it to the
+  // visitor's mail app. Email + WeChat are shown alongside as the direct channels.
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("sending");
-    setError(null);
-
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || "Something went wrong. Please email me directly.");
-      }
-      setStatus("sent");
-      form.reset();
-    } catch (err) {
-      setStatus("error");
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    }
+    const fd = new FormData(e.currentTarget);
+    if (fd.get("company_website")) return; // honeypot
+    const name = String(fd.get("name") || "").trim();
+    const email = String(fd.get("email") || "").trim();
+    const subject = String(fd.get("subject") || "").trim() || `Enquiry from ${name || "the website"}`;
+    const message = String(fd.get("message") || "").trim();
+    const body = `${message}\n\n— ${name}${email ? ` · ${email}` : ""}`;
+    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setStatus("sent");
   }
 
   if (status === "sent") {
@@ -43,10 +32,14 @@ export function ContactForm() {
             <path d="m4 10.5 4 4 8-9" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h3 className="mt-4 text-xl font-semibold">Message sent</h3>
+        <h3 className="mt-4 text-xl font-semibold">Your email is ready</h3>
         <p className="mt-2 text-slate">
-          Thanks for reaching out — I&apos;ll get back to you within one business
-          day.
+          Your mail app should have opened with your message — just hit send. If
+          it didn&apos;t, email me directly at{" "}
+          <a href={`mailto:${site.email}`} className="font-medium text-accent hover:underline">
+            {site.email}
+          </a>
+          .
         </p>
       </div>
     );
@@ -85,16 +78,11 @@ export function ContactForm() {
         />
       </div>
 
-      {status === "error" && error && (
-        <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
-      )}
-
       <button
         type="submit"
-        disabled={status === "sending"}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-card transition hover:bg-accent-600 disabled:opacity-60 sm:w-auto"
+        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-card transition hover:bg-accent-600 sm:w-auto"
       >
-        {status === "sending" ? "Sending…" : <>Send message <ArrowIcon /></>}
+        Send message <ArrowIcon />
       </button>
     </form>
   );

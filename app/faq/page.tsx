@@ -6,7 +6,7 @@ import { faqs } from "@/content/faq";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Honest answers about manufacturing in China — IP protection, MOQs, quality control, tooling ownership, landed cost, fees, and lead times.",
+    "Honest answers about working with Brian — full-time vs. project work, design plus manufacturing, building hardware in Shenzhen, MOQs, quality, and cost.",
 };
 
 const jsonLd = {
@@ -33,8 +33,8 @@ export default function FaqPage() {
             The questions you&apos;re right to ask.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
-            Manufacturing overseas is full of ways to get burned. Here are
-            straight answers to what hardware teams worry about most — no spin.
+            How I like to work, what I bring, and straight answers about building
+            hardware in Shenzhen — no spin.
           </p>
         </Container>
       </section>

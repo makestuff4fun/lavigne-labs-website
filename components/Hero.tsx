@@ -14,33 +14,32 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="eyebrow text-accent-300">
-              For funded hardware teams · US &amp; Canada
+              Hardware engineer · Based in Shenzhen
             </p>
             <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              Manufacture in China without the{" "}
-              <span className="text-accent-300">costly mistakes.</span>
+              I design hardware — and{" "}
+              <span className="text-accent-300">get it built.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              You&apos;ve got a working prototype or the funding to build one.
-              I&apos;m {site.founder} — an engineer who&apos;s spent 13+ years in
-              China turning designs into shipped products. Work with me and the
-              person who lays out your board is the same person standing on your
-              factory floor. No agency, no account managers, no telephone game.
+              I&apos;m {site.founder} — a hardware and manufacturing engineer with
+              13+ years in Shenzhen, taking electronics and devices from schematic
+              to shipped product. I&apos;m looking for the right team to build with
+              full-time — and I take focused projects too.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button href="/contact">
-                Tell me about your product <ArrowIcon />
+                Get in touch <ArrowIcon />
               </Button>
               <Button href="/work" variant="ghost">
                 See the work
               </Button>
             </div>
             <p className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-white/55">
-              <span className="font-medium text-white/80">Open-book pricing</span>
+              <span className="font-medium text-white/80">PCB &amp; product design</span>
               <span className="text-white/30">·</span>
-              <span className="font-medium text-white/80">aligned incentives</span>
+              <span className="font-medium text-white/80">rapid prototyping</span>
               <span className="text-white/30">·</span>
-              <span className="font-medium text-white/80">your IP &amp; tooling stay yours</span>
+              <span className="font-medium text-white/80">production in Shenzhen</span>
             </p>
           </div>
 
@@ -48,7 +47,7 @@ export function Hero() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-card">
               <Image
                 src="/brand/office.jpg"
-                alt="The Lavigne Labs workshop in China"
+                alt="Brian Barrett's hardware workshop in Shenzhen"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 45vw"

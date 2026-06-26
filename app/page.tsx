@@ -18,13 +18,15 @@ const jsonLd = {
   url: site.url,
   email: site.email,
   founder: { "@type": "Person", name: site.founder },
-  areaServed: ["United States", "Canada"],
+  areaServed: "Worldwide",
   knowsAbout: [
-    "Manufacturing in China",
-    "Production management",
+    "Hardware engineering",
     "PCB design",
+    "Electronics design",
     "Rapid prototyping",
     "Design for manufacturability",
+    "Manufacturing in Shenzhen",
+    "Wearable & sensor devices",
   ],
 };
 

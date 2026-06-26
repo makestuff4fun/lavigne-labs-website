@@ -6,14 +6,14 @@ export function ProblemSolution() {
     <section className="bg-mist py-20 sm:py-28">
       <Container>
         <div className="max-w-2xl">
-          <Eyebrow>The stakes</Eyebrow>
+          <Eyebrow>The hard part</Eyebrow>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Manufacturing in China can save you — or sink you.
+            Getting hardware built is where it gets hard.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate">
-            A wrong move on the other side of the world is expensive and slow to
-            fix. The four mistakes that cost hardware teams the most — and how I
-            take them off the table.
+            The gap between a working prototype and thousands of reliable units
+            in the field is where products stall. The four places teams get
+            stuck — and how I take them off the table.
           </p>
         </div>
 

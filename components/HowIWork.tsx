@@ -6,9 +6,9 @@ export function HowIWork() {
     <section id="how-i-work" className="scroll-mt-20 py-20 sm:py-28">
       <Container>
         <div className="max-w-2xl">
-          <Eyebrow>How I work</Eyebrow>
+          <Eyebrow>Working together</Eyebrow>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Open books. One loyalty.
+            Full-time, or a focused project.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate">{engagement.intro}</p>
         </div>

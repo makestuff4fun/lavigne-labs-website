@@ -40,14 +40,14 @@ export default function WorkPage() {
         <Container>
           <div className="flex flex-col items-center gap-5 rounded-3xl border border-line bg-white px-7 py-14 text-center shadow-card">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Want this kind of work behind your product?
+              Want this kind of engineer on your team?
             </h2>
             <p className="max-w-xl text-slate">
-              Bring your prototype or idea — I&apos;ll help you make it well, at
-              volume, in China.
+              Bring your prototype, product, or open role — I&apos;ll help you
+              design it and get it built, reliably, at volume.
             </p>
             <Button href="/contact">
-              Start a project <ArrowIcon />
+              Get in touch <ArrowIcon />
             </Button>
           </div>
         </Container>
