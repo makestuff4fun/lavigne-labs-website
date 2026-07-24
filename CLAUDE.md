@@ -22,9 +22,16 @@ Flappy Bird) and **Freezing Fortress** (addressable-LED Sokoban).
 web/        THE SITE — the whole Next.js app. Run npm here. Paths named below
             (app/, content/, lib/, public/, scripts/) are relative to web/.
 docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS)
-fastners/   NOT part of the site — standalone fastener-reference sheets parked
-            for discussion. Never imported by the app; see fastners/README.md.
+fasteners/  Standalone HTML calculators (6) — fastener sheets, holding force,
+            tightening torque. See fasteners/README.md.
+pcb/        Standalone HTML calculator — "Copper & Patina" PCB calculators.
+            See pcb/README.md.
 ```
+
+**`fasteners/` and `pcb/` are calculators destined for the website** — they're
+staged at the repo root because they aren't wired into `/tools` yet. Nothing in
+the Next build imports them, so a change there never affects the live site until
+someone integrates it. Integration approach is still open (see their READMEs).
 
 ## Architecture & stack
 
@@ -74,10 +81,18 @@ npm run export     # STATIC_EXPORT=1 build -> out/ + deployable game zips
 Requires **Node ≥20.9** (blue has 22.23.1). All four verified working on blue,
 2026-07-24.
 
-**Deploy target:** the static export (`web/out/`) uploaded to cPanel/FTP
-`public_html` at `lavignelabs.com` — **this is what's live now**. Alternative:
-host the Next app on Vercel/Netlify/CF Pages (root directory would be `web`).
-Full procedure: **docs/DEPLOYMENT.md**.
+**Deploy:** `cd web && ./scripts/deploy.sh` — builds, then mirrors `out/` into
+`public_html` at `lavignelabs.com` over FTPS, then verifies the live site. Runs
+unattended. Credentials: `~/.config/lavigne-labs/deploy.env` (mode 0600, outside
+the repo; template at `web/scripts/deploy.env.example`). `--dry-run` to preview.
+
+The mirror runs with `--delete`, so the server ends up exactly matching `out/`.
+`DEPLOY_PROTECT` (default `.well-known cgi-bin`) is never deleted — `.well-known`
+carries Let's Encrypt renewal challenges. **No automatic backup**: recovery means
+re-deploying from a known-good commit.
+
+Alternative: host the Next app on Vercel/Netlify/CF Pages (root directory would
+be `web`). Full procedure: **docs/DEPLOYMENT.md**.
 
 ## Where it runs (fleet)
 
@@ -115,7 +130,7 @@ Full procedure: **docs/DEPLOYMENT.md**.
 
 Tracked in docs/CONTEXT.md: wire the live contact form to a form service (static
 host has no API); verify the 8 inferred portfolio blurbs; decide whether the
-`fastners/` sheets become a `/tools` entry.
+`fasteners/` + `pcb/` calculators get wired into `/tools`.
 
 ## Key files
 
@@ -125,4 +140,5 @@ host has no API); verify the 8 inferred portfolio blurbs; decide whether the
 - `web/app/api/contact/route.ts` — Resend contact handler
 - `web/scripts/export-static.sh` — static export + game-bundle builder
 - `docs/` — CONTEXT (status), CONTENT (editing), DEPLOYMENT, GAMES, SOUNDS
-- `fastners/` — off-site drafts under discussion (fastners/README.md)
+- `fasteners/`, `pcb/` — standalone calculators staged for `/tools`, not yet
+  wired into the build (see each folder's README.md)

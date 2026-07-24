@@ -1,8 +1,11 @@
-# fastners/ — staging area, **not part of the site**
+# fasteners/ — calculators, staged for the site
 
-Standalone drafts parked here for discussion. Nothing in this folder is built,
-imported, linked, or deployed by the site in [`../web/`](../web) — it is
-deliberately outside the Next.js app so it can't leak into a build by accident.
+Calculators built **for the website**, parked here until they're wired into
+`/tools`. Nothing in this folder is built, imported, linked, or deployed by the
+site in [`../web/`](../web) — it sits outside the Next.js app so edits here
+can't reach the live site until someone integrates them.
+
+See also [`../pcb`](../pcb), staged the same way.
 
 ## What's here
 

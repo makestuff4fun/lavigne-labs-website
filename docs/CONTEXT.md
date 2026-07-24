@@ -15,8 +15,8 @@ Black & Decker LED factory; two EV startups).
 - **Repo:** `git@github.com:makestuff4fun/lavigne-labs-website.git`
 - **Repo layout:** `web/` = the Next.js site (run npm there; all `app/…`,
   `content/…`, `public/…` paths in these docs are relative to `web/`) ·
-  `docs/` = these docs · `fastners/` = standalone drafts, **not part of the
-  site** (see `fastners/README.md`).
+  `docs/` = these docs · `fasteners/` + `pcb/` = standalone HTML calculators
+  built for the site but **not yet wired into `/tools`** (see their READMEs).
 - **Production:** `lavignelabs.com` — **LIVE with this Next.js site** (static
   export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
   site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
@@ -77,11 +77,11 @@ and is no longer the plan.
    Brian to verify (Smart Fire Alarm, Teleprompter, Special Action Camera, Custom
    Motorcycle Parts, Dog Backpack, Oculus Earphones, Passport Case, Under Cabinet
    Lighting).
-3. **`fastners/` decision** — six standalone fastener tools (reference sheet /
-   holding force / tightening torque, each metric + inch). Do they become
-   `/tools` entries (linked as-is from `public/`, or ported to React), and how
-   do they reconcile with the existing `bolt-sizes` calculator? See
-   `fastners/README.md`.
+3. **Wire the standalone calculators into `/tools`** — seven pages waiting:
+   `fasteners/` (reference sheet / holding force / tightening torque, each metric
+   + inch) and `pcb/` (Copper & Patina). Open: linked as-is from `public/` or
+   ported to React? And how do they reconcile with the existing `bolt-sizes`
+   calculator? See `fasteners/README.md` and `pcb/README.md`.
 4. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
 5. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
 

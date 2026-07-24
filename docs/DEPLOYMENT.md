@@ -7,6 +7,40 @@
 > (games at `/play`). The WordPress-freeze route below (Option D) is kept for
 > history — it is no longer the deploy path.
 
+## The one command
+
+```bash
+cd web
+./scripts/deploy.sh              # build, then mirror out/ -> public_html over FTPS
+./scripts/deploy.sh --dry-run    # show what would change, upload nothing
+./scripts/deploy.sh --skip-build # reuse the existing out/
+```
+
+Runs unattended — no prompts, no interactive auth. It builds, refuses to upload a
+broken build, mirrors over FTPS, then verifies the live site actually serves the
+homepage and `/play/`.
+
+**First-time setup:** credentials live outside the repo at
+`~/.config/lavigne-labs/deploy.env`, mode 0600. Copy the template from
+`web/scripts/deploy.env.example` and fill in `DEPLOY_HOST` / `DEPLOY_USER` /
+`DEPLOY_PASS` (cPanel → FTP Accounts). The script refuses to run if that file is
+missing or world-readable.
+
+**What it does to the server:** mirrors with `--delete`, so the server ends up
+exactly matching `out/` — stale files are removed. Two paths are protected from
+deletion by default (`DEPLOY_PROTECT=".well-known cgi-bin"`); `.well-known` is
+where Let's Encrypt writes renewal challenges, so deleting it breaks HTTPS at the
+next renewal. Set `DEPLOY_PROTECT=` empty for a literal pure mirror.
+
+There is **no automatic backup** — recovery is "re-run the deploy from a known
+good commit", which works because the site is fully reproducible from this repo.
+Anything on the server that the build doesn't contain is not recoverable this
+way.
+
+---
+
+The rest of this doc covers the manual/historical routes.
+
 Two independent pieces can go live:
 
 1. **The games** (Shiverwing + Freezing Fortress) — pure static, tiny.

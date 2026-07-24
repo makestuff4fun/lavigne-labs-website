@@ -30,9 +30,9 @@ npm run dev            # starts the dev server
 ```
 
 > **Repo layout:** the Next.js site is in **`web/`**, project docs in **`docs/`**,
-> and **`fastners/`** holds standalone drafts that are *not* part of the site yet.
-> Every `npm` command below is run from `web/`; paths like `app/…` or `content/…`
-> in the docs are relative to `web/`.
+> and **`fasteners/`** + **`pcb/`** hold standalone HTML calculators built for
+> the site but not yet wired into `/tools`. Every `npm` command below is run from
+> `web/`; paths like `app/…` or `content/…` in the docs are relative to `web/`.
 
 Open **http://localhost:3000**. Pages to check:
 
@@ -108,8 +108,12 @@ web/                  THE SITE — all npm commands run in here
   next.config.ts  package.json  tsconfig.json  eslint.config.mjs  postcss.config.mjs
 
 docs/                 Project docs — context, content, deployment, games, sounds
-fastners/             NOT part of the site: standalone fastener-reference sheets
-                      under discussion for a future /tools entry (see its README)
+
+Standalone HTML calculators — built for the site, not yet wired into /tools.
+Nothing in the Next build imports them (see each folder's README):
+fasteners/            6 pages: fastener sheets, holding force, tightening torque
+                      (metric + inch of each)
+pcb/                  "Copper & Patina" — PCB calculators for hobbyists
 ```
 
 ## Editing the site's content
