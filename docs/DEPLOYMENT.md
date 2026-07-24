@@ -1,14 +1,22 @@
 # Deployment
 
+> **Paths & commands in this doc are relative to `web/`** — the Next.js site
+> lives there. `cd web` before any `npm` command.
+
+> **Status:** `lavignelabs.com` is **live with the Next.js static export**
+> (games at `/play`). The WordPress-freeze route below (Option D) is kept for
+> history — it is no longer the deploy path.
+
 Two independent pieces can go live:
 
 1. **The games** (Shiverwing + Freezing Fortress) — pure static, tiny.
-2. **The full marketing site** — either the Next.js app, or (current plan) the
-   existing WordPress site **frozen to static** with the games bolted on.
+2. **The full marketing site** — the Next.js app (what's live), or historically
+   the existing WordPress site **frozen to static** with the games bolted on.
 
 ## Build the static bundles
 
 ```bash
+cd web
 npm run export
 ```
 

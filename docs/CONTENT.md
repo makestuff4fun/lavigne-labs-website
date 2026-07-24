@@ -1,5 +1,8 @@
 # Editing content
 
+> **All paths here are relative to `web/`** — the Next.js site lives there.
+> `content/site.ts` means `web/content/site.ts`, and `npm run dev` runs in `web/`.
+
 Almost everything you'd want to change — text, projects, articles, tools, FAQ —
 lives in plain data files under `content/` (and `content/articles/` for the blog).
 No React knowledge needed. After saving, the dev server (`npm run dev`) reloads

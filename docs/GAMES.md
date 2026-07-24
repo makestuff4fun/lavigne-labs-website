@@ -1,5 +1,8 @@
 # Games
 
+> **All paths here are relative to `web/`** (e.g. `components/games/…` is
+> `web/components/games/…`).
+
 Two of Brian's hardware side-projects, ported to the browser as faithful
 reproductions (not reimaginings). Both are canvas-based client components.
 

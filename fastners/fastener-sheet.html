@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fastener sheet — metric dimensions for modelling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --film:#E7E9E3; --paper:#F6F7F3; --ink:#14181A; --graphite:#6D7472;
+  --rule:#C3C7BF; --rule-soft:#D9DCD4; --dim:#2C6E9E; --flag:#B4451F;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --cond:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--film);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 28px}
+.eyebrow{font-family:var(--cond);font-weight:600;font-size:.64rem;text-transform:uppercase;letter-spacing:.2em;color:var(--graphite)}
+h2{font-family:var(--cond);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;margin:0}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:20px 0 12px;border-bottom:1.5px solid var(--ink)}
+.title h1{font-family:var(--cond);font-weight:700;font-size:2.7rem;line-height:.9;letter-spacing:.01em;text-transform:uppercase;margin:.1em 0 0}
+.title .pitchline{font-family:var(--mono);font-size:.72rem;color:var(--graphite);margin-top:5px;max-width:56ch}
+.selectors{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.selrow{display:flex;align-items:center;gap:9px}
+.selrow .cap{font-family:var(--cond);font-weight:600;font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:var(--graphite)}
+.tabs{display:flex;flex-wrap:wrap;border:1px solid var(--rule)}
+.tabs button{font-family:var(--mono);font-weight:500;font-size:.76rem;padding:6px 10px;background:var(--paper);color:var(--ink);border:0;border-right:1px solid var(--rule);cursor:pointer}
+.tabs button:last-child{border-right:0}
+.tabs button:hover{background:var(--film)}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tabs button:focus-visible{outline:2px solid var(--dim);outline-offset:-2px}
+
+.parts{display:flex;flex-wrap:wrap;margin-top:14px;border:1px solid var(--rule);background:var(--paper)}
+.parts button{flex:1 1 auto;font-family:var(--cond);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;padding:9px 8px;background:transparent;color:var(--graphite);border:0;border-right:1px solid var(--rule-soft);cursor:pointer}
+.parts button.gap{border-left:1.5px solid var(--ink)}
+.parts button:last-child{border-right:0}
+.parts button:hover{background:var(--film);color:var(--ink)}
+.parts button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.parts button:focus-visible{outline:2px solid var(--dim);outline-offset:-2px}
+.parts button i{font-style:normal;color:var(--flag);font-size:.85em}
+.parts button[aria-pressed="true"] i{color:#E8A48F}
+
+.plate{background:var(--paper);border:1px solid var(--rule);border-top:0;padding:4px 4px 0}
+.plate svg{display:block;width:100%;height:auto}
+.formulas{font-family:var(--mono);font-size:.73rem;color:var(--graphite);background:var(--paper);border:1px solid var(--rule);border-top:0;padding:8px 12px;line-height:1.6}
+.formulas b{color:var(--dim);font-weight:600}
+
+.band{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:18px}
+.bhead{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.bhead .ref{font-family:var(--mono);font-size:.66rem;color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead th{font-family:var(--cond);font-weight:600;font-size:.62rem;text-transform:uppercase;letter-spacing:.11em;color:var(--graphite);text-align:right;padding:0 9px 6px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+thead th:first-child{text-align:left;padding-left:0}
+tbody td{font-family:var(--mono);font-size:.78rem;text-align:right;padding:6px 9px;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+tbody td:first-child{text-align:left;padding-left:0;font-family:var(--sans);white-space:normal;line-height:1.3}
+tbody tr:last-child td{border-bottom:0}
+.std{display:block;font-family:var(--mono);font-size:.68rem;color:var(--graphite)}
+.def{color:var(--dim);font-weight:500}
+.holetable tbody tr{cursor:pointer}
+.holetable tbody tr:hover,.holetable tbody tr.pinned{background:var(--paper)}
+.holetable tbody tr.pinned td:first-child{box-shadow:inset 3px 0 0 var(--flag)}
+
+.est{display:inline-block;margin-left:6px;font-family:var(--mono);font-size:.56rem;letter-spacing:.07em;
+  color:var(--flag);border:1px solid var(--flag);border-radius:2px;padding:0 3px;vertical-align:1.5px;white-space:nowrap}
+.estbanner{margin-top:10px;border:1px solid var(--flag);background:#F6EDEA;padding:7px 12px;
+  font-family:var(--mono);font-size:.72rem;color:var(--flag);line-height:1.45}
+.estbanner b{font-weight:600}
+
+.titleblock{margin-top:18px;border:1.5px solid var(--ink);display:grid;grid-template-columns:2fr 1.3fr 1.2fr 1fr}
+.tb{padding:9px 13px;border-right:1px solid var(--rule)}
+.tb:last-child{border-right:0}
+.tb .k{font-family:var(--cond);font-weight:600;font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:var(--graphite)}
+.tb .v{font-family:var(--mono);font-size:.72rem;margin-top:3px;line-height:1.4}
+.tb .v em{font-style:normal;color:var(--flag)}
+
+.dimline{stroke:var(--dim);stroke-width:1;fill:none}
+.extline{stroke:var(--dim);stroke-width:.6;fill:none;opacity:.75}
+.leader{stroke:var(--dim);stroke-width:1;fill:none}
+.outline{stroke:var(--ink);stroke-width:1.6;fill:none;stroke-linejoin:round}
+.thin{stroke:var(--ink);stroke-width:.7;fill:none;opacity:.55}
+.hid{stroke:var(--ink);stroke-width:.7;fill:none;opacity:.5;stroke-dasharray:5 3}
+.centre{stroke:var(--ink);stroke-width:.7;fill:none;stroke-dasharray:14 3 2 3;opacity:.45}
+.proj{stroke:var(--dim);stroke-width:.6;fill:none;stroke-dasharray:5 4;opacity:.38}
+.hatch{stroke:var(--graphite);stroke-width:.55;opacity:.42}
+.section{stroke:var(--ink);stroke-width:1.25;fill-rule:evenodd}
+.arrow{fill:var(--dim)}
+.dtxt{font-family:var(--mono);font-size:11.5px;fill:var(--dim);font-weight:500}
+.sub-dtxt{font-family:var(--mono);font-size:10px;fill:var(--graphite)}
+.ltxt{font-family:var(--cond);font-size:10px;fill:var(--graphite);letter-spacing:.13em;text-transform:uppercase;font-weight:600}
+.vlabel{font-family:var(--cond);font-size:11px;fill:var(--ink);letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.matlabel{font-family:var(--cond);font-size:9.5px;fill:var(--graphite);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.estnote{font-family:var(--mono);font-size:11px;fill:var(--flag);font-weight:600}
+.hl{fill:none;stroke:none;stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+g.dgroup.lit .dimline,g.dgroup.lit .extline,g.dgroup.lit .leader,
+g.dgroup.pinned .dimline,g.dgroup.pinned .extline,g.dgroup.pinned .leader{stroke:var(--flag);stroke-width:1.6}
+g.dgroup.lit .dtxt,g.dgroup.lit .sub-dtxt,g.dgroup.pinned .dtxt,g.dgroup.pinned .sub-dtxt{fill:var(--flag)}
+g.dgroup.lit .hl,g.dgroup.pinned .hl{stroke:var(--flag)}
+
+@media (max-width:940px){
+  .band{grid-template-columns:1fr}
+  .titleblock{grid-template-columns:1fr 1fr}
+  .selectors{align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{body{background:#fff}.tabs,.parts{display:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <div class="title">
+    <div class="eyebrow">Fastener sheet · metric · dimensions for modelling</div>
+    <h1 id="bigsize"></h1>
+    <div class="pitchline" id="pitchline"></div>
+  </div>
+  <div class="selectors">
+    <div class="selrow"><span class="cap">Pitch</span><div class="tabs" id="pitchtabs" role="group" aria-label="Thread pitch"></div></div>
+    <div class="selrow"><span class="cap">Size</span><div class="tabs" id="sizetabs" role="group" aria-label="Thread size"></div></div>
+  </div>
+</header>
+
+<div class="parts" id="parts" role="group" aria-label="Part type"></div>
+
+<div class="plate">
+  <svg id="dwg" viewBox="0 0 1100 412" role="img" aria-label="Three-view drawing with hole preparation">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,1 L10,5 L0,9 z" class="arrow"/></marker>
+      <pattern id="hatchA" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="8" class="hatch"/></pattern>
+      <pattern id="hatchB" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+        <line x1="0" y1="0" x2="0" y2="8" class="hatch"/></pattern>
+    </defs>
+
+    <line id="proj1" class="proj"/><line id="proj2" class="proj"/>
+
+    <line id="clA-h" class="centre"/><line id="clAB-v" class="centre"/>
+    <path id="a-head" class="outline"/><path id="a-drive" class="outline"/><path id="a-thin" class="thin"/>
+    <text id="vl-a" class="vlabel">A — from above</text>
+
+    <path id="b-body" class="outline" fill="var(--paper)"/>
+    <path id="b-extra" class="thin"/><path id="b-minor" class="thin"/><path id="b-hidden" class="hid"/>
+    <text id="tx-thread" class="dtxt" text-anchor="middle"></text>
+    <text id="vl-b" class="vlabel" text-anchor="middle">B — side</text>
+
+    <path id="plateTop" class="section" fill="url(#hatchA)"/>
+    <path id="plateBot" class="section" fill="url(#hatchB)"/>
+    <path id="tapThread" class="thin"/><line id="clC-v" class="centre"/>
+    <path id="c-screw" class="outline" fill="var(--paper)"/>
+    <path id="c-minor" class="thin"/><path id="c-socket" class="thin"/>
+    <path id="c-washer" class="outline" fill="var(--paper)"/>
+    <path id="c-nut" class="outline" fill="var(--paper)"/><path id="c-nutthin" class="thin"/>
+    <text id="lbl-top" class="matlabel"></text><text id="lbl-bot" class="matlabel"></text>
+    <text id="vl-c" class="vlabel" text-anchor="middle">C — section</text>
+
+    <g class="dgroup" data-dim="dk"><path id="ld-dk" class="leader" marker-start="url(#ah)"/><text id="tx-dk" class="dtxt"></text></g>
+    <g class="dgroup" data-dim="drive"><path id="ld-drive" class="leader" marker-start="url(#ah)"/><text id="tx-drive" class="dtxt"></text></g>
+    <g class="dgroup" data-dim="k">
+      <line id="k-ext-t" class="extline"/><line id="k-ext-b" class="extline"/>
+      <line id="k-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="k-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="l">
+      <line id="l-ext-t" class="extline"/><line id="l-ext-b" class="extline"/>
+      <line id="l-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="l-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="t1">
+      <line id="t-ext-t" class="extline"/><line id="t-ext-b" class="extline"/>
+      <line id="t-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="t-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="eng">
+      <line id="e-ext-t" class="extline"/><line id="e-ext-b" class="extline"/>
+      <line id="e-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="e-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="drill">
+      <line id="d-ext-t" class="extline"/><line id="d-ext-b" class="extline"/>
+      <line id="d-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="d-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="cb"><path id="hl-cb" class="hl"/><path id="ld-cb" class="leader" marker-start="url(#ah)"/><text id="tx-cb" class="dtxt"></text></g>
+    <g class="dgroup" data-dim="clr"><path id="hl-clr" class="hl"/><path id="ld-clr" class="leader" marker-start="url(#ah)"/><text id="tx-clr" class="dtxt"></text></g>
+    <g class="dgroup" data-dim="tap"><path id="hl-tap" class="hl"/><path id="ld-tap" class="leader" marker-start="url(#ah)"/>
+      <text id="tx-tap" class="dtxt"></text><text id="tx-tap2" class="sub-dtxt"></text></g>
+    <g class="dgroup" data-dim="nutm"><path id="hl-nut" class="hl"/>
+      <line id="m-ext-t" class="extline"/><line id="m-ext-b" class="extline"/>
+      <line id="m-line" class="dimline" marker-start="url(#ah)" marker-end="url(#ah)"/><text id="m-txt" class="dtxt" text-anchor="middle"></text></g>
+    <g class="dgroup" data-dim="lmin"><path id="ld-lmin" class="leader" marker-start="url(#ah)"/>
+      <text id="tx-lmin" class="dtxt"></text><text id="tx-lmin2" class="sub-dtxt"></text></g>
+
+    <text id="estnote" x="22" y="404" class="estnote"></text>
+    <text id="caption" x="1078" y="404" class="ltxt" text-anchor="end"></text>
+  </svg>
+</div>
+<div class="formulas" id="formulas"></div>
+<div class="estbanner" id="estbanner" style="display:none"></div>
+
+<div class="band">
+  <div>
+    <div class="bhead"><h2>Holes</h2><span class="ref">click a row to mark it on the drawing</span></div>
+    <table class="holetable"><thead><tr><th>Feature</th><th>Default</th><th>Range / note</th></tr></thead><tbody id="holerows"></tbody></table>
+  </div>
+  <div>
+    <div class="bhead"><h2>Printed &amp; plastic parts</h2><span class="est">ALL ESTIMATE</span></div>
+    <table><thead><tr><th>Feature</th><th>mm</th></tr></thead><tbody id="printrows"></tbody></table>
+  </div>
+  <div>
+    <div class="bhead"><h2>At a glance</h2></div>
+    <table><thead><tr><th>Property</th><th>Value</th><th></th></tr></thead><tbody id="glancerows"></tbody></table>
+  </div>
+</div>
+
+<div class="titleblock">
+  <div class="tb"><div class="k">Standard for this part</div><div class="v" id="tb-std"></div></div>
+  <div class="tb"><div class="k">Also referenced</div><div class="v">ISO 273 clearance · ISO 7089 washers<br>ISO 898-1 property classes</div></div>
+  <div class="tb"><div class="k">Units · Angle · Projection</div><div class="v">Millimetres · 90° c'sinks<br>Third angle</div></div>
+  <div class="tb"><div class="k">Sheet</div><div class="v" id="tb-sheet"></div></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+/* ============ builders ============ */
+function T(P,tap,As,e){return {P:P,tap:tap,As:As,est:e};}
+function SW(dk,k,s,t,cb,b,e){return {dk:dk,k:k,s:s,t:t,cb:cb,b:b,est:e};}
+function BT(dk,k,s,b,e){return {dk:dk,k:k,s:s,t:0,b:b,est:e};}
+function CK(dk,k,s,b,e){return {dk:dk,k:k,s:s,t:0,cs:dk,b:b,est:e};}
+function HX(af,k,b,e){return {dk:af,k:k,s:af,t:0,b:b,est:e};}
+function NT(af,en,m,collar,e){return {af:af,e:en,m:m,collar:collar,est:e};}
+function PR(pocket,corners,pilot,boss,plastic,clr){
+  return [['Captive nut pocket',pocket],['Pocket across corners',corners],
+          ['Heat-set insert pilot ⌀',pilot],['Insert boss outer ⌀',boss],
+          ['Screw into plastic, pilot ⌀',plastic],['Printed clearance hole ⌀',clr]];
+}
+
+var DATA={
+M2:{d:2,threads:{coarse:T(0.4,1.60,2.07),fine:T(0.25,1.75,2.45,1)},
+  clr:{close:2.20,normal:2.40,loose:2.60},chamfer:2.60,printedClr:'2.60 – 2.80',
+  washer:{id:2.2,od:5.0,t:0.3},torque:'0.34 / 0.48 / 0.56',torx:'T6',estTorx:1,
+  printed:PR('4.10 – 4.20 A/F ⌵ 1.80','4.45 – 4.60','3.20 – 3.40','6.00 min','1.60 – 1.70','2.60 – 2.80'),
+  screws:{shcs:SW(3.80,2.00,1.5,1.00,4.40,16),low:SW(3.80,1.40,1.5,1.00,4.40,10,1),
+          button:BT(3.80,1.10,1.3,16,1),csk:CK(4.40,1.20,1.3,16,1),hex:HX(4.0,1.40,12,1)},
+  nuts:{nut:NT(4.0,4.32,1.60),thin:NT(4.0,4.32,1.20,0,1),nyloc:NT(4.0,4.32,2.80,0.9,1)}},
+
+M2_5:{d:2.5,label:'M2.5',threads:{coarse:T(0.45,2.05,3.39),fine:T(0.35,2.15,3.70,1)},
+  clr:{close:2.70,normal:2.90,loose:3.10},chamfer:3.10,printedClr:'3.10 – 3.30',
+  washer:{id:2.7,od:6.0,t:0.5},torque:'0.69 / 0.98 / 1.15',torx:'T8',estTorx:1,
+  printed:PR('5.10 – 5.20 A/F ⌵ 2.20','5.60 – 5.75','3.60 – 3.80','7.00 min','2.00 – 2.10','3.10 – 3.30'),
+  screws:{shcs:SW(4.50,2.50,2.0,1.10,5.40,17),low:SW(4.50,1.70,2.0,1.20,5.40,11,1),
+          button:BT(4.50,1.30,1.5,17,1),csk:CK(5.60,1.55,1.5,17,1),hex:HX(5.0,1.70,13,1)},
+  nuts:{nut:NT(5.0,5.45,2.00),thin:NT(5.0,5.45,1.60,0,1),nyloc:NT(5.0,5.45,3.50,1.0,1)}},
+
+M3:{d:3,threads:{coarse:T(0.5,2.50,5.03),fine:T(0.35,2.65,5.61)},
+  clr:{close:3.20,normal:3.40,loose:3.60},chamfer:3.60,printedClr:'3.60 – 3.80',
+  washer:{id:3.2,od:7.0,t:0.5},torque:'1.2 / 1.8 / 2.1',torx:'T10',
+  printed:PR('5.60 – 5.70 A/F ⌵ 2.60','6.15 – 6.30','4.00 – 4.20','8.00 min','2.40 – 2.50','3.60 – 3.80'),
+  screws:{shcs:SW(5.50,3.00,2.5,1.30,6.50,18),low:SW(5.50,2.00,2.0,1.50,6.50,12),
+          button:BT(5.70,1.65,2.0,18),csk:CK(6.72,1.86,2.0,18),hex:HX(5.5,2.00,12)},
+  nuts:{nut:NT(5.5,6.01,2.40),thin:NT(5.5,6.01,1.80),nyloc:NT(5.5,6.01,4.00,1.2)}},
+
+M4:{d:4,threads:{coarse:T(0.7,3.30,8.78),fine:T(0.5,3.50,9.79)},
+  clr:{close:4.30,normal:4.50,loose:4.80},chamfer:4.70,printedClr:'4.70 – 4.90',
+  washer:{id:4.3,od:9.0,t:0.8},torque:'2.9 / 4.1 / 4.8',torx:'T20',
+  printed:PR('7.10 – 7.20 A/F ⌵ 3.40','7.85 – 8.00','5.60 – 5.70','10.00 min','3.20 – 3.30','4.70 – 4.90'),
+  screws:{shcs:SW(7.00,4.00,3.0,2.00,8.25,20),low:SW(7.00,2.80,2.5,2.30,8.25,14),
+          button:BT(7.60,2.20,2.5,20),csk:CK(8.96,2.48,2.5,20),hex:HX(7.0,2.80,14)},
+  nuts:{nut:NT(7.0,7.66,3.20),thin:NT(7.0,7.66,2.20),nyloc:NT(7.0,7.66,5.00,1.6)}},
+
+M5:{d:5,threads:{coarse:T(0.8,4.20,14.2),fine:T(0.5,4.50,16.1)},
+  clr:{close:5.30,normal:5.50,loose:5.80},chamfer:5.70,printedClr:'5.80 – 6.00',
+  washer:{id:5.3,od:10.0,t:1.0},torque:'5.8 / 8.2 / 9.6',torx:'T25',
+  printed:PR('8.10 – 8.20 A/F ⌵ 4.90','8.95 – 9.10','6.40 – 6.60','12.00 min','4.00 – 4.20','5.80 – 6.00'),
+  screws:{shcs:SW(8.50,5.00,4.0,2.50,9.75,22),low:SW(8.50,3.50,3.0,2.70,9.75,16),
+          button:BT(9.50,2.75,3.0,22),csk:CK(11.20,3.10,3.0,22,1),hex:HX(8.0,3.50,16)},
+  nuts:{nut:NT(8.0,8.79,4.70),thin:NT(8.0,8.79,2.70),nyloc:NT(8.0,8.79,5.00,1.8)}},
+
+M6:{d:6,threads:{coarse:T(1.0,5.00,20.1),fine:T(0.75,5.25,22.0)},
+  clr:{close:6.40,normal:6.60,loose:7.00},chamfer:6.80,printedClr:'7.00 – 7.20',
+  washer:{id:6.4,od:12.0,t:1.6},torque:'9.8 / 14 / 16',torx:'T30',
+  printed:PR('10.10 – 10.20 A/F ⌵ 5.40','11.15 – 11.30','8.00 – 8.20','14.00 min','4.80 – 5.00','7.00 – 7.20'),
+  screws:{shcs:SW(10.00,6.00,5.0,3.00,11.20,24),low:SW(10.00,4.00,4.0,3.00,11.20,18),
+          button:BT(10.50,3.30,4.0,24),csk:CK(13.44,3.72,4.0,24,1),hex:HX(10.0,4.00,18)},
+  nuts:{nut:NT(10.0,11.05,5.20),thin:NT(10.0,11.05,3.20),nyloc:NT(10.0,11.05,6.00,2.0)}},
+
+M8:{d:8,threads:{coarse:T(1.25,6.80,36.6),fine:T(1.0,7.00,39.2)},
+  clr:{close:8.40,normal:9.00,loose:10.00},chamfer:9.20,printedClr:'9.20 – 9.50',
+  washer:{id:8.4,od:16.0,t:1.6},torque:'24 / 34 / 40',torx:'T45',
+  printed:PR('13.10 – 13.25 A/F ⌵ 7.00','14.50 – 14.70','10.20 – 10.50','18.00 min','6.40 – 6.60','9.20 – 9.50'),
+  screws:{shcs:SW(13.00,8.00,6.0,4.00,14.50,28),low:SW(13.00,5.00,5.0,3.80,14.50,22),
+          button:BT(14.00,4.40,5.0,28),csk:CK(17.92,4.96,5.0,28,1),hex:HX(13.0,5.30,22)},
+  nuts:{nut:NT(13.0,14.38,6.80),thin:NT(13.0,14.38,4.00),nyloc:NT(13.0,14.38,8.00,2.4)}},
+
+M10:{d:10,threads:{coarse:T(1.5,8.50,58.0),fine:T(1.25,8.80,61.2)},
+  clr:{close:10.50,normal:11.00,loose:12.00},chamfer:11.20,printedClr:'11.20 – 11.50',
+  washer:{id:10.5,od:20.0,t:2.0},torque:'47 / 67 / 79',torx:'T50',
+  printed:PR('16.15 – 16.30 A/F ⌵ 8.60','17.90 – 18.10','12.70 – 13.00','22.00 min','8.00 – 8.20','11.20 – 11.50'),
+  screws:{shcs:SW(16.00,10.00,8.0,5.00,17.50,32),low:SW(16.00,6.00,7.0,4.50,17.50,26),
+          button:BT(17.50,5.50,6.0,32),csk:CK(22.40,6.20,6.0,32,1),hex:HX(16.0,6.40,26)},
+  nuts:{nut:NT(16.0,17.77,8.40),thin:NT(16.0,17.77,5.00),nyloc:NT(16.0,17.77,10.00,3.0)}},
+
+M12:{d:12,threads:{coarse:T(1.75,10.20,84.3),fine:T(1.5,10.50,88.1)},
+  clr:{close:13.00,normal:13.50,loose:14.50},chamfer:14.20,printedClr:'13.70 – 14.00',
+  washer:{id:13.0,od:24.0,t:2.5},torque:'82 / 118 / 138',torx:'T55',estTorx:1,
+  printed:PR('18.15 – 18.35 A/F ⌵ 11.00','20.15 – 20.40','—','—','9.60 – 9.80','13.70 – 14.00'),
+  screws:{shcs:SW(18.00,12.00,10.0,6.00,19.50,36),low:SW(18.00,7.00,8.0,5.00,19.50,30),
+          button:BT(21.00,6.60,8.0,36),csk:CK(26.88,7.44,8.0,36,1),hex:HX(18.0,7.50,30)},
+  nuts:{nut:NT(18.0,20.03,10.80),thin:NT(18.0,20.03,6.00),nyloc:NT(18.0,20.03,12.00,3.5)}},
+
+M14:{d:14,threads:{coarse:T(2.0,12.00,115),fine:T(1.5,12.50,125)},
+  clr:{close:15.00,normal:15.50,loose:16.50},chamfer:16.20,printedClr:'—',
+  washer:{id:15.0,od:28.0,t:2.5},torque:'131 / 187 / 219',torx:'—',
+  printed:PR('21.20 – 21.40 A/F ⌵ 13.00','23.50 – 23.75','—','—','—','—'),
+  screws:{shcs:SW(21.00,14.00,12.0,7.00,22.50,40),low:SW(21.00,8.00,10.0,5.30,22.50,34),
+          button:BT(24.00,7.60,9.0,40,1),csk:CK(31.36,8.68,10.0,40,1),hex:HX(21.0,8.80,34)},
+  nuts:{nut:NT(21.0,23.35,12.80),thin:NT(21.0,23.35,7.00,0,1),nyloc:NT(21.0,23.35,14.00,4.0,1)}},
+
+M16:{d:16,threads:{coarse:T(2.0,14.00,157),fine:T(1.5,14.50,167)},
+  clr:{close:17.00,normal:17.50,loose:18.50},chamfer:18.20,printedClr:'—',
+  washer:{id:17.0,od:30.0,t:3.0},torque:'204 / 292 / 341',torx:'—',
+  printed:PR('24.20 – 24.40 A/F ⌵ 15.00','26.90 – 27.20','—','—','—','—'),
+  screws:{shcs:SW(24.00,16.00,14.0,8.00,25.50,44),low:SW(24.00,9.00,12.0,5.50,25.50,38),
+          button:BT(28.00,8.80,10.0,44),csk:CK(35.84,9.92,10.0,44,1),hex:HX(24.0,10.00,38)},
+  nuts:{nut:NT(24.0,26.75,14.80),thin:NT(24.0,26.75,8.00),nyloc:NT(24.0,26.75,16.00,4.5)}},
+
+M18:{d:18,threads:{coarse:T(2.5,15.50,192),fine:T(1.5,16.50,216)},
+  clr:{close:19.00,normal:20.00,loose:21.00},chamfer:20.40,estChamfer:1,printedClr:'—',
+  washer:{id:19.0,od:34.0,t:3.0},torque:'290 / 401 / 469',torx:'—',
+  secondChoice:1,
+  printed:PR('27.20 – 27.45 A/F ⌵ 16.00','29.75 – 30.05','—','—','—','—'),
+  screws:{shcs:SW(27.00,18.00,14.0,9.00,28.50,48,1),low:SW(27.00,10.00,12.0,6.50,28.50,42),
+          button:BT(31.00,9.90,12.0,48,1),csk:CK(40.32,11.16,12.0,48,1),hex:HX(27.0,11.50,42,1)},
+  nuts:{nut:NT(27.0,29.56,15.80,0,1),thin:NT(27.0,29.56,9.00,0,1),nyloc:NT(27.0,29.56,18.00,5.0,1)}},
+
+M20:{d:20,threads:{coarse:T(2.5,17.50,245),fine:T(1.5,18.50,272)},
+  clr:{close:21.00,normal:22.00,loose:24.00},chamfer:22.40,printedClr:'—',
+  washer:{id:21.0,od:37.0,t:3.0},torque:'412 / 570 / 665',torx:'—',
+  printed:PR('30.20 – 30.45 A/F ⌵ 18.20','33.15 – 33.45','—','—','—','—'),
+  screws:{shcs:SW(30.00,20.00,17.0,10.00,31.50,52),low:SW(30.00,11.00,14.0,7.50,31.50,46),
+          button:BT(33.00,10.50,12.0,52,1),csk:CK(44.80,12.40,12.0,52,1),hex:HX(30.0,12.50,46)},
+  nuts:{nut:NT(30.0,32.95,18.00),thin:NT(30.0,32.95,10.00,0,1),nyloc:NT(30.0,32.95,20.00,5.5,1)}}
+};
+
+var SIZES=['M2','M2_5','M3','M4','M5','M6','M8','M10','M12','M14','M16','M18','M20'];
+var PARTS=[{id:'shcs',kind:'screw',name:'Socket cap'},{id:'low',kind:'screw',name:'Low head'},
+           {id:'button',kind:'screw',name:'Button'},{id:'csk',kind:'screw',name:'Countersunk'},
+           {id:'hex',kind:'screw',name:'Hex bolt'},{id:'nut',kind:'nut',name:'Hex nut',gap:true},
+           {id:'thin',kind:'nut',name:'Thin nut'},{id:'nyloc',kind:'nut',name:'Nyloc'}];
+var LENGTHS=[3,4,5,6,8,10,12,14,16,18,20,25,30,35,40,45,50,55,60,65,70,80,90,100,110,120,130,140,150,160,180,200];
+var FORM={shcs:'flat',low:'flat',button:'dome',csk:'taper',hex:'flat'};
+var STD={
+ coarse:{shcs:'ISO 4762 · DIN 912',low:'DIN 7984',button:'ISO 7380-1',csk:'ISO 10642 · DIN 7991',
+         hex:'ISO 4017 · DIN 933',nut:'ISO 4032 · DIN 934',thin:'ISO 4035 · DIN 439',nyloc:'ISO 10511 · DIN 985'},
+ fine:{shcs:'DIN 912 fine · head as ISO 4762',low:'DIN 7984 fine',button:'ISO 7380 fine <em>rarely stocked</em>',
+       csk:'DIN 7991 fine <em>rarely stocked</em>',hex:'ISO 8676 · DIN 961',nut:'ISO 8673 · DIN 934 fine',
+       thin:'ISO 8675 · DIN 439 fine',nyloc:'ISO 10512 · DIN 985 fine'}
+};
+var EST='<span class="est">ESTIMATE</span>';
+
+/* ============ layout ============ */
+var XB=230,XC=600,YA=50,YT=130,BLW=120,BL=XC-BLW,BR=XC+BLW;
+var DB1=185,DB2=150,DC1=440,DC2=400;
+var LXA=350,TXA=374,LXC=790,TXC=814,YLAB=380;
+var SC=10;
+
+var $=function(i){return document.getElementById(i);};
+var set=function(el,a){for(var k in a){el.setAttribute(k,a[k]);}};
+var say=function(i,s){$(i).textContent=s;};
+var f2=function(n){return n.toFixed(2);};
+function nameOf(key){return DATA[key].label||key;}
+function hexPath(cx,cy,af){var R=af/2/Math.cos(Math.PI/6),p=[];
+  for(var i=0;i<6;i++){var a=Math.PI/180*(60*i);p.push((cx+R*Math.cos(a)).toFixed(1)+','+(cy+R*Math.sin(a)).toFixed(1));}
+  return 'M'+p.join(' L')+' Z';}
+function circ(cx,cy,r){return 'M'+(cx-r)+','+cy+' a'+r+','+r+' 0 1,0 '+(2*r)+',0 a'+r+','+r+' 0 1,0 '+(-2*r)+',0 Z';}
+function vdim(p,x,y1,y2,fromX,label){
+  set($(p+'-ext-t'),{x1:fromX,y1:y1,x2:x-8,y2:y1});set($(p+'-ext-b'),{x1:fromX,y1:y2,x2:x-8,y2:y2});
+  set($(p+'-line'),{x1:x,y1:y1,x2:x,y2:y2});
+  var tx=x-10,ty=(y1+y2)/2,t=$(p+'-txt');
+  set(t,{x:tx,y:ty,transform:'rotate(-90 '+tx+' '+ty+')'});t.textContent=label;}
+function leader(pid,tid,sx,sy,ex,by,tx,label){
+  set($(pid),{d:'M'+sx.toFixed(1)+','+sy.toFixed(1)+' L'+ex+','+by+' L'+(ex+16)+','+by});
+  var t=$(tid);set(t,{x:tx,y:by+4});t.textContent=label;}
+function showGroups(list){var gs=document.querySelectorAll('g.dgroup');
+  for(var i=0;i<gs.length;i++){gs[i].style.display=list.indexOf(gs[i].dataset.dim)>-1?'':'none';}}
+function blank(ids){for(var i=0;i<ids.length;i++){set($(ids[i]),{d:''});}}
+function screwPath(cx,p,form,yHT,yHB,yTip,majH,extH){
+  var dkH=p.dk/2*SC;
+  var tail=' L'+(cx+majH)+','+yHB+' L'+(cx+majH)+','+(yTip-5)+' L'+(cx+extH)+','+yTip
+          +' L'+(cx-extH)+','+yTip+' L'+(cx-majH)+','+(yTip-5)+' L'+(cx-majH)+','+yHB;
+  if(form==='dome'){return 'M'+(cx-dkH)+','+yHB+' Q'+(cx-dkH)+','+(yHT-3)+' '+cx+','+yHT
+    +' Q'+(cx+dkH)+','+(yHT-3)+' '+(cx+dkH)+','+yHB+tail+' L'+(cx-dkH)+','+yHB+' Z';}
+  if(form==='taper'){return 'M'+(cx-dkH)+','+yHT+' L'+(cx+dkH)+','+yHT+tail+' Z';}
+  return 'M'+(cx-dkH)+','+yHT+' L'+(cx+dkH)+','+yHT+' L'+(cx+dkH)+','+yHB+tail+' L'+(cx-dkH)+','+yHB+' Z';}
+
+/* ============ screw ============ */
+function drawScrew(S,TH,pid){
+  var p=S.screws[pid],form=FORM[pid],d=S.d;SC=30/d;
+  var dkH=p.dk/2*SC,sH=p.s/2*SC;
+  var clH=S.clr.normal/2*SC,minH=(d-TH.P)/2*SC,majH=d/2*SC,extH=(d-1.2269*TH.P)/2*SC;
+  var prep=p.cb?'cbore':(p.cs?'csink':'none');
+  var LD=4*d,yHT,yHB,yTip;
+  if(prep==='none'){yHT=YT-p.k*SC;yHB=YT;yTip=YT+LD*SC;}
+  else if(prep==='csink'){yHT=YT;yHB=YT+p.k*SC;yTip=YT+LD*SC;}
+  else {yHT=YT;yHB=YT+p.k*SC;yTip=yHB+LD*SC;}
+  var YM=YT+2*d*SC,YB=YM+5*d*SC;
+  var eng=(yTip-YM)/SC,dd=eng+4*TH.P,yDrill=YM+dd*SC,apex=yDrill+minH*0.6;
+
+  var isHex=(pid==='hex'),rA=isHex?p.dk/2/Math.cos(Math.PI/6)*SC:dkH;
+  set($('a-head'),{d:isHex?hexPath(XB,YA,p.dk*SC):circ(XB,YA,dkH)});
+  set($('a-drive'),{d:isHex?'':hexPath(XB,YA,p.s*SC)});
+  set($('a-thin'),{d:''});
+  set($('clA-h'),{x1:XB-rA-14,y1:YA,x2:XB+rA+14,y2:YA});
+  set($('clAB-v'),{x1:XB,y1:YA-rA-14,x2:XB,y2:yTip+20});
+  set($('vl-a'),{x:XB+rA+16,y:YA+4,'text-anchor':'start'});
+  var dg=Math.SQRT1_2;
+  leader('ld-dk','tx-dk',XB+rA*dg,YA-rA*dg,LXA,30,TXA,(isHex?f2(p.dk)+' a/f':'⌀'+f2(p.dk)));
+  leader('ld-drive','tx-drive',XB+(isHex?rA*dg:sH),YA+(isHex?rA*dg:2),LXA,74,TXA,
+    isHex?f2(p.s)+' mm spanner':f2(p.s)+' mm hex · '+S.torx);
+
+  set($('b-body'),{d:screwPath(XB,p,form,yHT,yHB,yTip,majH,extH)});
+  set($('b-extra'),{d:''});
+  set($('b-minor'),{d:'M'+(XB-extH)+','+yHB+' L'+(XB-extH)+','+(yTip-5)+' M'+(XB+extH)+','+yHB+' L'+(XB+extH)+','+(yTip-5)});
+  set($('b-hidden'),{d:p.t>0?'M'+(XB-sH)+','+yHT+' L'+(XB-sH)+','+(yHT+p.t*SC)+' L'+(XB+sH)+','+(yHT+p.t*SC)+' L'+(XB+sH)+','+yHT:''});
+  set($('tx-thread'),{x:XB,y:YLAB-18});say('tx-thread',nameOf(SIZEKEY)+' × '+TH.P);
+  set($('vl-b'),{x:XB,y:YLAB});
+  vdim('k',DB1,yHT,yHB,XB-dkH,'k '+f2(p.k));
+  vdim('l',DB2,(form==='taper'?yHT:yHB),yTip,XB-dkH,'l');
+
+  var hole,hlCb,hlClr;
+  if(prep==='cbore'){
+    var cbH=p.cb/2*SC,yCb=YT+p.k*SC;
+    hole='M'+(XC-cbH)+','+YT+' L'+(XC-cbH)+','+yCb+' L'+(XC-clH)+','+yCb+' L'+(XC-clH)+','+YM
+        +' L'+(XC+clH)+','+YM+' L'+(XC+clH)+','+yCb+' L'+(XC+cbH)+','+yCb+' L'+(XC+cbH)+','+YT+' Z';
+    hlCb='M'+(XC-cbH)+','+YT+' L'+(XC-cbH)+','+yCb+' L'+(XC-clH)+','+yCb
+        +' M'+(XC+cbH)+','+YT+' L'+(XC+cbH)+','+yCb+' L'+(XC+clH)+','+yCb;
+    hlClr='M'+(XC-clH)+','+yCb+' L'+(XC-clH)+','+YM+' M'+(XC+clH)+','+yCb+' L'+(XC+clH)+','+YM;
+  } else if(prep==='csink'){
+    var csH=p.cs/2*SC,yCs=YT+(p.cs-S.clr.normal)/2*SC;
+    hole='M'+(XC-csH)+','+YT+' L'+(XC-clH)+','+yCs+' L'+(XC-clH)+','+YM
+        +' L'+(XC+clH)+','+YM+' L'+(XC+clH)+','+yCs+' L'+(XC+csH)+','+YT+' Z';
+    hlCb='M'+(XC-csH)+','+YT+' L'+(XC-clH)+','+yCs+' M'+(XC+csH)+','+YT+' L'+(XC+clH)+','+yCs;
+    hlClr='M'+(XC-clH)+','+yCs+' L'+(XC-clH)+','+YM+' M'+(XC+clH)+','+yCs+' L'+(XC+clH)+','+YM;
+  } else {
+    hole='M'+(XC-clH)+','+YT+' L'+(XC-clH)+','+YM+' L'+(XC+clH)+','+YM+' L'+(XC+clH)+','+YT+' Z';
+    hlCb='M'+(XC-dkH)+','+YT+' L'+(XC-clH)+','+YT+' M'+(XC+clH)+','+YT+' L'+(XC+dkH)+','+YT;
+    hlClr='M'+(XC-clH)+','+YT+' L'+(XC-clH)+','+YM+' M'+(XC+clH)+','+YT+' L'+(XC+clH)+','+YM;
+  }
+  set($('plateTop'),{d:'M'+BL+','+YT+' L'+BR+','+YT+' L'+BR+','+YM+' L'+BL+','+YM+' Z '+hole});
+  set($('plateBot'),{d:'M'+BL+','+YM+' L'+BR+','+YM+' L'+BR+','+YB+' L'+BL+','+YB+' Z '
+    +'M'+(XC-minH)+','+YM+' L'+(XC-minH)+','+yDrill+' L'+XC+','+apex.toFixed(1)+' L'+(XC+minH)+','+yDrill+' L'+(XC+minH)+','+YM+' Z'});
+  set($('tapThread'),{d:'M'+(XC-majH)+','+YM+' L'+(XC-majH)+','+yDrill+' M'+(XC+majH)+','+YM+' L'+(XC+majH)+','+yDrill});
+  set($('hl-cb'),{d:hlCb});set($('hl-clr'),{d:hlClr});
+  set($('hl-tap'),{d:'M'+(XC-minH)+','+YM+' L'+(XC-minH)+','+yDrill+' L'+XC+','+apex.toFixed(1)+' L'+(XC+minH)+','+yDrill+' L'+(XC+minH)+','+YM});
+  set($('clC-v'),{x1:XC,y1:yHT-14,x2:XC,y2:YB+12});
+  set($('c-screw'),{d:screwPath(XC,p,form,yHT,yHB,yTip,majH,extH)});
+  set($('c-minor'),{d:'M'+(XC-extH)+','+yHB+' L'+(XC-extH)+','+(yTip-5)+' M'+(XC+extH)+','+yHB+' L'+(XC+extH)+','+(yTip-5)});
+  set($('c-socket'),{d:p.t>0?'M'+(XC-sH)+','+yHT+' L'+(XC-sH)+','+(yHT+p.t*SC)+' L'+(XC+sH)+','+(yHT+p.t*SC)+' L'+(XC+sH)+','+yHT:''});
+  blank(['c-washer','c-nut','c-nutthin']);
+  set($('lbl-top'),{x:BL+8,y:YT+15});say('lbl-top','Clamped part');
+  set($('lbl-bot'),{x:BL+8,y:YB-9});say('lbl-bot','Tapped part');
+  set($('vl-c'),{x:XC,y:YLAB});
+  vdim('t',DC1,YT,YM,BL-2,'t₁');
+  vdim('e',DC1,YM,yTip,XC-majH,'E');
+  vdim('d',DC2,YM,yDrill,XC-majH,'≥ E + 4P');
+
+  var px,py,plab;
+  if(prep==='cbore'){px=XC+p.cb/2*SC;py=YT+10;plab='⌀'+f2(p.cb)+' ⌵ c, c = '+f2(p.k);}
+  else if(prep==='csink'){px=XC+p.cs/2*SC-8;py=YT+6;plab='⌀'+f2(p.cs)+' × 90°';}
+  else {px=XC+dkH;py=YT-3;plab='no counterbore, c = 0';}
+  leader('ld-cb','tx-cb',px,py,LXC,150,TXC,plab);
+  leader('ld-clr','tx-clr',XC+clH,YM-18,LXC,208,TXC,'⌀'+f2(S.clr.normal)+' THRU');
+  leader('ld-tap','tx-tap',XC+majH,YM+48,LXC,272,TXC,nameOf(SIZEKEY)+' × '+TH.P+' ⌵ E');
+  set($('tx-tap2'),{x:TXC,y:288});say('tx-tap2','drill ⌀'+f2(TH.tap)+' ⌵ E + 4P');
+  set($('proj1'),{x1:XB+dkH+12,y1:yHT,x2:DC2-20,y2:yHT});
+  set($('proj2'),{x1:XB+majH+12,y1:yTip,x2:DC2-20,y2:yTip});
+
+  showGroups(['dk','drive','k','l','t1','eng','drill','cb','clr','tap']);
+  say('caption','Third angle · simplified thread · fastener unsectioned · proportions illustrative · mm');
+  return {prep:prep,p:p,est:p.est};
+}
+
+/* ============ nut ============ */
+function drawNut(S,TH,pid){
+  var n=S.nuts[pid],d=S.d,w=S.washer;SC=30/d;
+  var afH=n.af/2*SC,eH=n.e/2*SC,mH=n.m*SC;
+  var clH=S.clr.normal/2*SC,majH=d/2*SC,extH=(d-1.2269*TH.P)/2*SC,minH=(d-TH.P)/2*SC;
+  var tp=1.5*d,YM=YT+tp*SC,YB=YM+tp*SC;
+  var yWT=YB,yWB=YB+w.t*SC,yNT=yWB,yNB=yNT+mH;
+  var grip=2*tp,lmin=grip+w.t+n.m+2*TH.P;
+  var l=LENGTHS[LENGTHS.length-1];
+  for(var i=0;i<LENGTHS.length;i++){if(LENGTHS[i]>=lmin){l=LENGTHS[i];break;}}
+  var hp=S.screws.shcs,dkH=hp.dk/2*SC,sH=hp.s/2*SC;
+  var yHT=YT-hp.k*SC,yHB=YT,yTip=yHB+l*SC;
+
+  var rA=eH;
+  set($('a-head'),{d:hexPath(XB,YA,n.af*SC)});
+  set($('a-drive'),{d:circ(XB,YA,minH)});
+  set($('a-thin'),{d:circ(XB,YA,majH)});
+  set($('clA-h'),{x1:XB-rA-14,y1:YA,x2:XB+rA+14,y2:YA});
+  set($('clAB-v'),{x1:XB,y1:YA-rA-14,x2:XB,y2:YLAB-30});
+  set($('vl-a'),{x:XB+rA+16,y:YA+4,'text-anchor':'start'});
+  var dg=Math.SQRT1_2;
+  leader('ld-dk','tx-dk',XB+rA*dg,YA-rA*dg,LXA,30,TXA,f2(n.af)+' a/f · '+f2(n.e)+' a/c');
+  leader('ld-drive','tx-drive',XB+minH,YA+minH*0.4,LXA,74,TXA,nameOf(SIZEKEY)+' × '+TH.P+' thread');
+
+  var yB0=200,yB1=yB0+mH,ch=Math.min(mH*0.18,4);
+  set($('b-body'),{d:'M'+(XB-eH)+','+(yB0+ch)+' L'+(XB-eH+ch)+','+yB0+' L'+(XB+eH-ch)+','+yB0
+    +' L'+(XB+eH)+','+(yB0+ch)+' L'+(XB+eH)+','+(yB1-ch)+' L'+(XB+eH-ch)+','+yB1
+    +' L'+(XB-eH+ch)+','+yB1+' L'+(XB-eH)+','+(yB1-ch)+' Z'});
+  set($('b-extra'),{d:n.collar?'M'+(XB-afH)+','+(yB0+n.collar*SC)+' L'+(XB+afH)+','+(yB0+n.collar*SC):''});
+  set($('b-minor'),{d:'M'+(XB-afH)+','+yB0+' L'+(XB-afH)+','+yB1+' M'+(XB+afH)+','+yB0+' L'+(XB+afH)+','+yB1});
+  set($('b-hidden'),{d:'M'+(XB-majH)+','+yB0+' L'+(XB-majH)+','+yB1+' M'+(XB+majH)+','+yB0+' L'+(XB+majH)+','+yB1
+    +' M'+(XB-minH)+','+yB0+' L'+(XB-minH)+','+yB1+' M'+(XB+minH)+','+yB0+' L'+(XB+minH)+','+yB1});
+  set($('tx-thread'),{x:XB,y:YLAB-18});say('tx-thread',n.collar?'nylon collar '+f2(n.collar):nameOf(SIZEKEY)+' × '+TH.P);
+  set($('vl-b'),{x:XB,y:YLAB});
+  vdim('m',DB1,yB0,yB1,XB-eH,'m '+f2(n.m));
+
+  set($('plateTop'),{d:'M'+BL+','+YT+' L'+BR+','+YT+' L'+BR+','+YM+' L'+BL+','+YM+' Z '
+    +'M'+(XC-clH)+','+YT+' L'+(XC-clH)+','+YM+' L'+(XC+clH)+','+YM+' L'+(XC+clH)+','+YT+' Z'});
+  set($('plateBot'),{d:'M'+BL+','+YM+' L'+BR+','+YM+' L'+BR+','+YB+' L'+BL+','+YB+' Z '
+    +'M'+(XC-clH)+','+YM+' L'+(XC-clH)+','+YB+' L'+(XC+clH)+','+YB+' L'+(XC+clH)+','+YM+' Z'});
+  set($('tapThread'),{d:''});
+  set($('hl-clr'),{d:'M'+(XC-clH)+','+YT+' L'+(XC-clH)+','+YB+' M'+(XC+clH)+','+YT+' L'+(XC+clH)+','+YB});
+  blank(['hl-tap','hl-cb']);
+  set($('clC-v'),{x1:XC,y1:yHT-14,x2:XC,y2:yTip+14});
+  set($('c-screw'),{d:screwPath(XC,hp,'flat',yHT,yHB,yTip,majH,extH)});
+  set($('c-minor'),{d:'M'+(XC-extH)+','+yHB+' L'+(XC-extH)+','+(yTip-5)+' M'+(XC+extH)+','+yHB+' L'+(XC+extH)+','+(yTip-5)});
+  set($('c-socket'),{d:'M'+(XC-sH)+','+yHT+' L'+(XC-sH)+','+(yHT+hp.t*SC)+' L'+(XC+sH)+','+(yHT+hp.t*SC)+' L'+(XC+sH)+','+yHT});
+  var wH=w.od/2*SC;
+  set($('c-washer'),{d:'M'+(XC-wH)+','+yWT+' L'+(XC+wH)+','+yWT+' L'+(XC+wH)+','+yWB+' L'+(XC-wH)+','+yWB+' Z'});
+  set($('c-nut'),{d:'M'+(XC-eH)+','+yNT+' L'+(XC+eH)+','+yNT+' L'+(XC+eH)+','+yNB+' L'+(XC-eH)+','+yNB+' Z'});
+  set($('c-nutthin'),{d:'M'+(XC-afH)+','+yNT+' L'+(XC-afH)+','+yNB+' M'+(XC+afH)+','+yNT+' L'+(XC+afH)+','+yNB});
+  set($('hl-nut'),{d:'M'+(XC-eH)+','+yNT+' L'+(XC+eH)+','+yNT+' L'+(XC+eH)+','+yNB+' L'+(XC-eH)+','+yNB+' Z'});
+  set($('lbl-top'),{x:BL+8,y:YT+15});say('lbl-top','Part 1');
+  set($('lbl-bot'),{x:BL+8,y:YB-9});say('lbl-bot','Part 2');
+  set($('vl-c'),{x:XC,y:YLAB});
+  vdim('t',DC1,YT,YB,BL-2,'grip '+grip.toFixed(1));
+  vdim('l',DC2,yHB,yTip,XC-dkH,'l '+l);
+  leader('ld-clr','tx-clr',XC+clH,YT+22,LXC,150,TXC,'⌀'+f2(S.clr.normal)+' THRU, both');
+  leader('ld-lmin','tx-lmin',XC+eH,yNT+mH*0.5,LXC,236,TXC,'l ≥ '+lmin.toFixed(1)+' → use '+l);
+  set($('tx-lmin2'),{x:TXC,y:252});say('tx-lmin2','t₁+t₂ + w + m + 2P');
+  set($('proj1'),{x1:XB+eH+12,y1:yB0,x2:DC2-20,y2:yB0});
+  set($('proj2'),{x1:XB+eH+12,y1:yB1,x2:DC2-20,y2:yB1});
+
+  showGroups(['dk','drive','nutm','t1','l','clr','lmin']);
+  say('caption','Third angle · simplified thread · fasteners unsectioned · proportions illustrative · mm');
+  return {l:l,lmin:lmin,grip:grip,n:n,est:n.est};
+}
+
+/* ============ tables ============ */
+function row(cells,dim){
+  var tr=document.createElement('tr');
+  if(dim){tr.dataset.dim=dim;}
+  for(var i=0;i<cells.length;i++){
+    var td=document.createElement('td');
+    td.innerHTML=cells[i];
+    if(i===1)td.className='def';
+    tr.appendChild(td);
+  }
+  return tr;
+}
+function fill(id,rows){var tb=$(id);tb.innerHTML='';for(var i=0;i<rows.length;i++){tb.appendChild(rows[i]);}}
+function badge(on){return on?EST:'';}
+
+function holeRowsScrew(S,TH,info){
+  var p=info.p,r=[],sz=nameOf(SIZEKEY);
+  r.push(row(['Tap drill<span class="std">for '+sz+' × '+TH.P+'</span>'+badge(TH.est),'⌀'+f2(TH.tap),'d − P'],'tap'));
+  r.push(row(['Tapped depth<span class="std">blind holes</span>','⌵ E + 2P','drill ⌵ E + 4P'],'tap'));
+  r.push(row(['Clearance hole<span class="std">ISO 273 close / normal / loose</span>','⌀'+f2(S.clr.normal),f2(S.clr.close)+' – '+f2(S.clr.loose)],'clr'));
+  if(info.prep==='cbore'){r.push(row(['Counterbore<span class="std">head flush</span>'+badge(p.est),'⌀'+f2(p.cb)+' ⌵ c','c = k = '+f2(p.k)],'cb'));}
+  else if(info.prep==='csink'){r.push(row(['Countersink<span class="std">90°, not the 82° inch angle</span>'+badge(p.est),'⌀'+f2(p.cs),'× 90°'],'cb'));}
+  else {r.push(row(['No counterbore<span class="std">head sits proud</span>'+badge(p.est),'c = 0','proud '+f2(p.k)],'cb'));}
+  r.push(row(['Edge chamfer<span class="std">clears the under-head fillet</span>'+badge(S.estChamfer),'⌀'+f2(S.chamfer),'× 90°'],'clr'));
+  r.push(row(['Printed clearance hole<span class="std">FDM prints undersize</span>'+EST,'⌀'+S.printedClr,'test coupon'],'clr'));
+  return r;
+}
+function holeRowsNut(S,TH,info){
+  var n=info.n,r=[];
+  r.push(row(['Clearance hole<span class="std">both parts · ISO 273</span>','⌀'+f2(S.clr.normal),f2(S.clr.close)+' – '+f2(S.clr.loose)],'clr'));
+  r.push(row(['Bolt length<span class="std">l ≥ t₁+t₂ + w + m + 2P</span>','≥ '+info.lmin.toFixed(1),'use '+info.l],'lmin'));
+  r.push(row(['Grip<span class="std">t₁ + t₂ as drawn</span>',info.grip.toFixed(1),'your parts'],'t1'));
+  r.push(row(['Nut height m<span class="std">across flats '+f2(n.af)+'</span>'+badge(n.est),f2(n.m),'a/c '+f2(n.e)],'nutm'));
+  r.push(row(['Captive nut pocket<span class="std">printed parts</span>'+EST,S.printed[0][1].split(' A/F')[0],S.printed[1][1]+' corners'],'nutm'));
+  r.push(row(['Printed clearance hole<span class="std">FDM prints undersize</span>'+EST,'⌀'+S.printedClr,'test coupon'],'clr'));
+  return r;
+}
+function glanceRows(S,TH,kind,info){
+  var other=(PITCH==='coarse')?S.threads.fine:S.threads.coarse,r=[];
+  r.push(row(['Pitch <span class="std">'+PITCH+', selected</span>',String(TH.P),'other '+other.P]));
+  r.push(row(['Tensile stress area'+badge(TH.est),TH.As+' mm²','']));
+  if(kind==='screw'){
+    r.push(row(['Drive'+badge(info.p.est||S.estTorx),info.p.s+' mm hex',S.torx]));
+    r.push(row(['Min thread length b'+badge(info.p.est),String(info.p.b),'short screws full']));
+    r.push(row(['Head ⌀ dk · height k'+badge(info.p.est),f2(info.p.dk),'k '+f2(info.p.k)]));
+  } else {
+    r.push(row(['Nut height m'+badge(info.n.est),f2(info.n.m),'a/f '+f2(info.n.af)]));
+    r.push(row(['Across corners'+badge(info.n.est),f2(info.n.e),'pocket size']));
+    r.push(row(['Nylon collar'+badge(info.n.est),info.n.collar?f2(info.n.collar):'—','nyloc only']));
+  }
+  r.push(row(['Torque 8.8 / 10.9 / 12.9',S.torque,'N·m dry, calculated']));
+  r.push(row(['Min engagement E','steel '+S.d.toFixed(1),'alu '+(2*S.d).toFixed(1)+' · plastic '+(2.5*S.d).toFixed(1)]));
+  r.push(row(['Plain washer ISO 7089','⌀'+S.washer.id+' / ⌀'+S.washer.od,'t '+S.washer.t]));
+  return r;
+}
+function printRows(S){var r=[];for(var i=0;i<S.printed.length;i++){r.push(row([S.printed[i][0],S.printed[i][1]]));}return r;}
+
+/* ============ state ============ */
+var SIZEKEY='M3',PARTID='shcs',PITCH='coarse';
+function partById(id){for(var i=0;i<PARTS.length;i++){if(PARTS[i].id===id)return PARTS[i];}return null;}
+
+function render(){
+  var S=DATA[SIZEKEY],TH=S.threads[PITCH],part=partById(PARTID);
+  var info=part.kind==='screw'?drawScrew(S,TH,PARTID):drawNut(S,TH,PARTID);
+  var sz=nameOf(SIZEKEY);
+
+  say('bigsize',sz+' × '+TH.P);
+  say('pitchline',PITCH==='coarse'
+    ? 'coarse is the default — a drawing that says just '+sz+' means '+sz+' × '+TH.P
+    : 'fine pitch must always be written out in full: '+sz+' × '+TH.P+'. Head and hole sizes are unchanged; only the thread differs');
+  say('estnote',info.est?'ESTIMATED DIMENSIONS — verify before use':'');
+
+  $('formulas').innerHTML=part.kind==='screw'
+    ? '<b>E = l − t₁ + c</b> · c = counterbore depth, 0 where the head sits proud &nbsp;·&nbsp; <b>tapped ≥ E + 2P</b> &nbsp;·&nbsp; <b>drill ≥ E + 4P</b> &nbsp;·&nbsp; P = '+TH.P+' &nbsp;·&nbsp; <b>E ≥ k·d</b> — k = 1.0 steel · 1.25 stainless · 2.0 aluminium · 2.5 plastic'
+    : '<b>l ≥ t₁ + t₂ + w + m + 2P</b> · w = washer thickness, m = nut height, 2P of thread showing past the nut &nbsp;·&nbsp; round up to a stocked length &nbsp;·&nbsp; a thin nut is a jam nut, not a substitute for a full nut';
+
+  var eb=$('estbanner'),msgs=[];
+  if(info.est){msgs.push('<b>'+sz+' '+part.name.toLowerCase()+' dimensions are estimated</b> — derived from neighbouring sizes or standard ratios, not read from a source table.');}
+  if(S.secondChoice){msgs.push('<b>'+sz+' is an ISO second-choice size.</b> It is absent from ISO 4762 and thinly stocked; check availability before designing around it.');}
+  if(TH.est){msgs.push('Fine-pitch stress area for this size is estimated.');}
+  if(msgs.length){eb.style.display='';eb.innerHTML=msgs.join('<br>');}else{eb.style.display='none';}
+
+  fill('holerows',part.kind==='screw'?holeRowsScrew(S,TH,info):holeRowsNut(S,TH,info));
+  fill('printrows',printRows(S));
+  fill('glancerows',glanceRows(S,TH,part.kind,info));
+  wireHoleRows();
+
+  $('tb-std').innerHTML=STD[PITCH][PARTID]+(info.est?' <em>estimate</em>':'')+'<br>'+sz+' × '+TH.P+' · '+PITCH+' pitch';
+  $('tb-sheet').innerHTML=sz+' · '+part.name+'<br>Prototype';
+
+  var pb=$('parts').querySelectorAll('button');
+  for(var b=0;b<pb.length;b++){
+    var pid=pb[b].dataset.part,pp=partById(pid);
+    var e=(pp.kind==='screw'?S.screws[pid].est:S.nuts[pid].est);
+    pb[b].setAttribute('aria-pressed',pid===PARTID?'true':'false');
+    pb[b].innerHTML=pp.name+(e?' <i>&#9679;</i>':'');
+  }
+  var sb=$('sizetabs').querySelectorAll('button');
+  for(var s=0;s<sb.length;s++){sb[s].setAttribute('aria-pressed',sb[s].dataset.size===SIZEKEY?'true':'false');}
+  var qb=$('pitchtabs').querySelectorAll('button');
+  for(var q=0;q<qb.length;q++){qb[q].setAttribute('aria-pressed',qb[q].dataset.pitch===PITCH?'true':'false');}
+}
+
+function wireHoleRows(){
+  function gf(d){return document.querySelector('g.dgroup[data-dim="'+d+'"]');}
+  var rows=document.querySelectorAll('#holerows tr[data-dim]');
+  for(var h=0;h<rows.length;h++){
+    rows[h].addEventListener('mouseenter',function(){var g=gf(this.dataset.dim);if(g)g.classList.add('lit');});
+    rows[h].addEventListener('mouseleave',function(){var g=gf(this.dataset.dim);if(g)g.classList.remove('lit');});
+    rows[h].addEventListener('click',function(){
+      var was=this.classList.contains('pinned');
+      var pn=document.querySelectorAll('g.dgroup.pinned,#holerows tr.pinned');
+      for(var i=0;i<pn.length;i++){pn[i].classList.remove('pinned');}
+      if(!was){this.classList.add('pinned');var g=gf(this.dataset.dim);if(g)g.classList.add('pinned');}
+    });
+  }
+}
+
+/* ============ tabs ============ */
+(function(){
+  var pt=$('pitchtabs'),modes=[['coarse','Coarse'],['fine','Fine']];
+  for(var m=0;m<modes.length;m++){
+    var b=document.createElement('button');
+    b.textContent=modes[m][1];b.dataset.pitch=modes[m][0];b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',function(){PITCH=this.dataset.pitch;render();});
+    pt.appendChild(b);
+  }
+  var sz=$('sizetabs');
+  for(var i=0;i<SIZES.length;i++){
+    var s=document.createElement('button');
+    s.textContent=nameOf(SIZES[i]);s.dataset.size=SIZES[i];s.setAttribute('aria-pressed','false');
+    s.addEventListener('click',function(){SIZEKEY=this.dataset.size;render();});
+    sz.appendChild(s);
+  }
+  var pr=$('parts');
+  for(var j=0;j<PARTS.length;j++){
+    var p=document.createElement('button');
+    p.textContent=PARTS[j].name;p.dataset.part=PARTS[j].id;p.setAttribute('aria-pressed','false');
+    p.title=PARTS[j].name;
+    if(PARTS[j].gap){p.className='gap';}
+    p.addEventListener('click',function(){PARTID=this.dataset.part;render();});
+    pr.appendChild(p);
+  }
+})();
+
+var groups=document.querySelectorAll('g.dgroup');
+for(var g=0;g<groups.length;g++){
+  groups[g].addEventListener('mouseenter',function(){this.classList.add('lit');});
+  groups[g].addEventListener('mouseleave',function(){this.classList.remove('lit');});
+}
+render();
+})();
+</script>
+</body>
+</html>

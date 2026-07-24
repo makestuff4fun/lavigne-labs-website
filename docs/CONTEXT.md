@@ -13,38 +13,47 @@ production, vetting factories, QC on the ground (13+ yrs in China; ran a
 Black & Decker LED factory; two EV startups).
 
 - **Repo:** `git@github.com:makestuff4fun/lavigne-labs-website.git`
-- **Production:** `lavignelabs.com` (currently **WordPress** on cPanel/FTP,
-  Let's Encrypt SSL). Contact: `hello@lavignelabs.com`, WeChat `briantb`.
+- **Repo layout:** `web/` = the Next.js site (run npm there; all `app/…`,
+  `content/…`, `public/…` paths in these docs are relative to `web/`) ·
+  `docs/` = these docs · `fastners/` = standalone drafts, **not part of the
+  site** (see `fastners/README.md`).
+- **Production:** `lavignelabs.com` — **LIVE with this Next.js site** (static
+  export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
+  site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
 
 ## Status by workstream
 
 | Area | State |
 |---|---|
-| **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in repo. Home is the new positioning overhaul. **Not deployed yet.** |
+| **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in `web/`, and **LIVE at lavignelabs.com** as a static export. Home is the new positioning overhaul. |
 | **Games** (Shiverwing, Freezing Fortress) | Done, in repo. Faithful ports; synth SFX + mute toggle wired. |
 | **Game sounds** | **Real device SFX wired** (recovered WT588F recordings → `public/games/sfx/*.mp3`, registered via `sfx.useSamples` in each game). Synth voices remain as fallback. `score` (pipe-pass) uses `bell` as a chosen cue — badge was silent there. See docs/SOUNDS.md. |
-| **Static WordPress freeze** | Done **locally**, **not in the repo** (it's a 168 MB deploy artifact). Made with **Simply Static**, trimmed 825 MB→168 MB (unreferenced media removed), and the "Our Projects" grid rebuilt as a plain static grid (the theme's AJAX infinite-scroll can't work statically). Regenerate via docs/DEPLOYMENT.md. |
-| **Deployment** | **Not live yet.** Artifacts built (`lavigne-site-flat.zip` = freeze + Play menu → `/play/`; `lavigne-games-folder.zip` = games for `public_html`). Both extract into `public_html` → games at `lavignelabs.com/play` (no subdomain). WP backup/swap pending — user executes via cPanel. Plan below. |
+| **Static WordPress freeze** | **Superseded** — the Next.js site went live instead of the freeze. The freeze work (Simply Static, trimmed 825 MB→168 MB, static "Our Projects" grid) still exists locally / regenerable per docs/DEPLOYMENT.md, but is no longer the deploy path. |
+| **Deployment** | **LIVE.** `lavignelabs.com` serves the Next.js static export from `public_html`, games at `/play` (no subdomain, existing SSL). Redeploy = `cd web && npm run export`, upload `out/` (or `lavigne-site-full.zip`) via cPanel/FTP. |
 
-## Deployment plan (current decision)
+## Deployment (as shipped)
 
-Flat **WP static freeze** serves `lavignelabs.com` (replacing WordPress); the
-**games** sit beside it in the same `public_html`, served at `lavignelabs.com/play`
-(**no subdomain** — existing SSL covers the path). The frozen site's nav gets a
-**Play** item linking to `/play/`. Full runbook: **docs/DEPLOYMENT.md → Option D**.
+The **Next.js static export** serves `lavignelabs.com` from `public_html`, with
+the games at `lavignelabs.com/play` (**no subdomain** — existing SSL covers the
+path). This replaced both WordPress and the planned WP-freeze intermediate step.
 
-Artifacts are prepared (git-ignored, in repo root + copied to Downloads):
-- **`lavigne-site-flat.zip`** — the freeze **with "Play" added to the menu**
-  (Home · Portfolio · Play · Contact, desktop + mobile). → `public_html`.
-- **`lavigne-games-folder.zip`** — `_next/ games/ play/`, no root index (won't
-  overwrite the freeze homepage). → `public_html` too (gives `/play`).
+To ship an update:
 
-Regenerate: `npm run export` (games bundle) + `python3
-scripts/freeze-add-play-menu.py` (re-injects the Play link into a fresh freeze).
+```bash
+cd web
+npm run export        # -> web/out/ + web/lavigne-*.zip (git-ignored)
+```
 
-Order: (1) back up WP, (2) extract the flat site into `public_html`, (3) extract
-the games folder bundle into `public_html`. **Contact form** is still open (static
-has no PHP → Formspree/Web3Forms/`mailto:`).
+…then upload `out/` (or extract `lavigne-site-full.zip`) into `public_html` via
+cPanel/FTP. Full runbook: **docs/DEPLOYMENT.md**.
+
+**Contact form is still open** — the static host has no PHP/API, so the Resend
+route (`web/app/api/contact/route.ts`) isn't running in production. Needs
+Formspree/Web3Forms/`mailto:` wiring.
+
+_Historical:_ the WP-freeze path (`lavigne-site-flat.zip` +
+`scripts/freeze-add-play-menu.py`) is documented in DEPLOYMENT.md as Option D
+and is no longer the plan.
 
 ## Key positioning decisions (reflected in the site copy)
 
@@ -62,17 +71,19 @@ has no PHP → Formspree/Web3Forms/`mailto:`).
 
 ## Open / next steps (rough priority)
 
-1. **Go-live** (artifacts ready, see Deployment plan / DEPLOYMENT.md Option D):
-   back up WP; extract `lavigne-site-flat.zip` + `lavigne-games-folder.zip` into
-   `public_html` → site + games at `lavignelabs.com/play`.
-2. **Contact form** → wire the frozen Contact page to a form service (still open).
-3. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
-4. **Review portfolio descriptions** — 8 items in the static grid have *inferred*
-   blurbs flagged for Brian to verify (Smart Fire Alarm, Teleprompter, Special
-   Action Camera, Custom Motorcycle Parts, Dog Backpack, Oculus Earphones,
-   Passport Case, Under Cabinet Lighting).
-5. **Optional later:** launch the *new* Next.js overhaul (better than the frozen
-   old design) instead of/after the freeze.
+1. **Contact form** → wire the live Contact page to a form service (Formspree /
+   Web3Forms / `mailto:`); static hosting can't run the Resend API route.
+2. **Review portfolio descriptions** — 8 items have *inferred* blurbs flagged for
+   Brian to verify (Smart Fire Alarm, Teleprompter, Special Action Camera, Custom
+   Motorcycle Parts, Dog Backpack, Oculus Earphones, Passport Case, Under Cabinet
+   Lighting).
+3. **`fastners/` decision** — six standalone fastener tools (reference sheet /
+   holding force / tightening torque, each metric + inch). Do they become
+   `/tools` entries (linked as-is from `public/`, or ported to React), and how
+   do they reconcile with the existing `bolt-sizes` calculator? See
+   `fastners/README.md`.
+4. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
+5. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
 
 ## Things that live OUTSIDE the repo (and how to regenerate)
 
@@ -90,10 +101,10 @@ has no PHP → Formspree/Web3Forms/`mailto:`).
 
 ```bash
 git clone git@github.com:makestuff4fun/lavigne-labs-website.git
-cd lavigne-labs-website
+cd lavigne-labs-website/web    # the site lives in web/
 npm install
 npm run dev      # http://localhost:3000
-npm run export   # rebuild deployable game bundles when needed
+npm run export   # rebuild the static export + deployable bundles when needed
 ```
 
 Then see **docs/DEPLOYMENT.md** to continue the rollout.

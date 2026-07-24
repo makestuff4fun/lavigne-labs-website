@@ -4,7 +4,7 @@
 # CLAUDE.md — Lavigne Labs website
 
 The two imports above carry the details: **AGENTS.md** (Next.js 16 is not the
-Next you were trained on — read `node_modules/next/dist/docs/` before writing
+Next you were trained on — read `web/node_modules/next/dist/docs/` before writing
 Next code) and **docs/CONTEXT.md** (the living status/handoff — read it first).
 This file is the tight complement: stack, gotchas, and where it runs. Don't
 duplicate CONTEXT.md here — update _that_ file when status changes.
@@ -15,6 +15,16 @@ Marketing + portfolio site for **Lavigne Labs** (Brian Barrett — helps US/Cana
 hardware teams manufacture in China without costly mistakes). Also hosts two
 faithful browser ports of his hardware side-projects: **Shiverwing** (ESP32-badge
 Flappy Bird) and **Freezing Fortress** (addressable-LED Sokoban).
+
+## Repo layout (read this before touching paths)
+
+```
+web/        THE SITE — the whole Next.js app. Run npm here. Paths named below
+            (app/, content/, lib/, public/, scripts/) are relative to web/.
+docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS)
+fastners/   NOT part of the site — standalone fastener-reference sheets parked
+            for discussion. Never imported by the app; see fastners/README.md.
+```
 
 ## Architecture & stack
 
@@ -30,11 +40,11 @@ Flappy Bird) and **Freezing Fortress** (addressable-LED Sokoban).
 - **Contact form:** `app/api/contact/route.ts` emails via **Resend**
   (`RESEND_API_KEY` in `.env.local`; without it, dev logs submissions to the terminal).
 
-## Current state (2026-07-23)
+## Current state (2026-07-24)
 
-Site + games built and in the repo; **nothing deployed yet** — prod
-`lavignelabs.com` is still the old WordPress on cPanel. Game SFX are synth
-placeholders (real WAVs pending). Full status table + rollout plan: **docs/CONTEXT.md**.
+**Live.** `lavignelabs.com` now serves this Next.js site as a static export,
+games included at `/play` — the old WordPress site has been replaced. Real
+device SFX (WT588F recordings) are wired. Full status table: **docs/CONTEXT.md**.
 
 ## Key decisions & gotchas
 
@@ -53,35 +63,66 @@ placeholders (real WAVs pending). Full status table + rollout plan: **docs/CONTE
 ## Run / build / deploy
 
 ```bash
-npm install
+cd web             # everything below runs in web/
+npm install --maxsockets=4    # plain `npm install` ECONNRESETs behind the proxy
 npm run dev        # http://localhost:3000
 npm run build      # Node-server production build
-npm run lint
+npm run lint       # 9 pre-existing errors in the game components — known, not yours
 npm run export     # STATIC_EXPORT=1 build -> out/ + deployable game zips
 ```
 
-**Deploy target:** static freeze uploaded to cPanel/FTP `public_html` at
-`lavignelabs.com` (current plan), _or_ host the Next app on Vercel/Netlify/CF
-Pages. Full procedure: **docs/DEPLOYMENT.md**.
+Requires **Node ≥20.9** (blue has 22.23.1). All four verified working on blue,
+2026-07-24.
+
+**Deploy target:** the static export (`web/out/`) uploaded to cPanel/FTP
+`public_html` at `lavignelabs.com` — **this is what's live now**. Alternative:
+host the Next app on Vercel/Netlify/CF Pages (root directory would be `web`).
+Full procedure: **docs/DEPLOYMENT.md**.
 
 ## Where it runs (fleet)
 
-- **blue** (laptop) — interactive dev; `npm run dev`/lint/edit here.
-- **tunnel-bear** (Tokyo VPS, always-on, clean IP) — run `npm install`, builds,
-  and deploys here; the npm registry and deploy targets need clean foreign
-  internet. **Not miku** (GFW'd — registry/deploys are unreliable). No GPU needed.
+- **blue** (laptop) — **full dev box: edit, `npm install`, build, lint, export.**
+  Verified 2026-07-24 (Node 22.23.1, `npm run build` + `npm run export` both
+  pass). Requires the local proxy on `127.0.0.1:7897` to be up.
+- **tunnel-bear** (Tokyo VPS, always-on, clean IP) — fallback / unattended builds
+  and deploys. No GPU needed.
+- **miku** — GFW'd, no proxy; don't install or deploy from it.
+
+> **Correction (2026-07-24):** this file used to claim blue couldn't run installs
+> or builds and that everything had to happen on tunnel-bear. That was wrong and
+> cost real time. See "Network gotchas" — the failures were fixable locally.
+
+## Network gotchas (China / proxy)
+
+- **Node 20.9+ is required** (Next 16 hard-refuses older). blue runs **22.23.1**
+  from NodeSource; Ubuntu's distro Node 18 is too old. Note `sudo` on blue is
+  NOPASSWD **only** for `apt`/`apt-get`/`dpkg`/`systemctl`/`journalctl`/`ip` — so
+  `curl … | sudo bash` installers don't work; install a downloaded `.deb` with
+  `sudo apt-get install ./file.deb` instead.
+- **`npm install` dies with `ECONNRESET`** — not the GFW. npm's ~50 concurrent
+  sockets swamp the local proxy. Throttle it:
+  ```bash
+  npm install --maxsockets=4 --fetch-retries=5 --fetch-timeout=120000
+  ```
+  (Worth putting in `~/.npmrc`. Don't set `registry=` globally — that rewrites
+  `resolved` URLs in `package-lock.json` and creates noisy cross-machine diffs.)
+- **Large downloads truncate** through the same proxy — `curl --retry 5
+  --retry-all-errors -C -` resumes cleanly.
+- **A build can fail once on `fonts.gstatic.com`** (`next/font/google` fetches at
+  build time) and succeed on retry — same proxy flakiness. Just re-run.
 
 ## Open items
 
-Tracked in docs/CONTEXT.md: wire the contact form to a service before go-live;
-the WordPress→static go-live swap (reversible, with backup); swap in real game
-WAVs when they arrive; verify the 8 inferred portfolio blurbs.
+Tracked in docs/CONTEXT.md: wire the live contact form to a form service (static
+host has no API); verify the 8 inferred portfolio blurbs; decide whether the
+`fastners/` sheets become a `/tools` entry.
 
 ## Key files
 
-- `next.config.ts` — dual build-mode config (static export toggle)
-- `content/` — all editable copy/data; `content/articles/*.md` — blog posts
-- `lib/articles.ts`, `lib/sfx.ts` — Markdown loader, sound engine
-- `app/api/contact/route.ts` — Resend contact handler
-- `scripts/export-static.sh` — static export + game-bundle builder
+- `web/next.config.ts` — dual build-mode config (static export toggle)
+- `web/content/` — all editable copy/data; `web/content/articles/*.md` — blog posts
+- `web/lib/articles.ts`, `web/lib/sfx.ts` — Markdown loader, sound engine
+- `web/app/api/contact/route.ts` — Resend contact handler
+- `web/scripts/export-static.sh` — static export + game-bundle builder
 - `docs/` — CONTEXT (status), CONTENT (editing), DEPLOYMENT, GAMES, SOUNDS
+- `fastners/` — off-site drafts under discussion (fastners/README.md)

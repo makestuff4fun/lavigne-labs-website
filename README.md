@@ -23,11 +23,16 @@ No database, no services required for local development.
 
 ```bash
 git clone git@github.com:makestuff4fun/lavigne-labs-website.git
-cd lavigne-labs-website
+cd lavigne-labs-website/web    # ← the site lives in web/
 
 npm install            # installs dependencies (~1–2 min the first time)
 npm run dev            # starts the dev server
 ```
+
+> **Repo layout:** the Next.js site is in **`web/`**, project docs in **`docs/`**,
+> and **`fastners/`** holds standalone drafts that are *not* part of the site yet.
+> Every `npm` command below is run from `web/`; paths like `app/…` or `content/…`
+> in the docs are relative to `web/`.
 
 Open **http://localhost:3000**. Pages to check:
 
@@ -74,32 +79,37 @@ cp .env.example .env.local
 ## Project structure
 
 ```
-app/                Routes (App Router)
-  page.tsx          Home (hero, services, how-I-work, work, FAQ, CTA)
-  work/  articles/  tools/  faq/  contact/  lab/   Section pages
-  play/             Games hub + /play/shiverwing + /play/freezing-fortress
-  api/contact/      Contact form handler (Resend; stripped from static export)
-  sitemap.ts  robots.ts  opengraph-image.tsx
-components/
-  Hero, Services, HowIWork, FeaturedWork, Faq, …    Home/section components
-  games/Shiverwing.tsx        Flappy-Bird port (canvas)
-  games/FreezingFortress.tsx  LED Sokoban port (canvas)
-  games/ffData.ts             Freezing Fortress colour/animation/digit tables
-  SoundToggle.tsx
-content/            Editable site content — NO code needed (see docs/CONTENT.md):
-  site.ts           Name, contact, nav, services, process, engagement copy
-  projects.ts       Portfolio projects
-  tools.ts  faq.ts  labNotes.ts
-  articles/*.md     Blog posts (Markdown + frontmatter)
-lib/
-  sfx.ts            Web Audio sound engine (docs/SOUNDS.md)
-  articles.ts       Markdown article loader
-public/
-  games/shiverwing/        Real badge sprites (extracted from firmware)
-  games/freezing-fortress/ levels.txt + bezel.png
-  work/  brand/            Site imagery
-scripts/export-static.sh   Static export + game-bundle builder
-docs/                      Deployment, content, games, sounds
+web/                  THE SITE — all npm commands run in here
+  app/                Routes (App Router)
+    page.tsx          Home (hero, services, how-I-work, work, FAQ, CTA)
+    work/  articles/  tools/  faq/  contact/  lab/   Section pages
+    play/             Games hub + /play/shiverwing + /play/freezing-fortress
+    api/contact/      Contact form handler (Resend; stripped from static export)
+    sitemap.ts  robots.ts  opengraph-image.tsx
+  components/
+    Hero, Services, HowIWork, FeaturedWork, Faq, …    Home/section components
+    games/Shiverwing.tsx        Flappy-Bird port (canvas)
+    games/FreezingFortress.tsx  LED Sokoban port (canvas)
+    games/ffData.ts             Freezing Fortress colour/animation/digit tables
+    SoundToggle.tsx
+  content/            Editable site content — NO code needed (see docs/CONTENT.md):
+    site.ts           Name, contact, nav, services, process, engagement copy
+    projects.ts       Portfolio projects
+    tools.ts  faq.ts  labNotes.ts
+    articles/*.md     Blog posts (Markdown + frontmatter)
+  lib/
+    sfx.ts            Web Audio sound engine (docs/SOUNDS.md)
+    articles.ts       Markdown article loader
+  public/
+    games/shiverwing/        Real badge sprites (extracted from firmware)
+    games/freezing-fortress/ levels.txt + bezel.png
+    work/  brand/            Site imagery
+  scripts/export-static.sh   Static export + game-bundle builder
+  next.config.ts  package.json  tsconfig.json  eslint.config.mjs  postcss.config.mjs
+
+docs/                 Project docs — context, content, deployment, games, sounds
+fastners/             NOT part of the site: standalone fastener-reference sheets
+                      under discussion for a future /tools entry (see its README)
 ```
 
 ## Editing the site's content
@@ -111,14 +121,16 @@ update text, projects, articles, tools, and FAQ **without touching code**.
 
 ## Deploying
 
-Two things can ship independently: the **games** (tiny, static) and the **full
-site** (the Next.js app, or the current plan: a static freeze of the existing
-WordPress site with the games bolted on).
+**`lavignelabs.com` is live** and serving this Next.js site as a static export
+(games included, at `/play`). The old WordPress site has been replaced.
 
-👉 **See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).** Quick version:
+Two things can ship independently: the **games** (tiny, static) and the **full
+site**.
+
+👉 **See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).** Quick version, from `web/`:
 
 ```bash
-npm run export   # builds out/ and lavigne-games*.zip
+npm run export   # builds out/ and lavigne-*.zip
 ```
 
 …then upload per the doc (cPanel/FTP, or host the Next app on Vercel/Netlify/CF Pages).
@@ -129,7 +141,7 @@ npm run export   # builds out/ and lavigne-games*.zip
 - [docs/CONTENT.md](docs/CONTENT.md) — editing copy, projects, articles, tools, FAQ, levels
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — static export + WordPress-freeze + games rollout
 - [docs/GAMES.md](docs/GAMES.md) — how the games were ported, asset provenance, adding levels
-- [docs/SOUNDS.md](docs/SOUNDS.md) — the SFX engine and swapping in the real WAVs
+- [docs/SOUNDS.md](docs/SOUNDS.md) — the SFX engine and the real device recordings
 
 ## Troubleshooting
 

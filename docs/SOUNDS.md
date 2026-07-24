@@ -1,5 +1,8 @@
 # Sounds
 
+> **All paths here are relative to `web/`** (e.g. `lib/sfx.ts` is
+> `web/lib/sfx.ts`).
+
 `lib/sfx.ts` is a tiny Web Audio engine. The games now use the **real recorded
 device sound effects** (from the WT588F voice chip), in `public/games/sfx/*.mp3`.
 The in-code synth voices remain as a **fallback** for any event not mapped to a

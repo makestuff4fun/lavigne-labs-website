@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What will it hold? — metric screw selection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --film:#E7E9E3; --paper:#F6F7F3; --ink:#14181A; --graphite:#6D7472;
+  --rule:#C3C7BF; --rule-soft:#D9DCD4; --dim:#2C6E9E; --flag:#B4451F; --ok:#4A7A46;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --cond:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--film);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+.sheet{max-width:1180px;margin:0 auto;padding:0 24px 34px}
+.eyebrow{font-family:var(--cond);font-weight:600;font-size:.64rem;text-transform:uppercase;letter-spacing:.2em;color:var(--graphite)}
+h2{font-family:var(--cond);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;margin:0}
+
+header{padding:20px 0 12px;border-bottom:1.5px solid var(--ink)}
+header h1{font-family:var(--cond);font-weight:700;font-size:2.7rem;line-height:.9;letter-spacing:.01em;text-transform:uppercase;margin:.1em 0 0}
+header .lede{font-family:var(--mono);font-size:.72rem;color:var(--graphite);margin-top:6px;max-width:74ch}
+
+/* ---- the question ---- */
+.ask{margin-top:16px;border:1.5px solid var(--ink);background:var(--paper);padding:16px 18px;
+  display:grid;grid-template-columns:auto auto 1fr;gap:18px 26px;align-items:end}
+.field .k{font-family:var(--cond);font-weight:600;font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);display:block;margin-bottom:5px}
+.field input{font-family:var(--mono);font-size:1.5rem;font-weight:600;width:130px;padding:4px 8px;
+  border:0;border-bottom:2px solid var(--dim);background:transparent;color:var(--ink)}
+.field input:focus{outline:0;border-bottom-color:var(--flag)}
+.field .unit{font-family:var(--mono);font-size:.9rem;color:var(--graphite);margin-left:6px}
+.chips{display:flex;flex-wrap:wrap;border:1px solid var(--rule)}
+.chips button{font-family:var(--cond);font-weight:600;font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;
+  padding:8px 11px;background:var(--paper);color:var(--graphite);border:0;border-right:1px solid var(--rule);cursor:pointer}
+.chips button:last-child{border-right:0}
+.chips button:hover{background:var(--film);color:var(--ink)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.chips button:focus-visible{outline:2px solid var(--dim);outline-offset:-2px}
+.chips.wide button{padding:8px 13px}
+
+/* ---- answer ---- */
+.answers{display:grid;grid-template-columns:.9fr 1fr 1.5fr;border:1.5px solid var(--ink);border-top:0;background:var(--paper)}
+.ans{padding:16px 18px;border-right:1px solid var(--rule)}
+.ans:last-child{border-right:0}
+.ans .k{font-family:var(--cond);font-weight:600;font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:var(--graphite)}
+.ans .big{font-family:var(--mono);font-weight:600;font-size:2.5rem;line-height:1.05;margin-top:4px;color:var(--dim)}
+.ans .big small{font-size:.9rem;color:var(--graphite);font-weight:400;margin-left:4px}
+.ans .sub{font-family:var(--sans);font-size:.8rem;color:var(--graphite);margin-top:6px;line-height:1.45}
+.ans.bad .big{color:var(--flag)}
+
+/* ---- ladder ---- */
+.ladder{margin-top:18px}
+.rungs{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.rung{font-family:var(--mono);font-size:.78rem;padding:7px 10px;border:1px solid var(--rule);
+  background:var(--paper);color:var(--rule);cursor:pointer;min-width:60px;text-align:center}
+.rung .cap{display:block;font-size:.62rem;margin-top:2px}
+.rung.pass{color:var(--ink);border-color:var(--graphite)}
+.rung.pick{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.rung.sel{box-shadow:inset 0 -3px 0 var(--flag)}
+
+.band{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;margin-top:24px}
+.bhead{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.bhead .ref{font-family:var(--mono);font-size:.66rem;color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead th{font-family:var(--cond);font-weight:600;font-size:.62rem;text-transform:uppercase;letter-spacing:.11em;color:var(--graphite);text-align:right;padding:0 9px 6px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+thead th:first-child{text-align:left;padding-left:0}
+tbody td{font-family:var(--mono);font-size:.78rem;text-align:right;padding:6px 9px;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+tbody td:first-child{text-align:left;padding-left:0;font-family:var(--sans);white-space:normal;line-height:1.3}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.here{background:var(--paper)}
+tbody tr.here td:first-child{box-shadow:inset 3px 0 0 var(--dim)}
+.std{display:block;font-family:var(--mono);font-size:.68rem;color:var(--graphite)}
+.gov{color:var(--flag)}
+.scrollx{overflow-x:auto}
+
+.notes{margin-top:26px;border-top:1.5px solid var(--ink);padding-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.note h3{font-family:var(--cond);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);margin:0 0 5px}
+.note p{margin:0 0 8px;font-size:.82rem;line-height:1.5}
+.note b{font-weight:500}
+.disc{margin-top:22px;border:1px solid var(--flag);background:#F6EDEA;padding:9px 13px;font-family:var(--mono);font-size:.72rem;color:var(--flag);line-height:1.5}
+
+@media (max-width:940px){
+  .ask{grid-template-columns:1fr}
+  .answers{grid-template-columns:1fr}
+  .ans{border-right:0;border-bottom:1px solid var(--rule)}
+  .band,.notes{grid-template-columns:1fr}
+}
+@media print{body{background:#fff}.chips{display:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <div class="eyebrow">Fastener sheet · metric · what will it hold?</div>
+  <h1>Pick a screw</h1>
+  <div class="lede">Rough sizing for brackets, mounts and enclosures. Tell it what you're hanging and what you're screwing into, and it picks the smallest screw that copes.</div>
+</header>
+
+<div class="ask">
+  <div class="field">
+    <span class="k">Load to hold</span>
+    <input id="load" type="number" min="0" step="1" value="25"><span class="unit">kg</span>
+  </div>
+  <div class="field">
+    <span class="k">Direction of pull</span>
+    <div class="chips" id="dirchips" role="group" aria-label="Direction"></div>
+  </div>
+  <div class="field">
+    <span class="k">How careful do you need to be?</span>
+    <div class="chips wide" id="dutychips" role="group" aria-label="Duty"></div>
+  </div>
+  <div class="field" style="grid-column:1/-1">
+    <span class="k">Screwing into</span>
+    <div class="chips" id="matchips" role="group" aria-label="Material"></div>
+  </div>
+  <div class="field" style="grid-column:1/-1">
+    <span class="k">Screw grade</span>
+    <div class="chips" id="classchips" role="group" aria-label="Class"></div>
+  </div>
+</div>
+
+<div class="answers">
+  <div class="ans" id="a-size">
+    <div class="k">Use at least</div>
+    <div class="big" id="v-size"></div>
+    <div class="sub" id="s-size"></div>
+  </div>
+  <div class="ans">
+    <div class="k">That size holds</div>
+    <div class="big" id="v-hold"></div>
+    <div class="sub" id="s-hold"></div>
+  </div>
+  <div class="ans">
+    <div class="k">What gives out first</div>
+    <div class="big" id="v-gov" style="font-size:1.5rem"></div>
+    <div class="sub" id="s-gov"></div>
+  </div>
+</div>
+
+<div class="ladder">
+  <div class="bhead"><h2>Every size in this setup</h2><span class="ref">click to inspect · faded sizes are too small</span></div>
+  <div class="rungs" id="rungs"></div>
+</div>
+
+<div class="band">
+  <div>
+    <div class="bhead"><h2>Safe working load, kg</h2><span class="ref" id="tabnote"></span></div>
+    <div class="scrollx">
+    <table><thead><tr><th>Size</th><th>Straight pull</th><th>Sideways</th><th>Screw alone breaks at</th><th>Limited by</th></tr></thead>
+    <tbody id="allrows"></tbody></table>
+    </div>
+  </div>
+  <div>
+    <div class="bhead"><h2>Same screw, other materials</h2></div>
+    <div class="scrollx">
+    <table><thead><tr><th>Screwed into</th><th>Grip</th><th>Holds</th></tr></thead>
+    <tbody id="matrows"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="note">
+    <h3>Sideways is weaker than you think</h3>
+    <p>A screw through a clearance hole doesn't hold sideways by being strong — it holds because it squeezes the parts together and <b>friction</b> does the work.</p>
+    <p>That's why the sideways number is so much smaller than the straight-pull one. Once it slips, the screw shifts until it bears on the hole, and only then does its own strength matter.</p>
+  </div>
+  <div class="note">
+    <h3>The hole usually loses</h3>
+    <p>In steel the screw is the weak point. In aluminium, plastic or a printed part, the <b>thread in the hole</b> gives out first, often at a small fraction of what the screw could take.</p>
+    <p>Deeper engagement is the cheapest fix. Doubling the thread depth roughly doubles the pull-out. Going up a screw size does much less.</p>
+  </div>
+  <div class="note">
+    <h3>Use more than one</h3>
+    <p>Two M4s beat one M6, and they stop the thing rotating. Spread them as far apart as the part allows.</p>
+    <p>But don't assume the load splits evenly — with more than two screws, hole tolerance means some carry more than others. Size for the worst case.</p>
+  </div>
+</div>
+
+<div class="disc" id="disc"></div>
+
+</div>
+
+<script>
+(function(){
+var SIZES=[
+ {k:'M2',   d:2,  As:2.07}, {k:'M2.5', d:2.5, As:3.39}, {k:'M3', d:3, As:5.03},
+ {k:'M4',   d:4,  As:8.78}, {k:'M5',   d:5,   As:14.2}, {k:'M6', d:6, As:20.1},
+ {k:'M8',   d:8,  As:36.6}, {k:'M10',  d:10,  As:58.0}, {k:'M12',d:12,As:84.3},
+ {k:'M16',  d:16, As:157},  {k:'M20',  d:20,  As:245}
+];
+var CLASSES=[
+ {k:'8.8',   Sp:580, Rm:800,  name:'class 8.8 steel'},
+ {k:'10.9',  Sp:830, Rm:1040, name:'class 10.9 steel'},
+ {k:'12.9',  Sp:970, Rm:1220, name:'class 12.9 steel'},
+ {k:'A2-70', Sp:450, Rm:700,  name:'A2-70 stainless'}
+];
+var MATS=[
+ {k:'steel',  name:'Steel',           tau:210, le:1.0},
+ {k:'ss',     name:'Stainless',       tau:250, le:1.25},
+ {k:'alu',    name:'Aluminium',       tau:200, le:2.0},
+ {k:'brass',  name:'Brass',           tau:180, le:1.5},
+ {k:'print',  name:'Printed plastic', tau:15,  le:2.5},
+ {k:'insert', name:'Heat-set insert', insert:1,le:2.0},
+ {k:'nut',    name:'Nut on the back', nut:1,   le:1.0}
+];
+var INSERT={M2:350,'M2.5':500,M3:800,M4:1400,M5:2200,M6:3000,M8:4500,M10:6000,M12:8000,M16:0,M20:0};
+var DIRS=[{k:'pull',name:'Straight pull'},{k:'shear',name:'Sideways'}];
+var DUTY=[
+ {k:2, name:'Rough & ready', sub:'a shelf bracket, nothing underneath'},
+ {k:4, name:'Normal',        sub:'general purpose — start here'},
+ {k:8, name:'Careful',       sub:'overhead, moving, or people nearby'}
+];
+var MU=0.15, PRELOAD=0.70, G=9.80665;
+
+var CI=0, MI=0, DI=0, FI=1, SEL=-1;
+
+var $=function(i){return document.getElementById(i);};
+function kg(N){ return N/G; }
+function fk(v){ return v<10?v.toFixed(1):Math.round(v); }
+function proof(S,C){ return C.Sp*S.As; }
+function breakLoad(S,C){ return C.Rm*S.As; }
+function stripForce(S,C,M){
+  if(M.nut) return proof(S,C)*1.05;              /* a nut is stronger than the screw */
+  if(M.insert) return INSERT[S.k]||0;
+  return Math.PI*S.d*(M.le*S.d)*M.tau*0.5;
+}
+function pullLimit(S,C,M){ var st=stripForce(S,C,M); return st>0?Math.min(proof(S,C),st):0; }
+function slipLimit(S,C){ return PRELOAD*C.Sp*S.As*MU; }
+function safeLoad(S,C,M,dir,sf){
+  var lim = dir==='pull' ? pullLimit(S,C,M) : Math.min(slipLimit(S,C), pullLimit(S,C,M));
+  return lim>0 ? kg(lim)/sf : 0;
+}
+function governer(S,C,M){
+  var st=stripForce(S,C,M);
+  if(st<=0) return {t:'no data',s:'This size has no insert figure — check your supplier.'};
+  if(st<proof(S,C)) return {t:'the hole',s:'The thread in '+M.name.toLowerCase()+' strips before the screw yields. Deeper engagement or an insert buys more than a bigger screw.'};
+  return {t:'the screw',s:'The '+M.name.toLowerCase()+' thread outlasts the screw, which is the right way round — a snapped screw is visible, a stripped hole is not.'};
+}
+
+function render(){
+  var C=CLASSES[CI], M=MATS[MI], dir=DIRS[DI].k, sf=DUTY[FI].k;
+  var want=parseFloat($('load').value); if(isNaN(want)||want<0) want=0;
+
+  var pick=-1;
+  for(var i=0;i<SIZES.length;i++){ if(safeLoad(SIZES[i],C,M,dir,sf)>=want){ pick=i; break; } }
+  var show = SEL>=0 ? SEL : pick;
+  var S = show>=0 ? SIZES[show] : SIZES[SIZES.length-1];
+  var holds = safeLoad(S,C,M,dir,sf);
+  var g = governer(S,C,M);
+
+  $('a-size').className = pick<0 ? 'ans bad' : 'ans';
+  $('v-size').textContent = pick<0 ? 'none' : SIZES[pick].k;
+  $('s-size').textContent = pick<0
+    ? 'No size here copes with '+fk(want)+' kg in '+M.name.toLowerCase()+'. Use more screws, a different material, or spread the load.'
+    : (SEL>=0 && SEL!==pick ? 'Showing '+S.k+' below. Smallest that works is '+SIZES[pick].k+'.'
+       : 'Smallest size that carries '+fk(want)+' kg with a safety factor of '+sf+'.');
+
+  $('v-hold').innerHTML = fk(holds)+'<small>kg</small>';
+  $('s-hold').textContent = S.k+' '+C.name+' in '+M.name.toLowerCase()
+    +' · '+(dir==='pull'?'pulled straight out':'loaded sideways')+' · factor of '+sf;
+
+  $('v-gov').textContent = g.t;
+  $('s-gov').textContent = g.s;
+
+  var r=$('rungs'); r.innerHTML='';
+  for(var j=0;j<SIZES.length;j++){
+    var v=safeLoad(SIZES[j],C,M,dir,sf);
+    var el=document.createElement('div');
+    var cls='rung'+(v>=want&&v>0?' pass':'')+(j===pick?' pick':'')+(j===SEL?' sel':'');
+    el.className=cls;
+    el.innerHTML=SIZES[j].k+'<span class="cap">'+(v>0?fk(v)+' kg':'—')+'</span>';
+    (function(idx){el.addEventListener('click',function(){SEL=(SEL===idx?-1:idx);render();});})(j);
+    r.appendChild(el);
+  }
+
+  $('tabnote').textContent='into '+M.name.toLowerCase()+' · '+C.name+' · factor of '+sf;
+  var ar=$('allrows'); ar.innerHTML='';
+  for(var m=0;m<SIZES.length;m++){
+    var s=SIZES[m];
+    var p=safeLoad(s,C,M,'pull',sf), sh=safeLoad(s,C,M,'shear',sf), br=kg(breakLoad(s,C));
+    var gg=governer(s,C,M);
+    var tr=document.createElement('tr');
+    if(m===show) tr.className='here';
+    tr.innerHTML='<td>'+s.k+'</td><td>'+(p>0?fk(p):'—')+'</td><td>'+(sh>0?fk(sh):'—')
+      +'</td><td>'+Math.round(br)+'</td><td class="'+(gg.t==='the hole'?'gov':'')+'">'+gg.t+'</td>';
+    tr.style.cursor='pointer';
+    (function(idx){tr.addEventListener('click',function(){SEL=idx;render();});})(m);
+    ar.appendChild(tr);
+  }
+
+  var mr=$('matrows'); mr.innerHTML='';
+  for(var n=0;n<MATS.length;n++){
+    var mm=MATS[n], v2=safeLoad(S,C,mm,dir,sf);
+    var tr2=document.createElement('tr');
+    if(n===MI) tr2.className='here';
+    var grip = mm.nut ? 'through' : (mm.le*S.d).toFixed(1)+' mm';
+    tr2.innerHTML='<td>'+mm.name+'</td><td>'+grip+'</td><td>'+(v2>0?fk(v2)+' kg':'—')+'</td>';
+    tr2.style.cursor='pointer';
+    (function(idx){tr2.addEventListener('click',function(){MI=idx;render();});})(n);
+    mr.appendChild(tr2);
+  }
+
+  $('disc').innerHTML='Straight pull is the lesser of the screw\u2019s proof load (Sp \u00d7 stress area) and an estimate of thread strip in the '
+    +'tapped material, divided by your safety factor. Sideways assumes the joint holds by friction at \u03bc = 0.15 on one face. '
+    +'<b>Rough sizing only.</b> Do not use this page for anything that could hurt someone if it let go \u2014 vehicle parts, climbing gear, '
+    +'ceiling mounts over people, or pressure equipment. Those need a real engineering calculation.';
+
+  var cc=$('classchips').querySelectorAll('button');
+  for(var a=0;a<cc.length;a++) cc[a].setAttribute('aria-pressed',a===CI?'true':'false');
+  var mc=$('matchips').querySelectorAll('button');
+  for(var b=0;b<mc.length;b++) mc[b].setAttribute('aria-pressed',b===MI?'true':'false');
+  var dc=$('dirchips').querySelectorAll('button');
+  for(var c=0;c<dc.length;c++) dc[c].setAttribute('aria-pressed',c===DI?'true':'false');
+  var fc=$('dutychips').querySelectorAll('button');
+  for(var e=0;e<fc.length;e++) fc[e].setAttribute('aria-pressed',e===FI?'true':'false');
+}
+
+function build(host,items,label,setter){
+  var h=$(host);
+  for(var i=0;i<items.length;i++){
+    var b=document.createElement('button');
+    b.textContent=label(items[i]); b.setAttribute('aria-pressed','false');
+    if(items[i].sub) b.title=items[i].sub;
+    (function(idx){b.addEventListener('click',function(){setter(idx);SEL=-1;render();});})(i);
+    h.appendChild(b);
+  }
+}
+build('classchips',CLASSES,function(x){return x.k;},function(i){CI=i;});
+build('matchips',MATS,function(x){return x.name;},function(i){MI=i;});
+build('dirchips',DIRS,function(x){return x.name;},function(i){DI=i;});
+build('dutychips',DUTY,function(x){return x.name+' \u00d7'+x.k;},function(i){FI=i;});
+$('load').addEventListener('input',function(){SEL=-1;render();});
+render();
+})();
+</script>
+</body>
+</html>
