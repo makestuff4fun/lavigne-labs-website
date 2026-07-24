@@ -107,6 +107,25 @@ be `web`). Full procedure: **docs/DEPLOYMENT.md**.
 > or builds and that everything had to happen on tunnel-bear. That was wrong and
 > cost real time. See "Network gotchas" — the failures were fixable locally.
 
+## Resuming on another machine / after a reboot
+
+Git carries the source, but **four things this session set up live outside git**
+and must be recreated on a fresh checkout or a different OS install:
+
+1. **Node ≥20.9.** A fresh Ubuntu ships Node 18, which Next 16 refuses. Install
+   Node 22 from NodeSource — on a box where `curl … | sudo bash` is blocked,
+   fetch the `.deb` and `sudo apt-get install ./nodejs_*.deb` (verify its SHA256
+   against `deb.nodesource.com/.../Packages.gz` first).
+2. **lftp** — needed by `web/scripts/deploy.sh`. `sudo apt-get install lftp`.
+3. **Deploy credentials** — `~/.config/lavigne-labs/deploy.env`, mode 0600, from
+   the template at `web/scripts/deploy.env.example`. **Never created yet** — the
+   FTPS host/user/pass still need filling in before the first deploy.
+4. **`.claude/settings.local.json`** — the permission allowlist that lets the
+   deploy script run without a prompt. It's git-ignored, so recreate it (allow
+   `Bash(./scripts/deploy.sh*)`, `Bash(npm run export*)`, `Bash(npm run build*)`).
+
+Then: `cd web && npm install --maxsockets=4 && npm run build` to confirm.
+
 ## Network gotchas (China / proxy)
 
 - **Node 20.9+ is required** (Next 16 hard-refuses older). blue runs **22.23.1**
