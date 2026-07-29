@@ -15,8 +15,9 @@ Black & Decker LED factory; two EV startups).
 - **Repo:** `git@github.com:makestuff4fun/lavigne-labs-website.git`
 - **Repo layout:** `web/` = the Next.js site (run npm there; all `app/…`,
   `content/…`, `public/…` paths in these docs are relative to `web/`) ·
-  `docs/` = these docs · `fasteners/` + `pcb/` = standalone HTML calculators
-  built for the site but **not yet wired into `/tools`** (see their READMEs).
+  `docs/` = these docs · the fastener calculators are **live on `/tools`**
+  (served from `web/public/tools/fasteners/`) · `pcb/` = a standalone calculator
+  **not yet wired into `/tools`** (see pcb/README.md).
 - **Production:** `lavignelabs.com` — **LIVE with this Next.js site** (static
   export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
   site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
@@ -77,13 +78,18 @@ and is no longer the plan.
    Brian to verify (Smart Fire Alarm, Teleprompter, Special Action Camera, Custom
    Motorcycle Parts, Dog Backpack, Oculus Earphones, Passport Case, Under Cabinet
    Lighting).
-3. **Wire the standalone calculators into `/tools`** — seven pages waiting:
-   `fasteners/` (reference sheet / holding force / tightening torque, each metric
-   + inch) and `pcb/` (Copper & Patina). Open: linked as-is from `public/` or
-   ported to React? And how do they reconcile with the existing `bolt-sizes`
-   calculator? See `fasteners/README.md` and `pcb/README.md`.
-4. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
-5. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
+3. **Wire the `pcb/` calculator into `/tools`** — "Copper & Patina" is still
+   staged at the repo root. Open: linked as-is from `public/` or ported to React?
+   And it overlaps the existing `resistor-calculator` / `voltage-divider` /
+   `wire-gauge` tools — decide how they reconcile. See `pcb/README.md`.
+4. ~~Wire the fastener calculators into `/tools`~~ **done** — the 6 fastener
+   pages (reference sheet / holding force / tightening torque, each metric +
+   inch) are served from `web/public/tools/fasteners/` and listed in
+   `content/tools.ts`; their cards open the standalone pages in a new tab. Still
+   open: they overlap the existing `bolt-sizes` tool, and they pull fonts from
+   Google (slow/blocked in China — worth self-hosting).
+5. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
+6. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
 
 ## Things that live OUTSIDE the repo (and how to regenerate)
 

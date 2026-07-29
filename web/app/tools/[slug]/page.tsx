@@ -16,7 +16,9 @@ const components: Record<string, React.ComponentType> = {
 };
 
 export function generateStaticParams() {
-  return tools.map((t) => ({ slug: t.slug }));
+  // Only tools backed by a React component get a /tools/[slug] page; the
+  // standalone static tools (those with `href`) are served straight from public/.
+  return tools.filter((t) => !t.href).map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({

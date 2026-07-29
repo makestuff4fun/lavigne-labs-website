@@ -29,10 +29,11 @@ npm install            # installs dependencies (~1–2 min the first time)
 npm run dev            # starts the dev server
 ```
 
-> **Repo layout:** the Next.js site is in **`web/`**, project docs in **`docs/`**,
-> and **`fasteners/`** + **`pcb/`** hold standalone HTML calculators built for
-> the site but not yet wired into `/tools`. Every `npm` command below is run from
-> `web/`; paths like `app/…` or `content/…` in the docs are relative to `web/`.
+> **Repo layout:** the Next.js site is in **`web/`**, project docs in **`docs/`**.
+> The fastener calculators are live on `/tools` (served from
+> `web/public/tools/fasteners/`); **`pcb/`** still holds a standalone calculator
+> not yet wired in. Every `npm` command below is run from `web/`; paths like
+> `app/…` or `content/…` in the docs are relative to `web/`.
 
 Open **http://localhost:3000**. Pages to check:
 
@@ -103,17 +104,16 @@ web/                  THE SITE — all npm commands run in here
   public/
     games/shiverwing/        Real badge sprites (extracted from firmware)
     games/freezing-fortress/ levels.txt + bezel.png
+    tools/fasteners/         6 fastener calculators (live on /tools), *.html
     work/  brand/            Site imagery
   scripts/export-static.sh   Static export + game-bundle builder
   next.config.ts  package.json  tsconfig.json  eslint.config.mjs  postcss.config.mjs
 
-docs/                 Project docs — context, content, deployment, games, sounds
+docs/                 Project docs — context, content, deployment, games, sounds;
+                      fastener-sheet-*MAINTAINERS.md guide the fastener calculators
 
-Standalone HTML calculators — built for the site, not yet wired into /tools.
-Nothing in the Next build imports them (see each folder's README):
-fasteners/            6 pages: fastener sheets, holding force, tightening torque
-                      (metric + inch of each)
-pcb/                  "Copper & Patina" — PCB calculators for hobbyists
+pcb/                  "Copper & Patina" PCB calculator — standalone HTML, built
+                      for the site but NOT yet wired into /tools (see pcb/README.md)
 ```
 
 ## Editing the site's content

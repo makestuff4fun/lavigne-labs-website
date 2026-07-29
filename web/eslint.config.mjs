@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Build artifacts from `npm run export` — not source.
+    "dist-games/**",
   ]),
 ]);
 

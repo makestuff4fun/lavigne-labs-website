@@ -24,7 +24,9 @@ at page load and visitors in China will see a slow or failed load.
 
 ## Integrating it
 
-Open questions, same as for [`../fasteners`](../fasteners):
+Open questions (the fastener calculators went the "link as-is" route — they now
+live at `web/public/tools/fasteners/` and are listed in `web/content/tools.ts`;
+this could follow the same pattern):
 
 - Link as-is (drop the HTML into `web/public/`, link from `/tools`), or port to
   React components like the existing calculators?

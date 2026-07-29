@@ -6,7 +6,7 @@ import { tools } from "@/content/tools";
 export const metadata: Metadata = {
   title: "Engineering Tools",
   description:
-    "Free engineering reference tools and calculators I reach for constantly — resistor color codes, voltage dividers, wire ampacity, and metric bolt sizes.",
+    "Free engineering reference tools and calculators I reach for constantly — resistor color codes, voltage dividers, wire ampacity, and fastener sheets for metric and inch screws.",
 };
 
 export default function ToolsPage() {
@@ -28,24 +28,53 @@ export default function ToolsPage() {
       <section className="py-16 sm:py-20">
         <Container>
           <div className="grid gap-6 sm:grid-cols-2">
-            {tools.map((tool) => (
-              <Link
-                key={tool.slug}
-                href={`/tools/${tool.slug}`}
-                className="group flex items-start justify-between gap-4 rounded-2xl border border-line bg-white p-7 shadow-card transition hover:border-accent/40"
-              >
-                <div>
-                  <span className="font-mono text-[11px] uppercase tracking-wide text-accent">
-                    {tool.kind}
-                  </span>
-                  <h2 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">
-                    {tool.title}
-                  </h2>
-                  <p className="mt-2 leading-relaxed text-slate">{tool.blurb}</p>
-                </div>
-                <ArrowIcon className="mt-1 shrink-0 text-slate transition group-hover:translate-x-0.5 group-hover:text-accent" />
-              </Link>
-            ))}
+            {tools.map((tool) => {
+              const cardClass =
+                "group flex items-start justify-between gap-4 rounded-2xl border border-line bg-white p-7 shadow-card transition hover:border-accent/40";
+              const body = (
+                <>
+                  <div>
+                    <span className="font-mono text-[11px] uppercase tracking-wide text-accent">
+                      {tool.kind}
+                    </span>
+                    <h2 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">
+                      {tool.title}
+                    </h2>
+                    <p className="mt-2 leading-relaxed text-slate">
+                      {tool.blurb}
+                    </p>
+                  </div>
+                  <ArrowIcon
+                    className={`mt-1 shrink-0 text-slate transition group-hover:text-accent ${
+                      tool.href
+                        ? "-rotate-45 group-hover:-translate-y-0.5"
+                        : "group-hover:translate-x-0.5"
+                    }`}
+                  />
+                </>
+              );
+
+              // Standalone static tools (fastener sheets) open in a new tab.
+              return tool.href ? (
+                <a
+                  key={tool.slug}
+                  href={tool.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cardClass}
+                >
+                  {body}
+                </a>
+              ) : (
+                <Link
+                  key={tool.slug}
+                  href={`/tools/${tool.slug}`}
+                  className={cardClass}
+                >
+                  {body}
+                </Link>
+              );
+            })}
           </div>
         </Container>
       </section>

@@ -3,6 +3,11 @@
 Everything another agent needs to modify, extend or improve `fastener-sheet.html`.
 Read this before touching the file.
 
+> **Where it lives now:** the fastener calculators are live on the site at
+> `web/public/tools/fasteners/*.html` (listed in `web/content/tools.ts`, shown on
+> `/tools`). Edit them there — that copy is what deploys. The five other pages
+> (inch sheet, holding-force ×2, torque ×2) sit beside this one.
+
 ---
 
 ## 1. What this is

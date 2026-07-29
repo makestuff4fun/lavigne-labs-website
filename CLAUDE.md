@@ -21,17 +21,20 @@ Flappy Bird) and **Freezing Fortress** (addressable-LED Sokoban).
 ```
 web/        THE SITE — the whole Next.js app. Run npm here. Paths named below
             (app/, content/, lib/, public/, scripts/) are relative to web/.
-docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS)
-fasteners/  Standalone HTML calculators (6) — fastener sheets, holding force,
-            tightening torque. See fasteners/README.md.
+            The 6 fastener calculators are LIVE here at
+            web/public/tools/fasteners/*.html, listed in content/tools.ts.
+docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS,
+            + the two fastener-sheet-*MAINTAINERS.md guides).
 pcb/        Standalone HTML calculator — "Copper & Patina" PCB calculators.
-            See pcb/README.md.
+            Still staged (NOT wired into /tools yet). See pcb/README.md.
 ```
 
-**`fasteners/` and `pcb/` are calculators destined for the website** — they're
-staged at the repo root because they aren't wired into `/tools` yet. Nothing in
-the Next build imports them, so a change there never affects the live site until
-someone integrates it. Integration approach is still open (see their READMEs).
+**The fastener calculators are wired into `/tools`** — served as static pages
+from `web/public/tools/fasteners/`, each an entry in `content/tools.ts` whose
+card opens the page in a new tab. Editing the served `.html` is the whole change;
+the export copies `public/` into `out/` as-is. **`pcb/` is still staged** at the
+repo root (nothing imports it) until someone decides how it reconciles with the
+existing electronics calculators — see pcb/README.md.
 
 ## Architecture & stack
 
@@ -154,7 +157,7 @@ Then: `cd web && npm install --maxsockets=4 && npm run build` to confirm.
 
 Tracked in docs/CONTEXT.md: wire the live contact form to a form service (static
 host has no API); verify the 8 inferred portfolio blurbs; decide whether the
-`fasteners/` + `pcb/` calculators get wired into `/tools`.
+`pcb/` calculator gets wired into `/tools` (the fastener calculators already are).
 
 ## Key files
 
@@ -164,5 +167,6 @@ host has no API); verify the 8 inferred portfolio blurbs; decide whether the
 - `web/app/api/contact/route.ts` — Resend contact handler
 - `web/scripts/export-static.sh` — static export + game-bundle builder
 - `docs/` — CONTEXT (status), CONTENT (editing), DEPLOYMENT, GAMES, SOUNDS
-- `fasteners/`, `pcb/` — standalone calculators staged for `/tools`, not yet
-  wired into the build (see each folder's README.md)
+- `web/public/tools/fasteners/*.html` — the 6 fastener calculators, live on
+  `/tools` (listed in `web/content/tools.ts`); maintainer guides in `docs/`
+- `pcb/` — standalone calculator still staged for `/tools` (see pcb/README.md)
