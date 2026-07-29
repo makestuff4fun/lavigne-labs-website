@@ -82,12 +82,13 @@ and is no longer the plan.
    staged at the repo root. Open: linked as-is from `public/` or ported to React?
    And it overlaps the existing `resistor-calculator` / `voltage-divider` /
    `wire-gauge` tools — decide how they reconcile. See `pcb/README.md`.
-4. ~~Wire the fastener calculators into `/tools`~~ **done** — the 6 fastener
-   pages (reference sheet / holding force / tightening torque, each metric +
-   inch) are served from `web/public/tools/fasteners/` and listed in
-   `content/tools.ts`; their cards open the standalone pages in a new tab. Still
-   open: they overlap the existing `bolt-sizes` tool, and they pull fonts from
-   Google (slow/blocked in China — worth self-hosting).
+4. ~~Wire the fastener calculators into `/tools`~~ **done & live** — the 6
+   fastener pages (reference sheet / holding force / tightening torque, each
+   metric + inch) are served from `web/public/tools/fasteners/`, listed in
+   `content/tools.ts`, and each carries an injected "← Lavigne Labs · Tools"
+   back-bar so it opens in the same tab and feels part of the site. The old
+   `bolt-sizes` React tool (redundant metric table) was removed. Still open:
+   they pull fonts from Google (slow/blocked in China — worth self-hosting).
 5. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
 6. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
 

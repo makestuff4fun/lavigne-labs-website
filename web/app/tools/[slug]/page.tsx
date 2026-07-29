@@ -6,13 +6,11 @@ import { tools, getTool } from "@/content/tools";
 import { ResistorCalculator } from "@/components/tools/ResistorCalculator";
 import { VoltageDivider } from "@/components/tools/VoltageDivider";
 import { WireGauge } from "@/components/tools/WireGauge";
-import { BoltSizes } from "@/components/tools/BoltSizes";
 
 const components: Record<string, React.ComponentType> = {
   "resistor-calculator": ResistorCalculator,
   "voltage-divider": VoltageDivider,
   "wire-gauge": WireGauge,
-  "bolt-sizes": BoltSizes,
 };
 
 export function generateStaticParams() {

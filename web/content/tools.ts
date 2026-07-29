@@ -31,12 +31,6 @@ export const tools: Tool[] = [
     kind: "reference",
   },
   {
-    slug: "bolt-sizes",
-    title: "Metric Bolt & Thread Sizes",
-    blurb: "Pitch, tap-drill, clearance holes, and hex sizes for M-series bolts.",
-    kind: "reference",
-  },
-  {
     slug: "fastener-sheet-metric",
     title: "Fastener Sheet — Metric",
     blurb:

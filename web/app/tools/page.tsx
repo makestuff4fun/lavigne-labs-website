@@ -44,25 +44,14 @@ export default function ToolsPage() {
                       {tool.blurb}
                     </p>
                   </div>
-                  <ArrowIcon
-                    className={`mt-1 shrink-0 text-slate transition group-hover:text-accent ${
-                      tool.href
-                        ? "-rotate-45 group-hover:-translate-y-0.5"
-                        : "group-hover:translate-x-0.5"
-                    }`}
-                  />
+                  <ArrowIcon className="mt-1 shrink-0 text-slate transition group-hover:translate-x-0.5 group-hover:text-accent" />
                 </>
               );
 
-              // Standalone static tools (fastener sheets) open in a new tab.
+              // Static tools (fastener sheets) are plain pages under public/;
+              // they carry their own back-to-site bar, so open them in the same tab.
               return tool.href ? (
-                <a
-                  key={tool.slug}
-                  href={tool.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cardClass}
-                >
+                <a key={tool.slug} href={tool.href} className={cardClass}>
                   {body}
                 </a>
               ) : (
