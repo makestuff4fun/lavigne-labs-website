@@ -8,6 +8,10 @@
 #
 # Credentials live OUTSIDE the repo, in ~/.config/lavigne-labs/deploy.env
 # (mode 0600). Override the location with LAVIGNE_DEPLOY_ENV.
+#
+# RUN THIS FROM A CLEAN-IP HOST (tunnel-bear). FTP does not survive the China
+# network / clash TUN on blue — the control channel connects but the transfer
+# hangs. Verified 2026-07-29: login + passive mode work fine from tunnel-bear.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -67,7 +71,10 @@ log "Built $file_count files ($(du -sh out | cut -f1))"
 # --- upload ------------------------------------------------------------------
 exclude_args=""
 for p in $DEPLOY_PROTECT; do
-  exclude_args="$exclude_args --exclude ^${p}/"
+  # Protect both a directory (NAME/…) and an exact top-level file (NAME) from
+  # --delete. Escape dots so ".htaccess" is a literal, not "any char"+htaccess.
+  esc=$(printf '%s' "$p" | sed 's/\./\\./g')
+  exclude_args="$exclude_args --exclude ^${esc}/ --exclude ^${esc}\$"
 done
 
 mirror_flags="--reverse --delete --parallel=4 --no-perms --verbose"

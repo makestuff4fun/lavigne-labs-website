@@ -20,17 +20,24 @@ Runs unattended — no prompts, no interactive auth. It builds, refuses to uploa
 broken build, mirrors over FTPS, then verifies the live site actually serves the
 homepage and `/play/`.
 
+> **Run it from tunnel-bear, not blue.** FTP does not survive blue's network
+> (clash TUN / GFW): the control channel connects but the transfer hangs.
+> Verified 2026-07-29 — login and passive mode work cleanly from tunnel-bear.
+
 **First-time setup:** credentials live outside the repo at
 `~/.config/lavigne-labs/deploy.env`, mode 0600. Copy the template from
-`web/scripts/deploy.env.example` and fill in `DEPLOY_HOST` / `DEPLOY_USER` /
-`DEPLOY_PASS` (cPanel → FTP Accounts). The script refuses to run if that file is
-missing or world-readable.
+`web/scripts/deploy.env.example` — the verified non-secret values for this host
+are recorded at the top of it; paste `DEPLOY_PASS` from cPanel → FTP Accounts.
+The script refuses to run if that file is missing or world-readable. Note this
+host's account logs straight into the docroot, so `DEPLOY_REMOTE_DIR=.` (not
+`public_html`), and its FTPS cert needs `DEPLOY_SSL_VERIFY=false`.
 
 **What it does to the server:** mirrors with `--delete`, so the server ends up
-exactly matching `out/` — stale files are removed. Two paths are protected from
-deletion by default (`DEPLOY_PROTECT=".well-known cgi-bin"`); `.well-known` is
-where Let's Encrypt writes renewal challenges, so deleting it breaks HTTPS at the
-next renewal. Set `DEPLOY_PROTECT=` empty for a literal pure mirror.
+exactly matching `out/` — stale files are removed. Protected from deletion on
+this host: `DEPLOY_PROTECT='.well-known cgi-bin .htaccess .ftpquota'`
+(`.well-known` holds Let's Encrypt renewal challenges → deleting it breaks HTTPS;
+`.htaccess` is cPanel's PHP handler; `.ftpquota` is server-managed and erroring
+on it fails the mirror). Set `DEPLOY_PROTECT=` empty for a literal pure mirror.
 
 There is **no automatic backup** — recovery is "re-run the deploy from a known
 good commit", which works because the site is fully reproducible from this repo.

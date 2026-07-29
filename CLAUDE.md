@@ -82,9 +82,12 @@ Requires **Node ≥20.9** (blue has 22.23.1). All four verified working on blue,
 2026-07-24.
 
 **Deploy:** `cd web && ./scripts/deploy.sh` — builds, then mirrors `out/` into
-`public_html` at `lavignelabs.com` over FTPS, then verifies the live site. Runs
+the docroot at `lavignelabs.com` over FTPS, then verifies the live site. Runs
 unattended. Credentials: `~/.config/lavigne-labs/deploy.env` (mode 0600, outside
-the repo; template at `web/scripts/deploy.env.example`). `--dry-run` to preview.
+the repo; template + verified values at `web/scripts/deploy.env.example`).
+`--dry-run` to preview. **Run it from tunnel-bear** — FTP doesn't survive blue's
+network (control channel connects, transfer hangs); verified working from
+tunnel-bear 2026-07-29.
 
 The mirror runs with `--delete`, so the server ends up exactly matching `out/`.
 `DEPLOY_PROTECT` (default `.well-known cgi-bin`) is never deleted — `.well-known`
@@ -117,9 +120,11 @@ and must be recreated on a fresh checkout or a different OS install:
    fetch the `.deb` and `sudo apt-get install ./nodejs_*.deb` (verify its SHA256
    against `deb.nodesource.com/.../Packages.gz` first).
 2. **lftp** — needed by `web/scripts/deploy.sh`. `sudo apt-get install lftp`.
-3. **Deploy credentials** — `~/.config/lavigne-labs/deploy.env`, mode 0600, from
-   the template at `web/scripts/deploy.env.example`. **Never created yet** — the
-   FTPS host/user/pass still need filling in before the first deploy.
+3. **Deploy credentials** — `~/.config/lavigne-labs/deploy.env`, mode 0600. The
+   working values are recorded (non-secret) at the top of
+   `web/scripts/deploy.env.example`; paste the password from cPanel. Verified
+   2026-07-29: FTPS login + passive mode work **from tunnel-bear** (FTP is
+   blocked from blue — run the deploy there).
 4. **`.claude/settings.local.json`** — the permission allowlist that lets the
    deploy script run without a prompt. It's git-ignored, so recreate it (allow
    `Bash(./scripts/deploy.sh*)`, `Bash(npm run export*)`, `Bash(npm run build*)`).
