@@ -6,7 +6,7 @@ import { tools } from "@/content/tools";
 export const metadata: Metadata = {
   title: "Engineering Tools",
   description:
-    "Free engineering reference tools and calculators I reach for constantly — resistor color codes, voltage dividers, wire ampacity, and fastener sheets for metric and inch screws.",
+    "Free fastener calculators and reference sheets — dimensions, hole prep, holding force, and tightening torque for metric and inch screws.",
 };
 
 export default function ToolsPage() {

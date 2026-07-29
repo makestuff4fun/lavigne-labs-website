@@ -13,24 +13,6 @@ export type Tool = {
 
 export const tools: Tool[] = [
   {
-    slug: "resistor-calculator",
-    title: "Resistor Color Code",
-    blurb: "Decode a 4-band resistor to resistance and tolerance — and back.",
-    kind: "calculator",
-  },
-  {
-    slug: "voltage-divider",
-    title: "Voltage Divider",
-    blurb: "Solve Vout, current, and power for a two-resistor divider.",
-    kind: "calculator",
-  },
-  {
-    slug: "wire-gauge",
-    title: "Wire Gauge & Ampacity",
-    blurb: "AWG to diameter, cross-section, resistance, and current capacity.",
-    kind: "reference",
-  },
-  {
     slug: "fastener-sheet-metric",
     title: "Fastener Sheet — Metric",
     blurb:
@@ -82,4 +64,9 @@ export const tools: Tool[] = [
 
 export function getTool(slug: string) {
   return tools.find((t) => t.slug === slug);
+}
+
+/** Public URL for a tool's card — its static page (href) or its /tools/[slug] route. */
+export function toolHref(t: Tool) {
+  return t.href ?? `/tools/${t.slug}`;
 }
