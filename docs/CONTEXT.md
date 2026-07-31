@@ -28,6 +28,8 @@ Black & Decker LED factory; two EV startups).
 |---|---|
 | **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in `web/`, and **LIVE at lavignelabs.com** as a static export. Home is the new positioning overhaul. |
 | **Games** (Shiverwing, Freezing Fortress) | Done, in repo. Faithful ports; synth SFX + mute toggle wired. |
+| **QR Time Sync tool** (2026-07-31) | New tool: flashes epoch-ms timestamps as QR codes to sync multi-camera/egocentric rigs. Two faces, both live: branded page at `/tools/qr-sync` (component `components/tools/QrTimeSync.tsx`, encoder in `lib/qrTimeSync.ts`, verified against python-qrcode + OpenCV) and an **unbranded standalone** at `lavignelabs.com/qr-sync` (`public/qr-sync/index.html`, self-contained HTML, no site chrome — shareable with clients without looking like advertising). Decoder script served at `/qr-sync/decode_sync.py`. Standalone origin copy: `github.com/makestuff4fun/ha-qr-sync` (also `~/projects/ha-qr-sync/` on blue). |
+| **Tools grid** (2026-07-31) | `/tools` lists eight cards: the six fastener pages, Copper & Patina (`web/public/tools/pcb/pcb-calculator.html` — repo-root `pcb/` + injected back-bar; root stays the editing source), and QR Time Sync (the one component-backed tool — `/tools/[slug]` route restored for it). The React electronics calculators are gone (their removal shipped in `4fc44d7`; `bolt-sizes` went with the fastener work). **Stale-checkout warning, learned the hard way:** a deploy from a checkout that was 4 commits behind briefly reverted the live site to the old tools and deleted the fasteners — `git fetch` + confirm `main` is up to date before every deploy. |
 | **Game sounds** | **Real device SFX wired** (recovered WT588F recordings → `public/games/sfx/*.mp3`, registered via `sfx.useSamples` in each game). Synth voices remain as fallback. `score` (pipe-pass) uses `bell` as a chosen cue — badge was silent there. See docs/SOUNDS.md. |
 | **Static WordPress freeze** | **Superseded** — the Next.js site went live instead of the freeze. The freeze work (Simply Static, trimmed 825 MB→168 MB, static "Our Projects" grid) still exists locally / regenerable per docs/DEPLOYMENT.md, but is no longer the deploy path. |
 | **Deployment** | **LIVE.** `lavignelabs.com` serves the Next.js static export from `public_html`, games at `/play` (no subdomain, existing SSL). Redeploy = `cd web && npm run export`, upload `out/` (or `lavigne-site-full.zip`) via cPanel/FTP. |
@@ -78,10 +80,11 @@ and is no longer the plan.
    Brian to verify (Smart Fire Alarm, Teleprompter, Special Action Camera, Custom
    Motorcycle Parts, Dog Backpack, Oculus Earphones, Passport Case, Under Cabinet
    Lighting).
-3. **Wire the `pcb/` calculator into `/tools`** — "Copper & Patina" is still
-   staged at the repo root. Open: linked as-is from `public/` or ported to React?
-   And it overlaps the existing `resistor-calculator` / `voltage-divider` /
-   `wire-gauge` tools — decide how they reconcile. See `pcb/README.md`.
+3. ~~Wire the `pcb/` calculator into `/tools`~~ **done 2026-07-31** — "Copper &
+   Patina" is listed in `content/tools.ts` and served from
+   `web/public/tools/pcb/pcb-calculator.html` (repo-root `pcb/` + the injected
+   back-bar; the root copy stays the editing source). The overlapping React
+   electronics calculators were already removed with the fastener work.
 4. ~~Wire the fastener calculators into `/tools`~~ **done & live** — the 6
    fastener pages (reference sheet / holding force / tightening torque, each
    metric + inch) are served from `web/public/tools/fasteners/`, listed in

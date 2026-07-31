@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copper &amp; Patina — PCB Calculators for Hobbyists</title>
+<meta name="description" content="PCB design calculators with the working shown: trace width, via current, resistor dividers, controlled impedance. IPC-2221 and IPC-2152 side by side.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   TOKENS
+   Palette derived from the material itself: metallic copper,
+   the verdigris it becomes, FR4 laminate amber, drafting grey.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --paper:      #E4E7EA;
+  --panel:      #FCFCFB;
+  --panel-2:    #F2F4F5;
+  --ink:        #0F1519;
+  --ink-2:      #47535C;
+  --ink-3:      #7C8992;
+  --rule:       #CDD6DC;
+  --rule-2:     #E3E9ED;
+  --copper:     #A8501E;
+  --copper-lt:  #C87137;
+  --patina:     #1F6F62;
+  --patina-lt:  #E4F0ED;
+  --amber:      #96660F;
+  --amber-bg:   #FBF1DC;
+  --red:        #A32A22;
+  --red-bg:     #FBE9E7;
+  --laminate:   #D9B87F;
+
+  --f-disp: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --f-body: "Source Serif 4", Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --rail: 250px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); font-size:16.5px; line-height:1.62;
+  /* faint drill-drawing grid */
+  background-image:
+    linear-gradient(rgba(120,150,165,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,150,165,.10) 1px, transparent 1px);
+  background-size:26px 26px;
+}
+h1,h2,h3,h4,.disp{font-family:var(--f-disp); font-weight:600; letter-spacing:-.015em; line-height:1.2}
+code,.mono,.num{font-family:var(--f-mono); font-variant-ligatures:none}
+
+a{color:var(--copper); text-underline-offset:3px}
+
+/* ── layout ───────────────────────────────────────────────── */
+.wrap{display:grid; grid-template-columns:var(--rail) minmax(0,1fr); max-width:1320px; margin:0 auto; gap:0}
+
+/* ── masthead ─────────────────────────────────────────────── */
+.mast{
+  grid-column:1/-1; padding:30px 30px 22px; border-bottom:1.5px solid var(--ink);
+  background:var(--panel); display:flex; flex-wrap:wrap; align-items:flex-end; gap:20px 34px;
+}
+.mast h1{font-size:27px; margin:0; font-weight:700}
+.mast h1 .amp{color:var(--copper); font-weight:400}
+.mast .sub{
+  font-family:var(--f-mono); font-size:11.5px; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-3); margin:0; padding-bottom:3px;
+}
+.mast .stamp{
+  margin-left:auto; font-family:var(--f-mono); font-size:10.5px; letter-spacing:.09em;
+  color:var(--ink-3); text-align:right; text-transform:uppercase; line-height:1.7;
+}
+
+/* ── rail nav (reads like a layer legend) ─────────────────── */
+.rail{background:var(--panel-2); border-right:1.5px solid var(--ink); padding:20px 0 60px}
+.rail .grp{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--ink-3); padding:16px 22px 7px;
+}
+.rail .grp:first-child{padding-top:2px}
+.nav-item{
+  display:flex; align-items:baseline; gap:10px; width:100%; text-align:left; cursor:pointer;
+  background:none; border:0; border-left:3px solid transparent; padding:8px 20px 8px 19px;
+  font-family:var(--f-disp); font-size:14.5px; font-weight:500; color:var(--ink-2);
+}
+.nav-item .idx{font-family:var(--f-mono); font-size:10.5px; color:var(--ink-3); min-width:16px}
+.nav-item:hover{background:#E8EDEF; color:var(--ink)}
+.nav-item[aria-current="true"]{
+  background:var(--panel); color:var(--copper); border-left-color:var(--copper); font-weight:600;
+}
+.nav-item[aria-current="true"] .idx{color:var(--copper)}
+.nav-item:focus-visible{outline:2px solid var(--patina); outline-offset:-2px}
+
+/* ── main ─────────────────────────────────────────────────── */
+main{background:var(--panel); padding:30px 34px 90px; min-width:0}
+.calc-head{border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:26px}
+.calc-head .eyebrow{
+  font-family:var(--f-mono); font-size:10.5px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--patina); margin-bottom:7px;
+}
+.calc-head h2{font-size:29px; margin:0 0 8px}
+.calc-head p{margin:0; color:var(--ink-2); max-width:66ch; font-size:16px}
+
+/* ── the working bench ────────────────────────────────────── */
+.bench{display:grid; grid-template-columns:minmax(260px,1fr) minmax(280px,1.05fr); gap:0; border:1.5px solid var(--ink); margin-bottom:30px}
+.bench-in{padding:20px 22px; border-right:1.5px solid var(--ink); min-width:0}
+.bench-out{padding:20px 22px; background:var(--panel-2); min-width:0}
+.bench-label{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 14px; padding-bottom:6px; border-bottom:1px solid var(--rule-2);
+}
+
+.field{margin-bottom:14px}
+.field > label{display:block; font-family:var(--f-disp); font-size:13px; font-weight:500; margin-bottom:5px; color:var(--ink)}
+.field .hint{display:block; font-family:var(--f-mono); font-size:10.5px; color:var(--ink-3); margin-top:4px; line-height:1.5}
+.inrow{display:flex; align-items:stretch}
+.field input[type=number], .field select{
+  font-family:var(--f-mono); font-size:15px; padding:8px 10px; width:100%;
+  border:1px solid var(--rule); background:#fff; color:var(--ink); border-radius:0;
+}
+.field input[type=number]:focus, .field select:focus{outline:2px solid var(--patina); outline-offset:-1px; border-color:var(--patina)}
+.unit{
+  font-family:var(--f-mono); font-size:12px; color:var(--ink-2); background:var(--panel-2);
+  border:1px solid var(--rule); border-left:0; padding:0 10px; display:flex; align-items:center; white-space:nowrap;
+}
+.seg{display:flex; flex-wrap:wrap; border:1px solid var(--rule); background:#fff}
+.seg button{
+  flex:1 1 auto; font-family:var(--f-disp); font-size:12.5px; font-weight:500; padding:7px 9px;
+  border:0; border-right:1px solid var(--rule); background:#fff; color:var(--ink-2); cursor:pointer; white-space:nowrap;
+}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink); color:#fff}
+.seg button:focus-visible{outline:2px solid var(--patina); outline-offset:-2px}
+.checks{display:flex; flex-direction:column; gap:7px}
+.checks label{display:flex; gap:9px; align-items:flex-start; font-family:var(--f-disp); font-size:13.5px; cursor:pointer}
+.checks input{margin-top:3px; accent-color:var(--copper); width:15px; height:15px}
+
+/* ── results ──────────────────────────────────────────────── */
+.res{display:flex; justify-content:space-between; align-items:baseline; gap:14px; padding:7px 0; border-bottom:1px dotted var(--rule)}
+.res:last-of-type{border-bottom:0}
+.res .k{font-family:var(--f-disp); font-size:13px; color:var(--ink-2); font-weight:500}
+.res .v{font-family:var(--f-mono); font-size:15px; font-weight:500; text-align:right; white-space:nowrap}
+.res .v .u{font-size:11.5px; color:var(--ink-3); margin-left:3px}
+.res.primary{padding:11px 0}
+.res.primary .k{font-size:14px; color:var(--ink)}
+.res.primary .v{font-size:23px; color:var(--copper); font-weight:600}
+.res.sub .k, .res.sub .v{font-size:12px; color:var(--ink-3)}
+.res-note{font-family:var(--f-mono); font-size:10.5px; color:var(--ink-3); margin:-4px 0 8px; line-height:1.55}
+.res-group{margin-bottom:16px}
+.res-group > h4{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--patina); margin:0 0 5px; padding-top:6px;
+}
+
+.flag{
+  font-family:var(--f-disp); font-size:12.5px; line-height:1.5; padding:9px 12px; margin:10px 0 0;
+  border-left:3px solid; display:block;
+}
+.flag.warn{background:var(--amber-bg); border-color:var(--amber); color:#5C400A}
+.flag.bad{background:var(--red-bg); border-color:var(--red); color:#6E1C16}
+.flag.ok{background:var(--patina-lt); border-color:var(--patina); color:#134940}
+
+/* ── signature: live cross-section ────────────────────────── */
+.xsec{border:1.5px solid var(--ink); border-top:0; margin:-30px 0 30px; background:#fff}
+.xsec figcaption{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); padding:9px 14px; border-bottom:1px solid var(--rule-2);
+  display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.xsec figcaption em{font-style:normal; color:var(--patina); font-family:var(--f-mono); text-transform:none; letter-spacing:0}
+.xsec .stage{padding:6px 10px 12px}
+.xsec svg{display:block; width:100%; height:auto}
+.xs-cu{fill:var(--copper-lt)}
+.xs-cu-2{fill:var(--copper)}
+.xs-core{fill:#EADCC0}
+.xs-pp{fill:#F2E8D5}
+.xs-mask{fill:#1F6F62; opacity:.24}
+.xs-line{stroke:var(--ink-3); stroke-width:.75; fill:none}
+.xs-dim{stroke:var(--patina); stroke-width:1; fill:none}
+.xs-t{font-family:var(--f-mono); font-size:9.5px; fill:var(--ink-2)}
+.xs-t.acc{fill:var(--patina)}
+.xs-t.cu{fill:var(--copper)}
+
+/* ── teaching column ──────────────────────────────────────── */
+.theory{max-width:74ch}
+.theory h3{
+  font-size:19px; margin:34px 0 10px; padding-top:16px; border-top:1px solid var(--rule);
+  display:flex; align-items:baseline; gap:11px;
+}
+.theory h3 .tag{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:400;
+}
+.theory h4{font-size:15px; margin:20px 0 6px}
+.theory p{margin:0 0 13px}
+.theory ul,.theory ol{margin:0 0 13px; padding-left:20px}
+.theory li{margin-bottom:6px}
+.theory strong{font-weight:600}
+.theory .tt{font-family:var(--f-mono); font-size:.88em; background:var(--panel-2); padding:1px 4px; border:1px solid var(--rule-2)}
+
+.eq{
+  font-family:var(--f-mono); font-size:15.5px; line-height:2.1; background:var(--panel-2);
+  border-left:3px solid var(--copper); padding:14px 18px; margin:14px 0; overflow-x:auto;
+}
+.eq .lbl{display:block; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); line-height:1.6; margin-bottom:4px}
+.eq em{font-style:italic; color:var(--copper)}
+.frac{display:inline-flex; flex-direction:column; vertical-align:middle; text-align:center; margin:0 .18em; line-height:1.35}
+.frac .n{border-bottom:1.2px solid currentColor; padding:0 .4em}
+.frac .d{padding:0 .4em}
+
+.where{font-family:var(--f-mono); font-size:12.5px; line-height:1.85; color:var(--ink-2); margin:-4px 0 16px; padding-left:18px}
+.where b{color:var(--ink); font-weight:600}
+
+.worked{border:1px solid var(--rule); background:#fff; margin:16px 0}
+.worked > h5{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; margin:0;
+  padding:9px 16px; background:var(--panel-2); border-bottom:1px solid var(--rule); color:var(--patina);
+}
+.worked .body{padding:14px 16px}
+.worked p{margin:0 0 10px; font-size:15px}
+.worked .step{font-family:var(--f-mono); font-size:13.5px; line-height:1.95; margin:0 0 10px; padding-left:14px; border-left:2px solid var(--rule-2)}
+.worked .ans{font-family:var(--f-mono); font-size:14px; font-weight:600; color:var(--copper); border-top:1px solid var(--rule-2); padding-top:9px; margin:0}
+
+.limits{border:1px solid var(--amber); background:var(--amber-bg); padding:13px 16px; margin:16px 0}
+.limits h5{font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; margin:0 0 8px; color:#5C400A}
+.limits ul{margin:0; padding-left:19px; font-size:14.5px; color:#5C400A}
+.limits li{margin-bottom:5px}
+
+table.ref{border-collapse:collapse; width:100%; font-family:var(--f-mono); font-size:12.5px; margin:14px 0}
+table.ref th{
+  text-align:left; font-weight:600; padding:7px 10px; border-bottom:1.5px solid var(--ink);
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2); white-space:nowrap;
+}
+table.ref td{padding:6px 10px; border-bottom:1px solid var(--rule-2); white-space:nowrap}
+table.ref tr:hover td{background:var(--panel-2)}
+table.ref td.n{text-align:right}
+.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch}
+
+footer.site{
+  grid-column:1/-1; border-top:1.5px solid var(--ink); background:var(--panel-2);
+  padding:22px 30px; font-family:var(--f-mono); font-size:11px; line-height:1.9; color:var(--ink-3);
+}
+footer.site b{color:var(--ink-2); font-weight:600}
+
+/* ── responsive ───────────────────────────────────────────── */
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .rail{
+    border-right:0; border-bottom:1.5px solid var(--ink); padding:0;
+    display:flex; gap:0; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  }
+  .rail .grp{display:none}
+  .nav-item{
+    width:auto; white-space:nowrap; border-left:0; border-bottom:3px solid transparent;
+    padding:12px 15px 10px;
+  }
+  .nav-item[aria-current="true"]{border-left-color:transparent; border-bottom-color:var(--copper)}
+  .bench{grid-template-columns:1fr}
+  .bench-in{border-right:0; border-bottom:1.5px solid var(--ink)}
+  main{padding:22px 18px 70px}
+  .mast{padding:20px 18px 16px}
+  .mast .stamp{margin-left:0; text-align:left}
+  .xsec{margin-top:-30px}
+  footer.site{padding:20px 18px}
+}
+@media (prefers-reduced-motion:no-preference){
+  main{animation:fade .22s ease-out}
+  @keyframes fade{from{opacity:0; transform:translateY(3px)} to{opacity:1; transform:none}}
+}
+</style>
+</head>
+<body>
+<a href="/tools/" class="ll-backbar">← Lavigne Labs <span class="ll-sep">· Tools</span></a>
+<style>.ll-backbar{display:block;padding:.62rem 1.1rem;background:#0f172a;color:#e2e8f0;font:600 13px/1.25 "IBM Plex Sans",system-ui,sans-serif;letter-spacing:.01em;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.1)}.ll-backbar:hover{background:#1e293b;color:#fff}.ll-backbar .ll-sep{opacity:.55}</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div>
+      <h1>Copper <span class="amp">&amp;</span> Patina</h1>
+      <p class="sub">PCB calculators with the working shown</p>
+    </div>
+    <div class="stamp">
+      Units · metric primary<br>
+      Standards · IPC-2221B / IPC-2152
+    </div>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Calculators"></nav>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="site">
+    <b>How to read this.</b> Every result on this page comes from a published equation that is printed alongside it, together with the range it was fitted over. Where a formula is an empirical curve fit rather than physics, it says so.<br>
+    <b>Not a substitute for your fabricator.</b> Impedance, plating thickness and copper weight all depend on the actual stackup your board house builds. Ask them for their stackup and controlled-impedance figures before committing a design.<br>
+    IPC-2221B and IPC-2152 are ©IPC, Bannockburn, Illinois. This page reproduces no part of those documents — only widely published equations and curve fits derived from them.
+  </footer>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONSTANTS & HELPERS
+   ═══════════════════════════════════════════════════════════ */
+const RHO_CU   = 1.72e-8;   // Ω·m, plated/rolled PCB copper at 20 °C
+const ALPHA_CU = 0.00393;   // 1/°C temperature coefficient at 20 °C
+const OZ_UM    = 34.8;      // µm of copper per oz/ft²  (= 1.37 mil)
+const MIL_MM   = 0.0254;    // 1 mil in mm
+const MM2_MIL2 = 1550.0031; // mil² per mm²
+
+const mm2mil  = v => v / MIL_MM;
+const mil2mm  = v => v * MIL_MM;
+const um2mil  = v => v / 1000 / MIL_MM;
+
+/* significant-figure formatter that never shows silly precision */
+function fmt(x, sig = 3){
+  if (x === null || x === undefined || !isFinite(x)) return "—";
+  if (x === 0) return "0";
+  const a = Math.abs(x);
+  if (a >= 1e6 || a < 1e-4) return x.toExponential(Math.max(0, sig - 1)).replace("e", "e");
+  const d = Math.max(0, sig - 1 - Math.floor(Math.log10(a)));
+  const out = x.toFixed(Math.min(d, 8));
+  return out.indexOf(".") < 0 ? out : out.replace(/\.?0+$/, "");
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* copper resistivity corrected for operating temperature */
+const rhoAt = T => RHO_CU * (1 + ALPHA_CU * (T - 20));
+
+/* ─── the two standards, in one place ────────────────────── */
+
+/* IPC-2221B Fig. 6-4 curve fit.  A in mil², I in A, ΔT in °C */
+function ipc2221Area(I, dT, layer){
+  const k = layer === "internal" ? 0.024 : 0.048;
+  return Math.pow(I / (k * Math.pow(dT, 0.44)), 1 / 0.725);
+}
+function ipc2221Current(A, dT, layer){
+  const k = layer === "internal" ? 0.024 : 0.048;
+  return k * Math.pow(dT, 0.44) * Math.pow(A, 0.725);
+}
+
+/* IPC-2152 Fig. 5-2 (still air, no plane) unified curve fit — Rozenblat,
+   interpolating Olson's per-ΔT coefficients.  A in mil².
+   Checks against the published case: I=10 A, ΔT=20 °C → 513.1 mil² (IPC ≈ 500). */
+function ipc2152Area(I, dT){
+  const k1 = 117.555 * Math.pow(dT, -0.913) + 1.15;
+  const k2 = 0.84 * Math.pow(dT, -0.108) + 1.159;
+  return k1 * Math.pow(I, k2);
+}
+function ipc2152Current(A, dT){
+  const k1 = 117.555 * Math.pow(dT, -0.913) + 1.15;
+  const k2 = 0.84 * Math.pow(dT, -0.108) + 1.159;
+  return Math.pow(A / k1, 1 / k2);
+}
+
+/* E-series */
+const E12 = [1,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+const E24 = [1,1.1,1.2,1.3,1.5,1.6,1.8,2,2.2,2.4,2.7,3,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+const E96 = [1,1.02,1.05,1.07,1.1,1.13,1.15,1.18,1.21,1.24,1.27,1.3,1.33,1.37,1.4,1.43,1.47,1.5,1.54,1.58,1.62,1.65,1.69,1.74,1.78,1.82,1.87,1.91,1.96,2,2.05,2.1,2.15,2.21,2.26,2.32,2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.8,2.87,2.94,3.01,3.09,3.16,3.24,3.32,3.4,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,5.62,5.76,5.9,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,7.5,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76];
+const SERIES = {E12, E24, E96};
+
+function eList(name, lo, hi){
+  const base = SERIES[name], out = [];
+  for (let d = -2; d <= 7; d++) for (const b of base){
+    const v = +(b * Math.pow(10, d)).toPrecision(4);
+    if (v >= lo && v <= hi) out.push(v);
+  }
+  return out;
+}
+function eNearest(name, val){
+  const base = SERIES[name];
+  if (val <= 0) return val;
+  const d = Math.floor(Math.log10(val));
+  let best = null, err = Infinity;
+  for (const dd of [d-1, d, d+1]) for (const b of base){
+    const v = b * Math.pow(10, dd);
+    const e = Math.abs(v - val) / val;
+    if (e < err){ err = e; best = +v.toPrecision(4); }
+  }
+  return best;
+}
+
+/* pretty resistance / capacitance / frequency */
+function eng(x, unit, sig = 3){
+  if (!isFinite(x)) return "—";
+  const p = [[1e9,"G"],[1e6,"M"],[1e3,"k"],[1,""],[1e-3,"m"],[1e-6,"µ"],[1e-9,"n"],[1e-12,"p"]];
+  const a = Math.abs(x);
+  for (const [m, s] of p) if (a >= m) return fmt(x / m, sig) + " " + s + unit;
+  return fmt(x / 1e-12, sig) + " p" + unit;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIAGRAM BUILDERS  — true scale wherever it is legible,
+   and honest about it when it is not.
+   ═══════════════════════════════════════════════════════════ */
+
+function svgTrace(wmm, tum, layer){
+  const W = 700, PAD = 30, FIELD = Math.max(wmm * 2.4, 0.9);
+  const s = (W - 2*PAD) / FIELD;                 // px per mm
+  const tmm = tum / 1000;
+  let tp = tmm * s, vex = 1;
+  if (tp < 7){ vex = 7 / tp; tp = 7; }           // exaggerate only if unreadable
+  const wp = Math.max(wmm * s, 2);
+  const H = 210, cx = W/2, base = 128;
+  const coreH = 46, maskT = Math.max(tp*0.55, 4);
+  const internal = layer === "internal";
+
+  let g = "";
+  // laminate
+  g += `<rect class="xs-core" x="${PAD}" y="${base}" width="${W-2*PAD}" height="${coreH}"/>`;
+  if (internal) g += `<rect class="xs-pp" x="${PAD}" y="${base-tp-22}" width="${W-2*PAD}" height="${tp+22}"/>`;
+  // trace
+  const ty = internal ? base - tp : base - tp;
+  g += `<rect class="xs-cu" x="${cx-wp/2}" y="${ty}" width="${wp}" height="${tp}"/>`;
+  // mask (external only)
+  if (!internal){
+    g += `<path class="xs-mask" d="M${PAD} ${ty-maskT+tp} L${cx-wp/2-maskT} ${ty-maskT+tp} L${cx-wp/2-maskT} ${ty-maskT} L${cx+wp/2+maskT} ${ty-maskT} L${cx+wp/2+maskT} ${ty-maskT+tp} L${W-PAD} ${ty-maskT+tp} L${W-PAD} ${ty+tp} L${PAD} ${ty+tp} Z"/>`;
+  } else {
+    g += `<rect class="xs-cu-2" x="${PAD}" y="${base-tp-30}" width="${W-2*PAD}" height="4"/>`;
+    g += `<text class="xs-t" x="${PAD+4}" y="${base-tp-36}">adjacent plane / layer</text>`;
+  }
+  // width dimension
+  const dy = base + coreH + 26;
+  g += `<path class="xs-dim" d="M${cx-wp/2} ${ty+tp+6} L${cx-wp/2} ${dy} M${cx+wp/2} ${ty+tp+6} L${cx+wp/2} ${dy} M${cx-wp/2-14} ${dy} L${cx+wp/2+14} ${dy}"/>`;
+  g += `<text class="xs-t acc" x="${cx}" y="${dy+16}" text-anchor="middle">w = ${fmt(wmm,3)} mm  (${fmt(mm2mil(wmm),3)} mil)</text>`;
+  // thickness dimension
+  const dx = cx + wp/2 + 40;
+  g += `<path class="xs-dim" d="M${cx+wp/2+6} ${ty} L${dx} ${ty} M${cx+wp/2+6} ${ty+tp} L${dx} ${ty+tp} M${dx} ${ty-6} L${dx} ${ty+tp+6}"/>`;
+  g += `<text class="xs-t cu" x="${dx+8}" y="${ty+tp/2+4}">t = ${fmt(tum,3)} µm</text>`;
+  g += `<text class="xs-t" x="${PAD+4}" y="${base+coreH+15}">FR-4 laminate</text>`;
+  return {
+    svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cross-section of a ${fmt(wmm,3)} millimetre wide, ${fmt(tum,3)} micrometre thick copper trace">${g}</svg>`,
+    right: vex > 1.02 ? `vertical scale ×${fmt(vex,2)}` : `true scale`
+  };
+}
+
+function svgVia(dmm, plum, boardmm){
+  const W = 700, H = 230, PAD = 40;
+  const doo = dmm + 2*plum/1000;
+  const FIELD = Math.max(doo * 3.4, 1.6);
+  const s = (W - 2*PAD) / FIELD;
+  const cx = W/2, top = 34, bh = Math.min(boardmm * s, 150), bot = top + Math.max(bh, 90);
+  const ri = (dmm/2) * s, ro = (doo/2) * s;
+  let pl = ro - ri; let vex = 1;
+  if (pl < 6){ vex = 6/pl; pl = 6; }
+  const RI = Math.max(ri, 5), RO = RI + pl;
+  let g = "";
+  g += `<rect class="xs-core" x="${PAD}" y="${top}" width="${W-2*PAD}" height="${bot-top}"/>`;
+  // annular pads
+  g += `<rect class="xs-cu" x="${cx-RO-16}" y="${top-7}" width="${RO*2+32}" height="7"/>`;
+  g += `<rect class="xs-cu" x="${cx-RO-16}" y="${bot}" width="${RO*2+32}" height="7"/>`;
+  // barrel walls
+  g += `<rect class="xs-cu-2" x="${cx-RO}" y="${top-7}" width="${pl}" height="${bot-top+14}"/>`;
+  g += `<rect class="xs-cu-2" x="${cx+RI}" y="${top-7}" width="${pl}" height="${bot-top+14}"/>`;
+  g += `<rect fill="#fff" x="${cx-RI}" y="${top}" width="${RI*2}" height="${bot-top}"/>`;
+  g += `<text class="xs-t" x="${cx}" y="${(top+bot)/2}" text-anchor="middle" fill="#7C8992">air</text>`;
+  // dims
+  const dy = bot + 30;
+  g += `<path class="xs-dim" d="M${cx-RI} ${bot+12} L${cx-RI} ${dy} M${cx+RI} ${bot+12} L${cx+RI} ${dy} M${cx-RI-12} ${dy} L${cx+RI+12} ${dy}"/>`;
+  g += `<text class="xs-t acc" x="${cx}" y="${dy+16}" text-anchor="middle">finished hole ⌀ ${fmt(dmm,3)} mm</text>`;
+  g += `<path class="xs-dim" d="M${cx-RO} ${top-22} L${cx-RO} ${top-11} M${cx-RI} ${top-22} L${cx-RI} ${top-11} M${cx-RO} ${top-16} L${cx-RI} ${top-16}"/>`;
+  g += `<text class="xs-t cu" x="${cx-RO-8}" y="${top-24}" text-anchor="end">plating ${fmt(plum,3)} µm</text>`;
+  g += `<path class="xs-dim" d="M${PAD+14} ${top} L${PAD+14} ${bot}"/>`;
+  g += `<text class="xs-t" x="${PAD+20}" y="${(top+bot)/2}">board ${fmt(boardmm,3)} mm</text>`;
+  return { svg:`<svg viewBox="0 0 ${W} ${H+30}" role="img" aria-label="Cross-section through a plated through-hole via">${g}</svg>`,
+           right: vex > 1.02 ? `plating shown ×${fmt(vex,2)}` : `true scale` };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CALCULATORS
+   ═══════════════════════════════════════════════════════════ */
+const CALCS = [];
+
+/* ─── 1 · TRACE WIDTH & CURRENT ──────────────────────────── */
+CALCS.push({
+  id:"trace", group:"Copper &amp; current", name:"Trace width",
+  eyebrow:"IPC-2221B · IPC-2152", title:"Trace width and current capacity",
+  blurb:"How wide does a track have to be to carry a given current without getting hotter than you allow? Both standards are here side by side, because they disagree — and the disagreement is the interesting part.",
+  fields:[
+    {k:"mode", label:"Solve for", type:"seg", def:"width",
+      opts:[{v:"width", l:"Width from current"},{v:"current", l:"Current from width"}]},
+    {k:"I", label:"Current", type:"num", unit:"A", def:2, step:0.1, min:0.001,
+      show:v=>v.mode==="width", hint:"Continuous RMS current, not peak or inrush."},
+    {k:"w", label:"Trace width", type:"num", unit:"mm", def:1, step:0.05, min:0.01,
+      show:v=>v.mode==="current"},
+    {k:"dT", label:"Allowed temperature rise", type:"num", unit:"°C", def:20, step:1, min:1,
+      hint:"Above the local board temperature, not above room temperature. 10–20 °C is a comfortable hobby default."},
+    {k:"oz", label:"Copper weight", type:"sel", def:1,
+      opts:[{v:0.5,l:"0.5 oz — 17.4 µm"},{v:1,l:"1 oz — 34.8 µm (default at every fab)"},{v:2,l:"2 oz — 69.6 µm"},{v:3,l:"3 oz — 104 µm"},{v:4,l:"4 oz — 139 µm"}]},
+    {k:"layer", label:"Layer", type:"seg", def:"external",
+      opts:[{v:"external", l:"External (outer)"},{v:"internal", l:"Internal (buried)"}]},
+    {k:"std", label:"Standards to show", type:"checks", def:{s2221:true, s2152:true},
+      opts:[{v:"s2221", l:"IPC-2221B — the classic, in every online calculator"},{v:"s2152", l:"IPC-2152 — the 2009 replacement, better data"}]},
+    {k:"cf", label:"IPC-2152 thermal correction factor", type:"num", unit:"×", def:1, step:0.05, min:0.1,
+      show:v=>v.std.s2152,
+      hint:"1.00 = the bare baseline chart (still air, no plane) — conservative. Drop toward 0.5–0.7 if the trace runs over a solid plane. See the notes below."},
+    {k:"len", label:"Trace length", type:"num", unit:"mm", def:100, step:5, min:0.1,
+      hint:"Only used for resistance, drop and power."},
+    {k:"Tamb", label:"Ambient / local board temperature", type:"num", unit:"°C", def:25, step:1}
+  ],
+  compute(v){
+    const t_um = v.oz * OZ_UM, t_mil = um2mil(t_um);
+    const out = [], flags = [];
+    const dTv = v.dT / Math.max(v.cf, 0.01);
+    let govW = null, govA = null;
+
+    if (v.mode === "width"){
+      if (v.std.s2221){
+        const A = ipc2221Area(v.I, v.dT, v.layer), w = A / t_mil;
+        out.push({type:"group", label:`IPC-2221B — ${v.layer}`});
+        out.push({type:"res", k:"Required width", v:fmt(mil2mm(w),3), u:"mm", cls:"primary"});
+        out.push({type:"res", k:"…in mils", v:fmt(w,3), u:"mil", cls:"sub"});
+        out.push({type:"res", k:"Cross-section", v:fmt(A,3), u:"mil²"});
+        govW = mil2mm(w); govA = A;
+      }
+      if (v.std.s2152){
+        const A = ipc2152Area(v.I, dTv), w = A / t_mil;
+        out.push({type:"group", label:"IPC-2152 — same for any layer"});
+        out.push({type:"res", k:"Required width", v:fmt(mil2mm(w),3), u:"mm", cls:"primary"});
+        out.push({type:"res", k:"…in mils", v:fmt(w,3), u:"mil", cls:"sub"});
+        out.push({type:"res", k:"Cross-section", v:fmt(A,3), u:"mil²"});
+        if (v.cf !== 1) out.push({type:"res", k:"Virtual ΔT used", v:fmt(dTv,3), u:"°C", cls:"sub",
+          note:`ΔT ÷ correction factor = ${fmt(v.dT,3)} ÷ ${fmt(v.cf,3)}`});
+        if (govW === null || mil2mm(w) > govW){ govW = mil2mm(w); govA = A; }
+      }
+    } else {
+      const A = mm2mil(v.w) * t_mil;
+      out.push({type:"group", label:"Cross-section of your trace"});
+      out.push({type:"res", k:"Area", v:fmt(A,3), u:"mil²", note:`${fmt(v.w,3)} mm × ${fmt(t_um,3)} µm`});
+      if (v.std.s2221){
+        out.push({type:"group", label:`IPC-2221B — ${v.layer}`});
+        out.push({type:"res", k:"Current capacity", v:fmt(ipc2221Current(A, v.dT, v.layer),3), u:"A", cls:"primary"});
+      }
+      if (v.std.s2152){
+        out.push({type:"group", label:"IPC-2152 — same for any layer"});
+        out.push({type:"res", k:"Current capacity", v:fmt(ipc2152Current(A, dTv),3), u:"A", cls:"primary"});
+      }
+      govW = v.w; govA = A;
+    }
+
+    // electrical consequences of the governing geometry
+    if (govW){
+      const Am_ = govW/1000 * t_um/1e6;                 // m²
+      const Top = v.Tamb + v.dT;
+      const R = rhoAt(Top) * (v.len/1000) / Am_;
+      const I = v.mode === "width" ? v.I : (v.std.s2221 ? ipc2221Current(govA, v.dT, v.layer) : ipc2152Current(govA, dTv));
+      out.push({type:"group", label:`Electrical — using ${fmt(govW,3)} mm, the wider of the two`});
+      out.push({type:"res", k:`Resistance over ${fmt(v.len,3)} mm`, v:eng(R,"Ω"), u:"", note:`copper at ${fmt(Top,3)} °C`});
+      out.push({type:"res", k:"Sheet resistance", v:fmt(rhoAt(Top)/(t_um/1e6)*1000,3), u:"mΩ/□"});
+      out.push({type:"res", k:"Voltage drop", v:eng(I*R,"V")});
+      out.push({type:"res", k:"Power dissipated", v:eng(I*I*R,"W")});
+    }
+
+    // validity
+    const I_chk = v.mode === "width" ? v.I : govA ? ipc2221Current(govA, v.dT, v.layer) : 0;
+    if (v.std.s2221){
+      if (I_chk > 35) flags.push({cls:"warn", t:"IPC-2221's chart stops at 35 A. Above that you are extrapolating a 1950s curve fit — use a copper bar, a busbar clip, or a thermal simulation."});
+      if (v.dT < 10 || v.dT > 100) flags.push({cls:"warn", t:"IPC-2221 was charted over a 10–100 °C rise. Outside that band the fit is unsupported."});
+      if (govW && mm2mil(govW) > 400) flags.push({cls:"warn", t:"The result is wider than 400 mil, past the end of the IPC-2221 data. Treat it as a hint that you want a plane or a pour, not a track."});
+      if (v.oz > 3) flags.push({cls:"warn", t:"IPC-2221 was charted up to 3 oz copper only."});
+    }
+    if (v.std.s2152){
+      if (I_chk > 30) flags.push({cls:"warn", t:"The IPC-2152 tests ran to 30 A. Beyond that the curve fit is extrapolation."});
+      if (v.dT < 2 || v.dT > 100) flags.push({cls:"warn", t:"The IPC-2152 curve fit was interpolated over a 2–100 °C rise."});
+    }
+    if (v.mode === "width" && v.std.s2221 && v.std.s2152 && v.layer === "external"){
+      const a1 = ipc2221Area(v.I, v.dT, "external"), a2 = ipc2152Area(v.I, dTv);
+      if (a2 > a1 * 1.05) flags.push({cls:"ok", t:"IPC-2152 is asking for more copper than IPC-2221 here, which surprises most people. That is the expected result for an outer trace in still air with no plane nearby: the old chart was optimistic about outer layers. Give the trace a plane underneath and the correction factor pulls IPC-2152 back below IPC-2221."});
+    }
+    flags.push({cls:"warn", t:"Neither number includes a safety margin. For anything that matters, size for the current you actually expect and then add 20–50 % on top."});
+
+    const d = svgTrace(govW || v.w, t_um, v.layer);
+    return {out, flags, xsec:{caption:`Cross-section · ${v.layer} trace, ${v.oz} oz copper`, right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>What is actually being calculated <span class="tag">the physics</span></h3>
+  <p>A trace carrying current dissipates <span class="tt">I²R</span> watts as heat along its whole length. That heat leaves by conduction into the laminate, convection into the air, and a little radiation. The trace warms up until heat out equals heat in, and settles at some steady temperature.</p>
+  <p>Nobody can solve that in closed form for a real board — it depends on the laminate, the copper around it, the planes, the airflow, the neighbouring parts. So both IPC standards do the same thing: <strong>they measure it, plot it, and fit a curve.</strong> Every trace-width calculator you have ever used is reading a curve fit off a graph of experimental data. Knowing that changes how much you should trust the third significant figure.</p>
+  <p>The variable that matters is <strong>cross-sectional area</strong>, not width. Width and copper weight only matter through their product:</p>
+  <div class="eq"><span class="lbl">Cross-section</span>A = w × t</div>
+  <p>Copper weight is a mass per unit area — one ounce of copper rolled flat over one square foot. Divide mass by density and you get a thickness of <span class="tt">1.37 mil = 34.8 µm</span> per ounce. That is why "1 oz copper" is a thickness.</p>
+
+  <h3>IPC-2221B <span class="tag">the classic — and where it came from</span></h3>
+  <p>The chart in IPC-2221B Figure 6-4 traces back to measurements made at the US National Bureau of Standards in the 1950s, carried over into MIL-STD-275 and then into IPC. It fits to:</p>
+  <div class="eq"><span class="lbl">IPC-2221B current capacity</span>
+    <em>I</em> = k · ΔT<sup>0.44</sup> · A<sup>0.725</sup>
+  </div>
+  <div class="where">
+    <b>I</b> — current, amperes<br>
+    <b>ΔT</b> — allowed temperature rise above ambient, °C<br>
+    <b>A</b> — cross-sectional area, <b>mil²</b> (this equation is not unit-agnostic)<br>
+    <b>k</b> — 0.048 external, 0.024 internal
+  </div>
+  <p>Rearranged for the thing you usually want:</p>
+  <div class="eq"><span class="lbl">Solved for area</span>
+    A = <span class="frac"><span class="n"><em>I</em></span><span class="d">k · ΔT<sup>0.44</sup></span></span><sup>&nbsp;1/0.725</sup>
+    &nbsp;&nbsp;then&nbsp;&nbsp; w = <span class="frac"><span class="n">A</span><span class="d">t</span></span>
+  </div>
+  <p>The two constants are worth pausing on. External copper gets <span class="tt">k = 0.048</span>; internal copper gets exactly half, <span class="tt">0.024</span>. That factor of two was <strong>an assumption, not a measurement</strong> — the reasoning being that a buried trace has no air to convect into. Because <span class="tt">k</span> is inside a 1/0.725 power, halving it does not double the required area, it multiplies it by 2<sup>1.379</sup> ≈ <strong>2.6×</strong>.</p>
+
+  <h3>IPC-2152 <span class="tag">the 2009 replacement</span></h3>
+  <p>IPC-2152 redid the experiment properly: modern materials, controlled conditions, tests in still air and in vacuum, and separate treatment of board thickness, copper weight and plane proximity. Two of its findings overturn what most hobbyists were taught.</p>
+  <ul>
+    <li><strong>Internal traces are not worse.</strong> Laminate conducts heat roughly ten times better than still air, so a buried trace often runs <em>cooler</em> than an identical outer trace. IPC-2152 gives one set of curves for all layers. The old 0.024 was conservative in the safe direction — internal traces built to IPC-2221 were simply over-wide.</li>
+    <li><strong>External traces were over-rated.</strong> On a small board with no plane, IPC-2221 lets you run more current through an outer trace than the measurements support. Designs sized purely off the old external chart can be genuinely under-copper.</li>
+  </ul>
+  <p>IPC-2152 publishes charts, not a formula. The widely used interpolation of its baseline chart (Figure 5-2 — still air, no plane) is a power law in current with coefficients that themselves vary with ΔT:</p>
+  <div class="eq"><span class="lbl">IPC-2152 baseline, area in mil²</span>
+    A = ( 117.555 · ΔT<sup>−0.913</sup> + 1.15 ) · <em>I</em><sup>&thinsp;( 0.84 · ΔT<sup>−0.108</sup> + 1.159 )</sup>
+  </div>
+  <p>This is a fit to a fit, and it is honest to say so. At the published check point of 10 A and a 20 °C rise it returns 513 mil² where the chart reads about 500 — within 3 %.</p>
+
+  <h4>The correction factor, and the virtual-temperature trick</h4>
+  <p>The baseline curve assumes the worst realistic case: a trace alone in still air with no copper plane to sink into. Real boards are better than that. IPC-2152's appendix supplies multiplier charts for board thickness, copper weight, plane area and distance to plane. Multiply them together into a single factor.</p>
+  <p>You cannot just scale the area by that factor, because area is not linear in ΔT. Instead, work backwards through the same curve — divide the target rise by the correction factor to get a <strong>virtual ΔT</strong>, then look that up:</p>
+  <div class="eq"><span class="lbl">Applying a correction</span>ΔT<sub>virtual</sub> = <span class="frac"><span class="n">ΔT<sub>target</sub></span><span class="d">CF</span></span>&nbsp;&nbsp;→&nbsp;&nbsp;A = f(&thinsp;<em>I</em>, ΔT<sub>virtual</sub>&thinsp;)</div>
+  <p>A factor of 0.5 means your real rise would be half the target, so you can afford to look up a 40 °C rise and still land at 20 °C. Rough guidance while you get hold of the actual charts: a trace directly over a large solid plane, on a 1.6 mm board, lands somewhere around <strong>0.5–0.7</strong>. A thin two-layer board with no pour can go <strong>above 1.0</strong>. Leave it at 1.0 and you are simply being conservative.</p>
+
+  <div class="worked">
+    <h5>Worked example · 3 A on an outer layer, 1 oz copper, 20 °C rise</h5>
+    <div class="body">
+      <p><b>IPC-2221B.</b> External, so k = 0.048.</p>
+      <p class="step">ΔT<sup>0.44</sup> = 20<sup>0.44</sup> = 3.736<br>
+      k · ΔT<sup>0.44</sup> = 0.048 × 3.736 = 0.1793<br>
+      A = (3 / 0.1793)<sup>1/0.725</sup> = 16.73<sup>1.379</sup> = <b>48.7 mil²</b><br>
+      w = 48.7 / 1.37 = <b>35.5 mil = 0.90 mm</b></p>
+      <p><b>IPC-2152 baseline.</b> No correction, CF = 1.</p>
+      <p class="step">k₁ = 117.555 × 20<sup>−0.913</sup> + 1.15 = 7.63 + 1.15 = 8.78<br>
+      k₂ = 0.84 × 20<sup>−0.108</sup> + 1.159 = 0.608 + 1.159 = 1.767<br>
+      A = 8.78 × 3<sup>1.767</sup> = 8.78 × 6.97 = <b>61.1 mil²</b><br>
+      w = 61.1 / 1.37 = <b>44.6 mil = 1.13 mm</b></p>
+      <p class="ans">IPC-2152 wants a trace about 26 % wider. Give that trace a ground plane under it (CF ≈ 0.6 → virtual ΔT = 33 °C) and the requirement falls to 0.74 mm — now narrower than IPC-2221. Both answers are "correct"; they describe different boards.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>Where this stops being valid</h5>
+    <ul>
+      <li>Both fits assume <strong>one isolated trace</strong>. IPC-2152's data assumes neighbours are more than 25 mm away. Bus several traces side by side and they heat each other — size them for their combined current.</li>
+      <li>Nearby hot components — regulators, bridges, inductors — raise the local board temperature. That is why IPC-2152 says "local board temperature", not "ambient".</li>
+      <li>ΔT is a <em>rise</em>. A 20 °C rise inside a 60 °C enclosure gives 80 °C copper, which is fine for FR-4 but may not be fine for what is soldered to it.</li>
+      <li>Vias, connectors, and the joint where a fat track meets a small pad are usually the real hot spot. The trace is rarely the weakest link.</li>
+      <li>Neither figure includes derating. Add margin yourself.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 2 · VIA CURRENT & RESISTANCE ───────────────────────── */
+CALCS.push({
+  id:"via", group:"Copper &amp; current", name:"Via current",
+  eyebrow:"Plated through-holes", title:"Via current capacity and resistance",
+  blurb:"A via is a short, thin-walled copper tube. Treat its barrel as a trace whose cross-section is an annulus, and the same current equations apply — with a few caveats that matter more than the arithmetic.",
+  fields:[
+    {k:"d", label:"Finished hole diameter", type:"num", unit:"mm", def:0.3, step:0.05, min:0.05,
+      hint:"After plating. A 0.3 mm finished hole is the cheap default at most prototype fabs."},
+    {k:"pl", label:"Barrel plating thickness", type:"num", unit:"µm", def:25, step:1, min:1,
+      hint:"IPC-6012 minimum average copper in the hole: 20 µm for Class 2, 25 µm for Class 3. Ask your fab — this single number dominates the result."},
+    {k:"th", label:"Board thickness", type:"num", unit:"mm", def:1.6, step:0.1, min:0.1,
+      hint:"The barrel length for a through via."},
+    {k:"dT", label:"Allowed temperature rise", type:"num", unit:"°C", def:20, step:1, min:1},
+    {k:"n", label:"Number of vias in parallel", type:"num", unit:"×", def:1, step:1, min:1},
+    {k:"I", label:"Current to be carried", type:"num", unit:"A", def:2, step:0.1, min:0.001,
+      hint:"Total through all the vias together."},
+    {k:"derate", label:"Derating you want to apply", type:"num", unit:"%", def:50, step:5, min:0,
+      hint:"Vias cool poorly and plating thickness varies. 50 % is a common hobby-grade margin."},
+    {k:"std", label:"Standards to show", type:"checks", def:{s2221:true, s2152:true},
+      opts:[{v:"s2221", l:"IPC-2221B (external constant)"},{v:"s2152", l:"IPC-2152 baseline"}]}
+  ],
+  compute(v){
+    const out = [], flags = [];
+    const di = v.d, dout = v.d + 2*v.pl/1000;
+    const A_mm2 = Math.PI/4 * (dout*dout - di*di);
+    const A_m2  = A_mm2 * 1e-6;
+    const A_mil = A_mm2 * MM2_MIL2;
+    const R1 = rhoAt(25 + v.dT) * (v.th/1000) / A_m2;
+    const dr = 1 - v.derate/100;
+
+    out.push({type:"group", label:"Barrel geometry"});
+    out.push({type:"res", k:"Outer barrel ⌀", v:fmt(dout,4), u:"mm"});
+    out.push({type:"res", k:"Copper cross-section", v:fmt(A_mm2,3), u:"mm²", note:`= ${fmt(A_mil,3)} mil²  ·  an annulus, not a circle`});
+
+    let cap = null;
+    if (v.std.s2221){
+      const i1 = ipc2221Current(A_mil, v.dT, "external");
+      out.push({type:"group", label:"IPC-2221B, external constant"});
+      out.push({type:"res", k:"Per via, underated", v:fmt(i1,3), u:"A"});
+      out.push({type:"res", k:`${v.n} via(s), derated ${fmt(v.derate,3)} %`, v:fmt(i1*v.n*dr,3), u:"A", cls:"primary"});
+      cap = i1*v.n*dr;
+    }
+    if (v.std.s2152){
+      const i2 = ipc2152Current(A_mil, v.dT);
+      out.push({type:"group", label:"IPC-2152 baseline"});
+      out.push({type:"res", k:"Per via, underated", v:fmt(i2,3), u:"A"});
+      out.push({type:"res", k:`${v.n} via(s), derated ${fmt(v.derate,3)} %`, v:fmt(i2*v.n*dr,3), u:"A", cls:"primary"});
+      cap = cap === null ? i2*v.n*dr : Math.min(cap, i2*v.n*dr);
+    }
+
+    out.push({type:"group", label:"Resistance and loss"});
+    out.push({type:"res", k:"One via", v:eng(R1,"Ω"), note:`ρL/A through a ${fmt(v.th,3)} mm barrel`});
+    out.push({type:"res", k:`${v.n} in parallel`, v:eng(R1/v.n,"Ω")});
+    out.push({type:"res", k:`Drop at ${fmt(v.I,3)} A`, v:eng(v.I*R1/v.n,"V")});
+    out.push({type:"res", k:"Power in the vias", v:eng(v.I*v.I*R1/v.n,"W")});
+    out.push({type:"res", k:"Per-via current", v:fmt(v.I/v.n,3), u:"A", cls:"sub"});
+
+    if (cap !== null){
+      if (v.I > cap) flags.push({cls:"bad", t:`${fmt(v.I,3)} A exceeds the derated capacity of ${fmt(cap,3)} A. Add vias, enlarge the hole, or ask for heavier plating. Vias fail by cracking, not melting — a barrel that cycles hot enough will fracture long before it glows.`});
+      else if (v.I > cap*0.8) flags.push({cls:"warn", t:`You are inside 80 % of the derated capacity. Comfortable, but add a via or two if the board is cheap.`});
+      else flags.push({cls:"ok", t:`${fmt(v.I,3)} A against ${fmt(cap,3)} A of derated capacity — comfortable margin.`});
+    }
+    if (v.pl < 20) flags.push({cls:"warn", t:"Below 20 µm you are under the IPC-6012 Class 2 minimum average. Do not design to plating your fab has not promised."});
+    if (v.n > 1) flags.push({cls:"warn", t:"Vias packed tightly heat one another, so N vias carry less than N times one via. Spread them out, or lean on the derating."});
+
+    const d = svgVia(v.d, v.pl, v.th);
+    return {out, flags, xsec:{caption:"Cross-section · plated through-hole", right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>A via is a trace that has been rolled into a tube</h3>
+  <p>There is no separate via equation in either standard. The trick is to work out the copper cross-section of the plated barrel and then feed it into the same current-capacity curve you would use for a track.</p>
+  <p>The barrel is an annulus: an outer circle of plated copper with the drilled air hole punched out of the middle.</p>
+  <div class="eq"><span class="lbl">Barrel copper area</span>
+    A = <span class="frac"><span class="n">π</span><span class="d">4</span></span> ( d<sub>outer</sub>² − d<sub>inner</sub>² )
+    &nbsp;&nbsp;where&nbsp;&nbsp; d<sub>outer</sub> = d<sub>inner</sub> + 2t
+  </div>
+  <p>Expand it and the geometry gets easier to feel:</p>
+  <div class="eq"><span class="lbl">Same thing, expanded</span>A = π · t · ( d<sub>inner</sub> + t )&nbsp;&nbsp;≈&nbsp;&nbsp;π · d · t &nbsp;<span style="color:var(--ink-3)">for thin plating</span></div>
+  <p>In other words: <strong>unroll the tube and it is a flat trace of width πd and thickness t.</strong> A 0.3 mm via plated to 25 µm unrolls to a trace 0.94 mm wide and 25 µm thick — thinner than 1 oz copper, but nearly a millimetre wide. That is why a single small via is worth roughly as much as a modest track, and why doubling the drill diameter buys you a linear, not quadratic, improvement.</p>
+
+  <h4>Which constant applies to a via?</h4>
+  <p>Neither standard says outright. Common practice, and what this page does, is to use the <strong>external</strong> IPC-2221 constant, on the grounds that a barrel is open to air at both ends and terminates in pads and planes that act as heat sinks. It is a defensible choice rather than a rigorous one — which is exactly why the derating field exists and defaults to 50 %.</p>
+
+  <h4>Resistance</h4>
+  <div class="eq"><span class="lbl">Barrel resistance</span>
+    R = <span class="frac"><span class="n">ρ · L</span><span class="d">A</span></span>
+    &nbsp;&nbsp;<span style="color:var(--ink-3)">L = board thickness, ρ = 1.72 × 10<sup>−8</sup> Ω·m</span>
+  </div>
+  <p>The numbers are small — typically under a milliohm — but they are in series with everything the via connects, and they matter enormously in two places: the return path of a switching regulator, and any point where you are sensing a voltage.</p>
+
+  <div class="worked">
+    <h5>Worked example · 0.3 mm via, 25 µm plating, 1.6 mm board, 20 °C rise</h5>
+    <div class="body">
+      <p class="step">d<sub>outer</sub> = 0.3 + 2(0.025) = 0.35 mm<br>
+      A = (π/4)(0.35² − 0.30²) = (π/4)(0.1225 − 0.09) = <b>0.02553 mm²</b><br>
+      In mils: 0.02553 × 1550 = <b>39.6 mil²</b></p>
+      <p class="step">IPC-2221 external: I = 0.048 × 20<sup>0.44</sup> × 39.6<sup>0.725</sup><br>
+      = 0.048 × 3.736 × 14.40 = <b>2.58 A</b><br>
+      Derated 50 %: <b>1.3 A per via</b></p>
+      <p class="step">R = (1.72×10<sup>−8</sup> × 0.0016) / (2.553×10<sup>−8</sup>) = <b>1.08 mΩ</b></p>
+      <p class="ans">To move 5 A you want at least four of these vias, and realistically six to eight so they share unevenly and still cope. This is why power planes are stitched with a field of vias rather than one big hole.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>What the arithmetic will not tell you</h5>
+    <ul>
+      <li><strong>Plating thickness is the whole game</strong> and you do not control it directly. It varies across the panel and down the barrel. Design to the fab's guaranteed <em>minimum average</em>, not the typical.</li>
+      <li><strong>Vias in parallel do not add cleanly.</strong> Current crowds into whichever via is closest to the source, and tight clusters heat each other.</li>
+      <li><strong>Thermal cycling, not steady current, is what kills barrels.</strong> Copper expands about six times less than FR-4 does through the thickness, so every heating cycle strains the barrel wall. Repeated hot cycles crack vias.</li>
+      <li><strong>Tented and filled vias run hotter</strong> than open ones — no airflow through the hole.</li>
+      <li>A via directly in a thermal pad is a heat path as much as a current path; size it for whichever job dominates.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 3 · TRACE RESISTANCE & DROP ────────────────────────── */
+CALCS.push({
+  id:"tracer", group:"Copper &amp; current", name:"Trace resistance",
+  eyebrow:"Ohms per copper", title:"Trace resistance, voltage drop and loss",
+  blurb:"Sizing for temperature is one constraint. Sizing for voltage drop is usually the tighter one — and it is the reason a trace that passes the thermal check can still ruin an analogue measurement.",
+  fields:[
+    {k:"w", label:"Trace width", type:"num", unit:"mm", def:0.5, step:0.05, min:0.01},
+    {k:"oz", label:"Copper weight", type:"sel", def:1,
+      opts:[{v:0.5,l:"0.5 oz — 17.4 µm"},{v:1,l:"1 oz — 34.8 µm"},{v:2,l:"2 oz — 69.6 µm"},{v:3,l:"3 oz — 104 µm"},{v:4,l:"4 oz — 139 µm"}]},
+    {k:"len", label:"Length", type:"num", unit:"mm", def:100, step:5, min:0.1},
+    {k:"I", label:"Current", type:"num", unit:"A", def:1, step:0.1, min:0},
+    {k:"T", label:"Copper operating temperature", type:"num", unit:"°C", def:25, step:1,
+      hint:"Not ambient — the temperature the copper actually reaches."},
+    {k:"budget", label:"Voltage drop budget", type:"num", unit:"mV", def:100, step:10, min:0,
+      hint:"Set this to whatever your circuit can tolerate; the check below uses it."}
+  ],
+  compute(v){
+    const out = [], flags = [];
+    const t_um = v.oz*OZ_UM, A = (v.w/1000)*(t_um/1e6);
+    const rho20 = RHO_CU, rhoT = rhoAt(v.T);
+    const R20 = rho20*(v.len/1000)/A, RT = rhoT*(v.len/1000)/A;
+    const Rsq = rhoT/(t_um/1e6);
+    const drop = v.I*RT, P = v.I*v.I*RT;
+
+    out.push({type:"group", label:"Geometry"});
+    out.push({type:"res", k:"Cross-section", v:fmt(A*1e6,4), u:"mm²", note:`${fmt(v.w,3)} mm × ${fmt(t_um,3)} µm  ·  ${fmt(v.w*t_um/1000*MM2_MIL2,3)} mil²`});
+    out.push({type:"res", k:"Squares of copper", v:fmt(v.len/v.w,3), u:"□", note:"length ÷ width — the only shape factor that matters"});
+
+    out.push({type:"group", label:"Resistance"});
+    out.push({type:"res", k:`At ${fmt(v.T,3)} °C`, v:eng(RT,"Ω"), cls:"primary"});
+    out.push({type:"res", k:"At 20 °C reference", v:eng(R20,"Ω"), cls:"sub"});
+    out.push({type:"res", k:"Sheet resistance", v:fmt(Rsq*1000,3), u:"mΩ/□"});
+    out.push({type:"res", k:"Per 100 mm at this width", v:eng(RT*100/v.len,"Ω"), cls:"sub"});
+
+    out.push({type:"group", label:`At ${fmt(v.I,3)} A`});
+    out.push({type:"res", k:"Voltage drop", v:eng(drop,"V"), cls:"primary"});
+    out.push({type:"res", k:"Power dissipated", v:eng(P,"W")});
+    out.push({type:"res", k:"Drop there and back", v:eng(drop*2,"V"), note:"the return path is a conductor too"});
+
+    if (v.budget > 0){
+      if (drop*1000 > v.budget) flags.push({cls:"bad", t:`Drop of ${eng(drop,"V")} is over your ${fmt(v.budget,3)} mV budget. Widen the trace to about ${fmt(v.w*drop*1000/v.budget,3)} mm, shorten it, or go to heavier copper.`});
+      else flags.push({cls:"ok", t:`${eng(drop,"V")} against a ${fmt(v.budget,3)} mV budget — inside it, with ${fmt(100*(1-drop*1000/v.budget),3)} % to spare.`});
+    }
+    flags.push({cls:"warn", t:"This is DC resistance. Above roughly 10 MHz, skin effect confines current to the surface and the effective resistance climbs; at 100 MHz the skin depth in copper is about 6.5 µm, so most of a 35 µm trace is doing nothing."});
+
+    const d = svgTrace(v.w, t_um, "external");
+    return {out, flags, xsec:{caption:`Cross-section · ${fmt(v.w,3)} mm × ${v.oz} oz`, right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>Resistance of a rectangular bar</h3>
+  <div class="eq"><span class="lbl">The whole calculation</span>R = <span class="frac"><span class="n">ρ · L</span><span class="d">w · t</span></span></div>
+  <div class="where">
+    <b>ρ</b> — resistivity of PCB copper, 1.72 × 10<sup>−8</sup> Ω·m at 20 °C<br>
+    <b>L, w, t</b> — length, width, thickness, all in metres
+  </div>
+  <p>Textbooks often quote 1.68 × 10<sup>−8</sup> for annealed copper. Plated and rolled PCB copper is slightly worse; 1.72 is the figure the PCB world uses, and the 2 % difference is far below the tolerance on your trace width anyway.</p>
+
+  <h4>Sheet resistance — the shortcut worth memorising</h4>
+  <p>Divide resistivity by thickness and you get resistance <em>per square</em>, which is independent of how big the square is. A 1 mm × 1 mm patch and a 10 mm × 10 mm patch of the same foil have identical resistance corner to corner.</p>
+  <div class="eq"><span class="lbl">Sheet resistance</span>R<sub>□</sub> = <span class="frac"><span class="n">ρ</span><span class="d">t</span></span>&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;R = R<sub>□</sub> · <span class="frac"><span class="n">L</span><span class="d">w</span></span></div>
+  <p>For 1 oz copper that works out at almost exactly <strong>0.5 mΩ per square</strong>. Count squares along your trace, halve the count, and you have the milliohms in your head. A 0.25 mm trace running 50 mm is 200 squares — about 100 mΩ.</p>
+
+  <table class="ref">
+    <tr><th>Copper</th><th>Thickness</th><th>mΩ per square</th><th>mΩ per mm at 0.25 mm wide</th></tr>
+    <tr><td>0.5 oz</td><td class="n">17.4 µm</td><td class="n">0.99</td><td class="n">3.95</td></tr>
+    <tr><td>1 oz</td><td class="n">34.8 µm</td><td class="n">0.49</td><td class="n">1.98</td></tr>
+    <tr><td>2 oz</td><td class="n">69.6 µm</td><td class="n">0.25</td><td class="n">0.99</td></tr>
+    <tr><td>3 oz</td><td class="n">104 µm</td><td class="n">0.16</td><td class="n">0.66</td></tr>
+  </table>
+
+  <h4>Temperature makes copper worse</h4>
+  <div class="eq"><span class="lbl">Temperature correction</span>ρ(T) = ρ<sub>20</sub> [ 1 + α ( T − 20 ) ]&nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3)">α ≈ 0.00393 / °C</span></div>
+  <p>About <strong>+0.4 % per degree</strong>. A trace running 60 °C above room temperature is roughly 24 % more resistive than the datasheet-cold value. That is a mild runaway: more resistance means more <span class="tt">I²R</span>, which means more heat. It is self-limiting on a PCB, but it means the drop you measure on a warm board is not the one you calculated cold.</p>
+
+  <div class="worked">
+    <h5>Worked example · why a thermally fine trace can still be wrong</h5>
+    <div class="body">
+      <p>A 1 mm, 1 oz trace, 100 mm long, carrying 2 A to a 3.3 V load.</p>
+      <p class="step">Squares = 100 / 1 = 100<br>
+      R = 100 × 0.494 mΩ = <b>49.4 mΩ</b> at 20 °C<br>
+      Drop = 2 × 0.0494 = <b>99 mV</b> — and the same again on the return, so <b>198 mV</b> round trip</p>
+      <p class="step">Thermal check, IPC-2221 external, 1 oz, 20 °C rise:<br>
+      A = 1 mm × 34.8 µm = 53.9 mil² → capacity <b>3.2 A</b> — <b>passes comfortably</b></p>
+      <p class="ans">The thermal check says yes; the circuit may not. Six per cent of a 3.3 V rail has gone missing in the wiring, there and back. Voltage drop, not temperature, is the binding constraint on most low-voltage boards — and it is why regulators want remote sensing and why you never share a trace between a power load and a reference.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>Assumptions in play</h5>
+    <ul>
+      <li>Etched traces are trapezoidal, not rectangular. The bottom is the width you drew; the top is narrower. Real resistance runs a few per cent above this figure.</li>
+      <li>DC only — see the note on skin effect above.</li>
+      <li>Vias, connectors and solder joints add resistance that is often larger than the trace itself.</li>
+      <li>Copper weight is a nominal. Finished foil thickness is typically within about ±10 %.</li>
+    </ul>
+  </div>`
+});
+
+/* schematic helpers ─────────────────────────────────────── */
+function resBox(x, y, label, sub){
+  return `<rect x="${x-19}" y="${y}" width="38" height="62" fill="#fff" stroke="#0F1519" stroke-width="1.6"/>
+          <text class="xs-t cu" x="${x+30}" y="${y+26}">${label}</text>
+          ${sub?`<text class="xs-t" x="${x+30}" y="${y+42}">${sub}</text>`:""}`;
+}
+function svgDivider(R1, R2, Vin, Vout, RL, Zout){
+  const x = 250, W = 700;
+  let g = `<path class="xs-line" stroke-width="1.6" d="M${x} 22 L${x} 46 M${x} 108 L${x} 150 M${x} 212 L${x} 246"/>`;
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x-42} 22 L${x+42} 22"/>`;
+  g += `<text class="xs-t acc" x="${x-50}" y="26" text-anchor="end">V_in = ${eng(Vin,"V")}</text>`;
+  g += resBox(x, 46, "R1 = " + eng(R1,"Ω"));
+  g += resBox(x, 150, "R2 = " + eng(R2,"Ω"));
+  g += `<circle cx="${x}" cy="129" r="4" fill="#A8501E"/>`;
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x} 129 L${x+150} 129"/>`;
+  g += `<text class="xs-t acc" x="${x+156}" y="126">V_out = ${eng(Vout,"V")}</text>`;
+  g += `<text class="xs-t" x="${x+156}" y="142">source impedance ${eng(Zout,"Ω")}</text>`;
+  if (RL > 0){
+    g += `<path class="xs-line" stroke-width="1.6" d="M${x+150} 129 L${x+150} 150 M${x+150} 212 L${x+150} 246"/>`;
+    g += resBox(x+150, 150, "R_L = " + eng(RL,"Ω"));
+    g += `<path class="xs-line" stroke-width="1.6" d="M${x+130} 246 L${x+170} 246 M${x+138} 253 L${x+162} 253 M${x+146} 260 L${x+154} 260"/>`;
+  }
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x-20} 246 L${x+20} 246 M${x-12} 253 L${x+12} 253 M${x-4} 260 L${x+4} 260"/>`;
+  return {svg:`<svg viewBox="0 0 ${W} 280" role="img" aria-label="Resistor divider schematic">${g}</svg>`, right:"schematic"};
+}
+function svgLed(n, R, Vs, If){
+  const y = 90, W = 700; let x = 90;
+  let g = `<text class="xs-t acc" x="${x-50}" y="${y+4}">${eng(Vs,"V")}</text>`;
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x-38} ${y} L${x} ${y} M${x-38} ${y-9} L${x-38} ${y+9}"/>`;
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x} ${y} L${x+30} ${y}"/>`;
+  g += `<rect x="${x+30}" y="${y-13}" width="62" height="26" fill="#fff" stroke="#0F1519" stroke-width="1.6"/>`;
+  g += `<text class="xs-t cu" x="${x+61}" y="${y-22}" text-anchor="middle">${eng(R,"Ω")}</text>`;
+  x += 92;
+  for (let i = 0; i < Math.min(n, 4); i++){
+    g += `<path class="xs-line" stroke-width="1.6" d="M${x} ${y} L${x+22} ${y}"/>`;
+    g += `<path d="M${x+22} ${y-13} L${x+22} ${y+13} L${x+44} ${y} Z" fill="#C87137" stroke="#0F1519" stroke-width="1.4"/>`;
+    g += `<path class="xs-line" stroke-width="1.8" d="M${x+44} ${y-13} L${x+44} ${y+13}"/>`;
+    g += `<path class="xs-line" d="M${x+30} ${y-17} L${x+40} ${y-27} M${x+36} ${y-17} L${x+46} ${y-27}"/>`;
+    x += 66;
+  }
+  if (n > 4) g += `<text class="xs-t" x="${x+4}" y="${y+4}">+ ${n-4} more</text>`;
+  x = Math.min(x, 560);
+  g += `<path class="xs-line" stroke-width="1.6" d="M${x} ${y} L${x+40} ${y} L${x+40} ${y+52} M${x+20} ${y+52} L${x+60} ${y+52} M${x+28} ${y+59} L${x+52} ${y+59} M${x+36} ${y+66} L${x+44} ${y+66}"/>`;
+  g += `<text class="xs-t acc" x="${x+46}" y="${y-6}">${fmt(If*1000,3)} mA</text>`;
+  return {svg:`<svg viewBox="0 0 ${W} 180" role="img" aria-label="LED with series resistor schematic">${g}</svg>`, right:"schematic"};
+}
+
+/* ─── 4 · RESISTOR DIVIDER ───────────────────────────────── */
+CALCS.push({
+  id:"divider", group:"Passives", name:"Resistor divider",
+  eyebrow:"Two resistors, four traps", title:"Resistor divider",
+  blurb:"The first circuit anyone builds, and the one that quietly goes wrong most often — because the ideal equation says nothing about loading, standard values, tolerance or noise.",
+  fields:[
+    {k:"mode", label:"Solve for", type:"seg", def:"vout",
+      opts:[{v:"vout", l:"V_out"},{v:"r2", l:"R2"},{v:"r1", l:"R1"}]},
+    {k:"Vin", label:"Input voltage", type:"num", unit:"V", def:12, step:0.1},
+    {k:"R1", label:"R1 — top, input to node", type:"num", unit:"Ω", def:10000, step:100, min:0.001,
+      show:v=>v.mode!=="r1"},
+    {k:"R2", label:"R2 — node to ground", type:"num", unit:"Ω", def:3300, step:100, min:0.001,
+      show:v=>v.mode!=="r2"},
+    {k:"Vt", label:"Target output voltage", type:"num", unit:"V", def:3.3, step:0.01,
+      show:v=>v.mode!=="vout"},
+    {k:"RL", label:"Load resistance across R2", type:"num", unit:"Ω", def:0, step:1000, min:0,
+      hint:"0 = unloaded. For an op-amp or ADC input, use its input impedance."},
+    {k:"ser", label:"Snap to standard values", type:"sel", def:"E24",
+      opts:[{v:"none",l:"Leave the exact values"},{v:"E12",l:"E12 — 10 % parts"},{v:"E24",l:"E24 — 5 % parts"},{v:"E96",l:"E96 — 1 % parts"}]},
+    {k:"tol", label:"Resistor tolerance", type:"num", unit:"%", def:1, step:0.1, min:0}
+  ],
+  compute(v){
+    const out = [], flags = [];
+    let R1 = v.R1, R2 = v.R2, Vo;
+    if (v.mode === "vout"){ Vo = v.Vin * R2/(R1+R2); }
+    else if (v.mode === "r2"){ R2 = R1 * v.Vt/(v.Vin - v.Vt); Vo = v.Vt; }
+    else { R1 = R2 * (v.Vin - v.Vt)/v.Vt; Vo = v.Vt; }
+
+    out.push({type:"group", label:"Ideal, unloaded"});
+    if (v.mode === "vout") out.push({type:"res", k:"Output voltage", v:eng(Vo,"V"), cls:"primary"});
+    if (v.mode === "r2")   out.push({type:"res", k:"R2 required", v:eng(R2,"Ω"), cls:"primary"});
+    if (v.mode === "r1")   out.push({type:"res", k:"R1 required", v:eng(R1,"Ω"), cls:"primary"});
+    out.push({type:"res", k:"Divider ratio", v:fmt(R2/(R1+R2),4), u:"", note:`R2 / (R1 + R2)`});
+    const I = v.Vin/(R1+R2), Zout = R1*R2/(R1+R2);
+    out.push({type:"res", k:"Quiescent current", v:eng(I,"A")});
+    out.push({type:"res", k:"Total power burned", v:eng(v.Vin*I,"W"), note:`R1 ${eng(I*I*R1,"W")} · R2 ${eng(I*I*R2,"W")}`});
+    out.push({type:"res", k:"Output impedance", v:eng(Zout,"Ω"), note:"R1 ∥ R2 — what the next stage sees"});
+
+    if (v.RL > 0){
+      const R2e = R2*v.RL/(R2+v.RL), VoL = v.Vin*R2e/(R1+R2e);
+      out.push({type:"group", label:`Loaded with ${eng(v.RL,"Ω")}`});
+      out.push({type:"res", k:"Actual output", v:eng(VoL,"V"), cls:"primary"});
+      out.push({type:"res", k:"Error from loading", v:fmt(100*(VoL-Vo)/Vo,3), u:"%"});
+      out.push({type:"res", k:"R2 ∥ R_L", v:eng(R2e,"Ω"), cls:"sub"});
+      if (Math.abs(100*(VoL-Vo)/Vo) > 1)
+        flags.push({cls:"warn", t:`Loading has moved the output by ${fmt(Math.abs(100*(VoL-Vo)/Vo),2)} %. Make the load at least 100× the divider impedance, or buffer it with an op-amp follower.`});
+    }
+
+    if (v.ser !== "none"){
+      const s1 = eNearest(v.ser, R1), s2 = eNearest(v.ser, R2);
+      const Vs = v.Vin * s2/(s1+s2);
+      out.push({type:"group", label:`Nearest ${v.ser} pair you can actually buy`});
+      out.push({type:"res", k:"R1", v:eng(s1,"Ω")});
+      out.push({type:"res", k:"R2", v:eng(s2,"Ω")});
+      out.push({type:"res", k:"Output with those", v:eng(Vs,"V"), cls:"primary"});
+      out.push({type:"res", k:"Error vs ideal", v:fmt(100*(Vs-Vo)/Vo,3), u:"%"});
+    }
+
+    if (v.tol > 0){
+      const k = v.tol/100;
+      const hi = v.Vin*(R2*(1+k))/(R1*(1-k)+R2*(1+k));
+      const lo = v.Vin*(R2*(1-k))/(R1*(1+k)+R2*(1-k));
+      out.push({type:"group", label:`Worst case with ±${fmt(v.tol,3)} % parts`});
+      out.push({type:"res", k:"Highest output", v:eng(hi,"V")});
+      out.push({type:"res", k:"Lowest output", v:eng(lo,"V")});
+      out.push({type:"res", k:"Spread", v:"±"+fmt(100*(hi-lo)/2/Vo,3), u:"%", note:"before the tolerance of V_in is counted"});
+    }
+
+    if (Zout > 100000) flags.push({cls:"warn", t:"An output impedance above about 100 kΩ picks up noise readily and interacts with the input bias current and sampling capacitor of whatever it feeds. Bring the resistors down or add a buffer."});
+    if (I > 0.01) flags.push({cls:"warn", t:`This divider draws ${eng(I,"A")} continuously. On a battery that is ${fmt(I*1000*24,3)} mAh a day, doing nothing.`});
+    if (v.mode !== "vout" && v.Vt >= v.Vin) flags.push({cls:"bad", t:"A divider can only go down. The target output must be below the input."});
+
+    const d = svgDivider(R1, R2, v.Vin, Vo, v.RL, Zout);
+    return {out, flags, xsec:{caption:"Schematic", right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>Where the equation comes from</h3>
+  <p>With nothing connected to the middle node, the same current must flow through both resistors, because there is nowhere else for it to go.</p>
+  <div class="eq"><span class="lbl">One current, two resistors</span><em>I</em> = <span class="frac"><span class="n">V<sub>in</sub></span><span class="d">R1 + R2</span></span></div>
+  <p>The output is just Ohm's law across R2 with that current:</p>
+  <div class="eq"><span class="lbl">Divider</span>V<sub>out</sub> = <em>I</em> · R2 = V<sub>in</sub> · <span class="frac"><span class="n">R2</span><span class="d">R1 + R2</span></span></div>
+  <p>Rearranged for design, when you know the ratio you want:</p>
+  <div class="eq"><span class="lbl">Solved for R2</span>R2 = R1 · <span class="frac"><span class="n">V<sub>out</sub></span><span class="d">V<sub>in</sub> − V<sub>out</sub></span></span>
+  &nbsp;&nbsp;&nbsp;&nbsp;<span class="lbl" style="display:inline">R1</span> R1 = R2 · <span class="frac"><span class="n">V<sub>in</sub> − V<sub>out</sub></span><span class="d">V<sub>out</sub></span></span></div>
+  <p>Notice that only the <em>ratio</em> sets the voltage. 10 k / 3.3 k and 10 Ω / 3.3 Ω give the same output. What the absolute values set is everything else: current drawn, noise, and how much the next stage disturbs it.</p>
+
+  <h3>Trap 1 — loading <span class="tag">the one that bites</span></h3>
+  <p>The ideal equation assumes nothing is connected to the output. Connect a load and it sits in parallel with R2:</p>
+  <div class="eq"><span class="lbl">Loaded output</span>
+    R2′ = <span class="frac"><span class="n">R2 · R<sub>L</sub></span><span class="d">R2 + R<sub>L</sub></span></span>
+    &nbsp;&nbsp;&nbsp;V<sub>out</sub> = V<sub>in</sub> · <span class="frac"><span class="n">R2′</span><span class="d">R1 + R2′</span></span>
+  </div>
+  <p>The useful rule: a divider behaves like an ideal voltage source of V<sub>out</sub> in series with R1 ∥ R2. That parallel combination is its <strong>output impedance</strong>. Keep the load at least 100× that and the error stays under 1 %.</p>
+
+  <h3>Trap 2 — standard values do not divide nicely</h3>
+  <p>You cannot buy the resistor the equation asks for. Resistors come in E-series: logarithmically spaced decades with 12, 24 or 96 values each, sized so that consecutive values just overlap at the part's tolerance. E24 for 5 % parts, E96 for 1 %. Snap both resistors and re-check the output — the calculator above does this for you.</p>
+
+  <h3>Trap 3 — tolerance stacks in the worst direction</h3>
+  <p>Two ±1 % resistors do not give a ±1 % ratio. The extremes occur when they err oppositely:</p>
+  <div class="eq"><span class="lbl">Worst-case high</span>V<sub>out,max</sub> = V<sub>in</sub> · <span class="frac"><span class="n">R2 (1 + k)</span><span class="d">R1 (1 − k) + R2 (1 + k)</span></span></div>
+  <p>For a 50/50 divider from ±1 % parts, the ratio can be off by roughly ±1 %. That is on top of any error in V<sub>in</sub> itself. If you are dividing a reference down for an ADC, this is usually the dominant error in the whole measurement — well ahead of the converter.</p>
+
+  <div class="worked">
+    <h5>Worked example · dividing a 12 V battery to a 3.3 V ADC</h5>
+    <div class="body">
+      <p>The ADC has 1 MΩ input impedance and you want the reading to be good to 1 %.</p>
+      <p class="step">Pick R1 = 10 kΩ.  R2 = 10 k × 3.3 / (12 − 3.3) = 10 k × 0.379 = <b>3.79 kΩ</b><br>
+      Nearest E24: <b>3.9 kΩ</b> → V_out = 12 × 3.9/13.9 = <b>3.367 V</b> (+2.0 %)<br>
+      Nearest E96: <b>3.83 kΩ</b> → V_out = 12 × 3.83/13.83 = <b>3.323 V</b> (+0.7 %)</p>
+      <p class="step">Output impedance = 10 k ∥ 3.83 k = <b>2.77 kΩ</b><br>
+      Load 1 MΩ is 361× that → loading error ≈ <b>−0.28 %</b> — acceptable<br>
+      Current drawn = 12 / 13.83 k = <b>868 µA</b> continuously</p>
+      <p class="ans">E96 parts, and the 868 µA is the real design problem: on a battery this divider costs 21 mAh a day just to watch the battery. The usual fix is to raise both resistors by 10× and add a small capacitor across R2 to keep the source impedance low at the moment the ADC samples — or to switch the divider on with a MOSFET only when you take a reading.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>Things a divider cannot do</h5>
+    <ul>
+      <li><strong>It is not a power supply.</strong> Any load that changes moves the output. Use a regulator.</li>
+      <li><strong>It cannot go up.</strong> Output is always below input.</li>
+      <li><strong>High-value dividers are slow.</strong> The source impedance and any stray capacitance form a low-pass filter; a 100 kΩ source into 20 pF of ADC sampling capacitance takes microseconds to settle.</li>
+      <li><strong>Resistors drift with temperature.</strong> Two parts with the same temperature coefficient partly cancel in a ratio — which is why matched networks exist, and why placing the pair close together on the board matters.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 5 · OHM'S LAW & POWER ──────────────────────────────── */
+CALCS.push({
+  id:"ohm", group:"Passives", name:"Ohm's law",
+  eyebrow:"V · I · R · P", title:"Ohm's law and the power wheel",
+  blurb:"Give any two of voltage, current, resistance and power, and the other two follow. Worth having on the page because the power form is the one people forget until a resistor discolours.",
+  fields:[
+    {k:"known", label:"What you know", type:"seg", def:"VR",
+      opts:[{v:"VI",l:"V & I"},{v:"VR",l:"V & R"},{v:"IR",l:"I & R"},{v:"PV",l:"P & V"},{v:"PI",l:"P & I"},{v:"PR",l:"P & R"}]},
+    {k:"V", label:"Voltage", type:"num", unit:"V", def:5, step:0.1, show:v=>v.known.includes("V")},
+    {k:"I", label:"Current", type:"num", unit:"A", def:0.02, step:0.001, show:v=>v.known.includes("I")},
+    {k:"R", label:"Resistance", type:"num", unit:"Ω", def:220, step:10, show:v=>v.known.includes("R")},
+    {k:"P", label:"Power", type:"num", unit:"W", def:0.1, step:0.01, show:v=>v.known.includes("P")},
+    {k:"rating", label:"Component power rating", type:"sel", def:0.25,
+      opts:[{v:0.0625,l:"0402 — 1/16 W"},{v:0.1,l:"0603 — 1/10 W"},{v:0.125,l:"0805 — 1/8 W"},{v:0.25,l:"1206 — 1/4 W"},{v:0.5,l:"1210 — 1/2 W"},{v:1,l:"2512 — 1 W"},{v:3,l:"Through-hole 3 W"}]}
+  ],
+  compute(v){
+    const out = [], flags = [];
+    let V, I, R, P;
+    switch(v.known){
+      case "VI": V=v.V; I=v.I; R=V/I;              P=V*I; break;
+      case "VR": V=v.V; R=v.R; I=V/R;              P=V*I; break;
+      case "IR": I=v.I; R=v.R; V=I*R;              P=V*I; break;
+      case "PV": P=v.P; V=v.V; I=P/V;              R=V/I; break;
+      case "PI": P=v.P; I=v.I; V=P/I;              R=V/I; break;
+      case "PR": P=v.P; R=v.R; I=Math.sqrt(P/R);   V=I*R; break;
+    }
+    out.push({type:"group", label:"All four quantities"});
+    out.push({type:"res", k:"Voltage", v:eng(V,"V"), cls:v.known.includes("V")?"":"primary"});
+    out.push({type:"res", k:"Current", v:eng(I,"A"), cls:v.known.includes("I")?"":"primary"});
+    out.push({type:"res", k:"Resistance", v:eng(R,"Ω"), cls:v.known.includes("R")?"":"primary"});
+    out.push({type:"res", k:"Power", v:eng(P,"W"), cls:v.known.includes("P")?"":"primary"});
+    out.push({type:"group", label:"Against the part you picked"});
+    out.push({type:"res", k:"Rating", v:eng(v.rating,"W")});
+    out.push({type:"res", k:"Used", v:fmt(100*P/v.rating,3), u:"%"});
+    out.push({type:"res", k:"Headroom", v:fmt(v.rating/P,3), u:"×"});
+    if (P > v.rating) flags.push({cls:"bad", t:`${eng(P,"W")} into a ${eng(v.rating,"W")} part. It will run hot enough to drift, discolour the board, or fail.`});
+    else if (P > v.rating*0.5) flags.push({cls:"warn", t:"Over half the rated power. Ratings assume a specified footprint and still air at 70 °C — derate to 50 % or below for anything continuous."});
+    else flags.push({cls:"ok", t:`${fmt(v.rating/P,2)}× headroom on the package. Comfortable.`});
+    return {out, flags};
+  },
+  theory:`
+  <h3>One law, four rearrangements</h3>
+  <div class="eq"><span class="lbl">Ohm's law</span>V = <em>I</em> · R&nbsp;&nbsp;&nbsp;&nbsp;<em>I</em> = <span class="frac"><span class="n">V</span><span class="d">R</span></span>&nbsp;&nbsp;&nbsp;&nbsp;R = <span class="frac"><span class="n">V</span><span class="d"><em>I</em></span></span></div>
+  <p>Resistance is the constant of proportionality between the push and the flow. It is an empirical law, not a fundamental one — it holds for metals and carbon films over their normal range, and fails for diodes, lamps and anything whose resistance changes as it heats.</p>
+
+  <h3>Power, three ways</h3>
+  <p>Power is voltage times current. Substitute Ohm's law into it twice and you get the two forms you actually use:</p>
+  <div class="eq"><span class="lbl">Power</span>P = V · <em>I</em>&nbsp;&nbsp;=&nbsp;&nbsp;<em>I</em>² · R&nbsp;&nbsp;=&nbsp;&nbsp;<span class="frac"><span class="n">V²</span><span class="d">R</span></span></div>
+  <p>The <span class="tt">I²R</span> form is the one worth internalising, because of the square. Double the current through a trace, a shunt or a MOSFET and you get <strong>four times</strong> the heat. Almost every thermal surprise in electronics is that square catching someone out.</p>
+
+  <h4>Package power ratings are optimistic</h4>
+  <p>A "1/4 W" 1206 resistor is rated 1/4 W at 70 °C ambient, mounted on a specified pad on a specified board, in still air, and it is allowed to reach roughly 155 °C internally to do it. That is a survival rating, not a comfort rating. It will also drift out of tolerance long before it fails.</p>
+  <ul>
+    <li>Continuous load: keep under <strong>50 %</strong> of rating.</li>
+    <li>Precision or reference circuits: under <strong>20 %</strong>, because self-heating shifts the value.</li>
+    <li>Above 70 °C ambient, the rating slides down a derating curve to zero at about 155 °C. Check the datasheet's curve.</li>
+  </ul>
+
+  <div class="worked">
+    <h5>Worked example · the classic first mistake</h5>
+    <div class="body">
+      <p>Dropping 12 V to run a 20 mA LED with a series resistor.</p>
+      <p class="step">Across the resistor: 12 − 2 = <b>10 V</b><br>
+      R = 10 / 0.02 = <b>500 Ω</b> → nearest E24 is 510 Ω<br>
+      P = <em>I</em>²R = 0.02² × 510 = 0.0004 × 510 = <b>0.204 W</b></p>
+      <p class="ans">An 0805 is rated 1/8 W. This needs 1/4 W as an absolute minimum, and 1/2 W to run cool. The current looks tiny; the resistor still gets hot, because it is dropping most of the supply. Whenever a resistor drops a lot of voltage, check the power before you pick the package.</p>
+    </div>
+  </div>`
+});
+
+/* ─── 6 · LED SERIES RESISTOR ────────────────────────────── */
+CALCS.push({
+  id:"led", group:"Passives", name:"LED resistor",
+  eyebrow:"Current limiting", title:"LED series resistor",
+  blurb:"An LED has no useful resistance of its own — put voltage across it and current runs away until something gives. The resistor is what makes the circuit predictable.",
+  fields:[
+    {k:"Vs", label:"Supply voltage", type:"num", unit:"V", def:5, step:0.1, min:0.1},
+    {k:"col", label:"LED colour", type:"sel", def:1.9,
+      opts:[{v:1.9,l:"Red — Vf ≈ 1.9 V"},{v:2.1,l:"Amber / yellow — 2.1 V"},{v:2.2,l:"Green (standard) — 2.2 V"},{v:3.2,l:"Green (InGaN) — 3.2 V"},{v:3.15,l:"Blue — 3.2 V"},{v:3.25,l:"White — 3.2 V"},{v:1.4,l:"Infrared — 1.4 V"},{v:0,l:"Enter my own"}]},
+    {k:"Vf", label:"Forward voltage", type:"num", unit:"V", def:2, step:0.05, min:0.1, show:v=>v.col===0,
+      hint:"From the datasheet, at your intended current — Vf rises with current."},
+    {k:"If", label:"Forward current", type:"num", unit:"mA", def:10, step:1, min:0.1,
+      hint:"Modern indicator LEDs are bright at 2–5 mA. 20 mA is a habit from the 1980s."},
+    {k:"n", label:"LEDs in series", type:"num", unit:"×", def:1, step:1, min:1},
+    {k:"ser", label:"Snap to standard values", type:"sel", def:"E24",
+      opts:[{v:"none",l:"Exact value"},{v:"E12",l:"E12"},{v:"E24",l:"E24"},{v:"E96",l:"E96"}]}
+  ],
+  compute(v){
+    const out = [], flags = [];
+    const Vf = v.col === 0 ? v.Vf : v.col;
+    const If = v.If/1000, Vled = Vf*v.n, Vr = v.Vs - Vled;
+    const R = Vr/If, P = Vr*If;
+
+    out.push({type:"group", label:"Voltage budget"});
+    out.push({type:"res", k:`${v.n} LED(s) drop`, v:eng(Vled,"V")});
+    out.push({type:"res", k:"Left for the resistor", v:eng(Vr,"V"), note:`${fmt(100*Vr/v.Vs,3)} % of the supply`});
+
+    if (Vr <= 0){
+      flags.push({cls:"bad", t:`${fmt(v.n,0)} LED(s) need ${eng(Vled,"V")} but the supply is only ${eng(v.Vs,"V")}. Use fewer in series, a higher supply, or a boost driver.`});
+      return {out, flags};
+    }
+
+    out.push({type:"group", label:"Resistor"});
+    out.push({type:"res", k:"Exact value", v:eng(R,"Ω"), cls:"primary"});
+    out.push({type:"res", k:"Power dissipated", v:eng(P,"W"), note:"pick a package rated at least 2× this"});
+
+    let Rf = R, Iact = If;
+    if (v.ser !== "none"){
+      Rf = eNearest(v.ser, R); Iact = Vr/Rf;
+      out.push({type:"group", label:`Nearest ${v.ser} value`});
+      out.push({type:"res", k:"Use", v:eng(Rf,"Ω"), cls:"primary"});
+      out.push({type:"res", k:"Actual current", v:fmt(Iact*1000,3), u:"mA"});
+      out.push({type:"res", k:"Deviation", v:fmt(100*(Iact-If)/If,3), u:"%"});
+      out.push({type:"res", k:"Resistor power", v:eng(Vr*Iact,"W")});
+    }
+    out.push({type:"group", label:"Efficiency"});
+    out.push({type:"res", k:"Power into the LEDs", v:eng(Vled*Iact,"W")});
+    out.push({type:"res", k:"Wasted in the resistor", v:eng(Vr*Iact,"W")});
+    out.push({type:"res", k:"Useful fraction", v:fmt(100*Vled/v.Vs,3), u:"%"});
+
+    if (Vr < v.Vs*0.15) flags.push({cls:"warn", t:`Only ${fmt(100*Vr/v.Vs,2)} % of the supply is across the resistor. With that little headroom, a small change in supply voltage or LED Vf swings the current wildly. Aim for at least 20 %.`});
+    if (Vr > v.Vs*0.7) flags.push({cls:"warn", t:"Most of the supply is being burned as heat. Fine for one indicator; wasteful for anything bright or battery powered — use a constant-current driver."});
+    if (v.If > 20) flags.push({cls:"warn", t:"Above 20 mA, check the datasheet's absolute maximum and its derating with temperature."});
+
+    const d = svgLed(v.n, Rf, v.Vs, Iact);
+    return {out, flags, xsec:{caption:"Schematic", right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>Why an LED needs a resistor at all</h3>
+  <p>An LED is a diode. Its current rises roughly exponentially with the voltage across it, so past the forward knee a few tens of millivolts more can double the current. The forward voltage also <em>falls</em> as the junction warms — so more current makes it hotter, which drops Vf, which lets in more current. Connected straight to a stiff supply, an LED destroys itself.</p>
+  <p>The resistor breaks that loop. It sets the current from a quantity that is stable and known — the voltage left over — rather than from the diode's own characteristics.</p>
+
+  <h3>The equation</h3>
+  <div class="eq"><span class="lbl">Series resistor</span>R = <span class="frac"><span class="n">V<sub>supply</sub> − n · V<sub>f</sub></span><span class="d"><em>I</em><sub>f</sub></span></span>
+  &nbsp;&nbsp;&nbsp;&nbsp;P<sub>R</sub> = ( V<sub>supply</sub> − n · V<sub>f</sub> ) · <em>I</em><sub>f</sub></div>
+  <div class="where">
+    <b>n</b> — LEDs in series (they all carry the same current)<br>
+    <b>V<sub>f</sub></b> — forward voltage at your chosen current, from the datasheet
+  </div>
+  <p>It is Kirchhoff's voltage law and nothing more: the supply must equal the LED drops plus the resistor drop. Everything the supply does not give the LEDs, the resistor eats.</p>
+
+  <h4>Headroom is what makes it work</h4>
+  <p>The resistor only regulates well if it has a decent share of the supply. With 5 V and one red LED, about 3 V lands on the resistor — a 0.2 V change in Vf shifts the current by 7 %. With 3.3 V and a white LED at 3.2 V, only 0.1 V is left, and that same 0.2 V uncertainty makes the current anything from zero to double. <strong>Keep at least 20 % of the supply across the resistor</strong>, or use a constant-current driver.</p>
+
+  <table class="ref">
+    <tr><th>Colour</th><th>Typical V<sub>f</sub></th><th>Why</th></tr>
+    <tr><td>Infrared</td><td class="n">1.2 – 1.6 V</td><td>GaAs, lowest band gap</td></tr>
+    <tr><td>Red</td><td class="n">1.8 – 2.2 V</td><td>AlGaInP</td></tr>
+    <tr><td>Amber / yellow</td><td class="n">2.0 – 2.2 V</td><td>AlGaInP</td></tr>
+    <tr><td>Green, older</td><td class="n">2.0 – 2.4 V</td><td>GaP</td></tr>
+    <tr><td>Green, modern</td><td class="n">2.9 – 3.4 V</td><td>InGaN, wider band gap</td></tr>
+    <tr><td>Blue / white</td><td class="n">2.8 – 3.6 V</td><td>InGaN; white is blue plus phosphor</td></tr>
+  </table>
+  <p>The pattern is physics, not marketing: photon energy sets the band gap, and the band gap sets the forward voltage. Bluer light costs more volts. This is also why a white LED will not light from a single alkaline cell without a boost converter.</p>
+
+  <div class="worked">
+    <h5>Worked example · one green indicator on 3.3 V</h5>
+    <div class="body">
+      <p>Modern InGaN green, Vf = 3.0 V at 5 mA, running from a 3.3 V rail.</p>
+      <p class="step">Headroom = 3.3 − 3.0 = <b>0.3 V</b> — only 9 % of the supply<br>
+      R = 0.3 / 0.005 = <b>60 Ω</b> → E24 gives 62 Ω, current 4.8 mA</p>
+      <p class="step">Now suppose the actual part measures Vf = 3.15 V:<br>
+      headroom = 0.15 V → <em>I</em> = 0.15 / 62 = <b>2.4 mA</b>, half as bright<br>
+      And at Vf = 2.85 V: <em>I</em> = 0.45 / 62 = <b>7.3 mA</b></p>
+      <p class="ans">A 5 % spread in Vf produced a 3:1 spread in brightness. Two boards from the same batch will visibly differ. The fixes: pick a red LED instead, drive it from 5 V, or use a constant-current sink — which is exactly why LED driver ICs exist.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>Practical notes</h5>
+    <ul>
+      <li><strong>Never parallel LEDs behind one resistor.</strong> The one with the lowest Vf hogs the current and gets brighter and hotter, which lowers its Vf further. Give each string its own resistor.</li>
+      <li><strong>Series is efficient, parallel is not.</strong> Three LEDs in series off 12 V share one resistor and one lot of waste; three separate strings waste three times as much.</li>
+      <li>V<sub>f</sub> falls roughly 2 mV per °C as the LED warms, so the current creeps up slightly in use.</li>
+      <li>For PWM dimming, the peak current still flows during the on-time — size the resistor for the peak, not the average.</li>
+      <li>Human brightness perception is roughly logarithmic. Halving the current does not look half as bright; it looks slightly dimmer. This is why 2 mA indicators are usually plenty.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 7 · CONTROLLED IMPEDANCE ───────────────────────────── */
+function zMicrostrip(w,h,t,er){ return 87/Math.sqrt(er+1.41)*Math.log(5.98*h/(0.8*w+t)); }
+function zStripline(w,b,t,er){ return 60/Math.sqrt(er)*Math.log(4*b/(0.67*Math.PI*(0.8*w+t))); }
+function erEffMs(w,h,er){ return (er+1)/2 + (er-1)/2*Math.pow(1+12*h/w, -0.5); }
+function svgMicrostrip(w,h,t,er,strip,s){
+  const W=700,PAD=45,FIELD=Math.max((strip? (2*w+s):w)*3.2, h*4, 1.2);
+  const sc=(W-2*PAD)/FIELD; let tp=Math.max(t*sc,6), hp=Math.max(h*sc,26), wp=Math.max(w*sc,3), sp=Math.max(s*sc,4);
+  const top=40, plane=top+tp+hp, H=plane+46, cx=W/2;
+  let g=`<rect class="xs-pp" x="${PAD}" y="${top+tp}" width="${W-2*PAD}" height="${hp}"/>`;
+  g+=`<rect class="xs-cu-2" x="${PAD}" y="${plane}" width="${W-2*PAD}" height="8"/>`;
+  g+=`<text class="xs-t" x="${PAD+5}" y="${plane+22}">reference plane</text>`;
+  g+=`<text class="xs-t" x="${W-PAD-5}" y="${top+tp+hp/2+4}" text-anchor="end">ε_r = ${fmt(er,3)}</text>`;
+  if(strip){
+    g+=`<rect class="xs-cu" x="${cx-sp/2-wp}" y="${top}" width="${wp}" height="${tp}"/>`;
+    g+=`<rect class="xs-cu" x="${cx+sp/2}" y="${top}" width="${wp}" height="${tp}"/>`;
+    g+=`<path class="xs-dim" d="M${cx-sp/2} ${top-10} L${cx-sp/2} ${top-3} M${cx+sp/2} ${top-10} L${cx+sp/2} ${top-3} M${cx-sp/2} ${top-7} L${cx+sp/2} ${top-7}"/>`;
+    g+=`<text class="xs-t acc" x="${cx}" y="${top-14}" text-anchor="middle">s = ${fmt(s,3)} mm</text>`;
+  } else {
+    g+=`<rect class="xs-cu" x="${cx-wp/2}" y="${top}" width="${wp}" height="${tp}"/>`;
+  }
+  const bx=strip?cx+sp/2:cx-wp/2, ex=strip?cx+sp/2+wp:cx+wp/2;
+  g+=`<path class="xs-dim" d="M${bx} ${top+tp+5} L${bx} ${top+tp+18} M${ex} ${top+tp+5} L${ex} ${top+tp+18} M${bx-10} ${top+tp+12} L${ex+10} ${top+tp+12}"/>`;
+  g+=`<text class="xs-t acc" x="${ex+16}" y="${top+tp+16}">w = ${fmt(w,3)} mm</text>`;
+  g+=`<path class="xs-dim" d="M${PAD+22} ${top+tp} L${PAD+22} ${plane}"/>`;
+  g+=`<text class="xs-t acc" x="${PAD+28}" y="${top+tp+hp/2}">h = ${fmt(h,3)} mm</text>`;
+  return {svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Microstrip cross-section">${g}</svg>`, right:"not to scale — proportions only"};
+}
+function svgStripline(w,b,t,er,strip,s){
+  const W=700,PAD=45,FIELD=Math.max((strip?(2*w+s):w)*3.2, b*3, 1.2);
+  const sc=(W-2*PAD)/FIELD; let tp=Math.max(t*sc,6), bp=Math.max(b*sc,60), wp=Math.max(w*sc,3), sp=Math.max(s*sc,4);
+  const top=34, bot=top+bp, H=bot+42, cx=W/2, ty=top+bp/2-tp/2;
+  let g=`<rect class="xs-pp" x="${PAD}" y="${top}" width="${W-2*PAD}" height="${bp}"/>`;
+  g+=`<rect class="xs-cu-2" x="${PAD}" y="${top-8}" width="${W-2*PAD}" height="8"/>`;
+  g+=`<rect class="xs-cu-2" x="${PAD}" y="${bot}" width="${W-2*PAD}" height="8"/>`;
+  if(strip){
+    g+=`<rect class="xs-cu" x="${cx-sp/2-wp}" y="${ty}" width="${wp}" height="${tp}"/>`;
+    g+=`<rect class="xs-cu" x="${cx+sp/2}" y="${ty}" width="${wp}" height="${tp}"/>`;
+    g+=`<text class="xs-t acc" x="${cx}" y="${ty-8}" text-anchor="middle">s = ${fmt(s,3)} mm</text>`;
+  } else g+=`<rect class="xs-cu" x="${cx-wp/2}" y="${ty}" width="${wp}" height="${tp}"/>`;
+  g+=`<path class="xs-dim" d="M${PAD+22} ${top} L${PAD+22} ${bot}"/>`;
+  g+=`<text class="xs-t acc" x="${PAD+28}" y="${top+bp/2}">b = ${fmt(b,3)} mm</text>`;
+  g+=`<text class="xs-t" x="${W-PAD-5}" y="${top-12}" text-anchor="end">plane</text>`;
+  g+=`<text class="xs-t" x="${W-PAD-5}" y="${bot+22}" text-anchor="end">plane · ε_r = ${fmt(er,3)}</text>`;
+  g+=`<text class="xs-t acc" x="${cx+wp}" y="${ty+tp+16}">w = ${fmt(w,3)} mm</text>`;
+  return {svg:`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Stripline cross-section">${g}</svg>`, right:"not to scale — proportions only"};
+}
+
+CALCS.push({
+  id:"imp", group:"Signals", name:"Controlled impedance",
+  eyebrow:"IPC-2141 approximations", title:"Microstrip and stripline impedance",
+  blurb:"Once a signal's rise time is short compared with its flight time down the track, the track stops being a wire and starts being a transmission line. Then its width, its height above the plane, and the laminate under it set an impedance you have to match.",
+  fields:[
+    {k:"type", label:"Geometry", type:"seg", def:"ms",
+      opts:[{v:"ms",l:"Microstrip (outer layer)"},{v:"sl",l:"Stripline (buried)"}]},
+    {k:"mode", label:"Solve for", type:"seg", def:"z",
+      opts:[{v:"z",l:"Impedance from width"},{v:"w",l:"Width for target impedance"}]},
+    {k:"w", label:"Trace width", type:"num", unit:"mm", def:0.3, step:0.01, min:0.01, show:v=>v.mode==="z"},
+    {k:"Zt", label:"Target impedance", type:"num", unit:"Ω", def:50, step:1, min:5, show:v=>v.mode==="w"},
+    {k:"h", label:"Dielectric height to plane", type:"num", unit:"mm", def:0.2, step:0.01, min:0.01, show:v=>v.type==="ms",
+      hint:"Prepreg or core thickness between the trace and its reference plane. On a standard 4-layer 1.6 mm stack this is around 0.2 mm."},
+    {k:"b", label:"Plane-to-plane separation", type:"num", unit:"mm", def:0.5, step:0.01, min:0.02, show:v=>v.type==="sl",
+      hint:"The trace is assumed centred between the two planes."},
+    {k:"oz", label:"Copper weight", type:"sel", def:1,
+      opts:[{v:0.5,l:"0.5 oz — 17.4 µm"},{v:1,l:"1 oz — 34.8 µm"},{v:2,l:"2 oz — 69.6 µm"}]},
+    {k:"er", label:"Dielectric constant ε_r", type:"num", unit:"", def:4.3, step:0.1, min:1,
+      hint:"FR-4 is roughly 4.2–4.6 at 1 GHz and falls with frequency. Ask your fab for the value of the specific laminate."},
+    {k:"diff", label:"Differential pair", type:"checks", def:{on:false},
+      opts:[{v:"on", l:"Calculate differential impedance too"}]},
+    {k:"s", label:"Edge-to-edge spacing", type:"num", unit:"mm", def:0.2, step:0.01, min:0.01, show:v=>v.diff.on},
+    {k:"len", label:"Trace length", type:"num", unit:"mm", def:100, step:5, min:0.1}
+  ],
+  compute(v){
+    const out=[], flags=[];
+    const t = v.oz*OZ_UM/1000;
+    const ms = v.type==="ms";
+    const h = ms ? v.h : v.b;
+    let w = v.w, Z0;
+
+    if (v.mode==="w"){
+      const fn = ms ? (x)=>zMicrostrip(x,h,t,v.er) : (x)=>zStripline(x,h,t,v.er);
+      let lo=0.01, hi=30;
+      for (let i=0;i<200;i++){ const m=(lo+hi)/2; if (fn(m) > v.Zt) lo=m; else hi=m; }
+      w=(lo+hi)/2; Z0=fn(w);
+      out.push({type:"group", label:"Geometry needed"});
+      out.push({type:"res", k:"Trace width", v:fmt(w,3), u:"mm", cls:"primary"});
+      out.push({type:"res", k:"…in mils", v:fmt(mm2mil(w),3), u:"mil", cls:"sub"});
+      out.push({type:"res", k:"Impedance achieved", v:fmt(Z0,4), u:"Ω"});
+    } else {
+      Z0 = ms ? zMicrostrip(w,h,t,v.er) : zStripline(w,h,t,v.er);
+      out.push({type:"group", label:"Single-ended"});
+      out.push({type:"res", k:"Characteristic impedance", v:fmt(Z0,4), u:"Ω", cls:"primary"});
+    }
+
+    const eeff = ms ? erEffMs(w,h,v.er) : v.er;
+    const tpd = 3.3356*Math.sqrt(eeff);
+    out.push({type:"group", label:"Propagation"});
+    out.push({type:"res", k:"Effective ε_r", v:fmt(eeff,4), u:"", note: ms ? "field is partly in air, partly in laminate" : "field is entirely in laminate"});
+    out.push({type:"res", k:"Delay", v:fmt(tpd,4), u:"ps/mm", note:`${fmt(tpd*25.4,4)} ps/inch`});
+    out.push({type:"res", k:`Over ${fmt(v.len,3)} mm`, v:fmt(tpd*v.len/1000,3), u:"ns"});
+    out.push({type:"res", k:"Signal speed", v:fmt(299.79/Math.sqrt(eeff),4), u:"mm/ns"});
+    out.push({type:"res", k:"Matters above roughly", v:fmt(1000/(2*tpd*v.len/1000)/1000,3), u:"MHz", cls:"sub",
+      note:"rule of thumb: treat as a transmission line when the rise time is under twice the flight time"});
+
+    if (v.diff.on){
+      const k = ms ? 0.48*Math.exp(-0.96*v.s/h) : 0.347*Math.exp(-2.9*v.s/h);
+      const Zd = 2*Z0*(1-k);
+      out.push({type:"group", label:"Differential pair"});
+      out.push({type:"res", k:"Differential impedance", v:fmt(Zd,4), u:"Ω", cls:"primary"});
+      out.push({type:"res", k:"Odd-mode impedance", v:fmt(Zd/2,4), u:"Ω"});
+      out.push({type:"res", k:"Coupling factor", v:fmt(k,3), u:"", note:"how much the two traces pull each other down"});
+      out.push({type:"res", k:"s / h ratio", v:fmt(v.s/h,3), u:""});
+    }
+
+    const wh = w/h;
+    if (ms && (wh < 0.1 || wh > 3)) flags.push({cls:"warn", t:`w/h = ${fmt(wh,2)} is outside the 0.1–3.0 band this approximation was fitted over. The number will still appear; its accuracy will not.`});
+    if (!ms && w/h > 0.35) flags.push({cls:"warn", t:`w/b = ${fmt(w/h,2)} exceeds the 0.35 limit of the symmetric stripline approximation.`});
+    if (!ms && t/h > 0.25) flags.push({cls:"warn", t:"t/b is above 0.25, past the limit of the stripline fit."});
+    if (v.er < 1 || v.er > 15) flags.push({cls:"warn", t:"The fit assumes ε_r between 1 and 15."});
+    flags.push({cls:"warn", t:"These are closed-form approximations, good to roughly ±5 % against a field solver — and that is before laminate tolerance, etch tolerance and ε_r's variation with frequency. For a board that must hit an impedance spec, send your fab the stackup and let them tell you the width. They will adjust it, and they will be right."});
+
+    const d = ms ? svgMicrostrip(w,h,t,v.er,v.diff.on,v.s) : svgStripline(w,h,t,v.er,v.diff.on,v.s);
+    return {out, flags, xsec:{caption: ms ? "Cross-section · microstrip" : "Cross-section · symmetric stripline", right:d.right, svg:d.svg}};
+  },
+  theory:`
+  <h3>When a trace becomes a transmission line</h3>
+  <p>Signals travel down copper at roughly half the speed of light — about 150 mm per nanosecond in FR-4. If the edge of your signal takes longer to rise than it takes to travel to the far end and back, the whole track is at essentially one voltage and it behaves like a wire. If the edge is faster than that round trip, different parts of the track are at different voltages at the same instant, and reflections from any impedance change come back and land on top of the original edge.</p>
+  <p>The usual rule: <strong>treat it as a transmission line when the rise time is shorter than twice the flight time.</strong> A 1 ns edge and a 150 mm track already qualifies. Note this depends on <em>rise time</em>, not clock frequency — a slow 1 MHz clock from a modern part can have a 500 ps edge and still ring.</p>
+
+  <h3>Microstrip <span class="tag">a trace on an outer layer</span></h3>
+  <div class="eq"><span class="lbl">IPC-2141 microstrip</span>
+    Z<sub>0</sub> = <span class="frac"><span class="n">87</span><span class="d">√(ε<sub>r</sub> + 1.41)</span></span>
+    · ln <span class="frac"><span class="n">5.98 h</span><span class="d">0.8 w + t</span></span>
+  </div>
+  <div class="where"><b>h</b> — dielectric height above the reference plane<br><b>w, t</b> — trace width and copper thickness, same units as h<br>Fitted for 0.1 &lt; w/h &lt; 3.0 and 1 &lt; ε<sub>r</sub> &lt; 15</div>
+  <p>Read the shape of it rather than the constants. Impedance rises with height above the plane and falls with width — it is a ratio of geometry, which is why the <em>same</em> trace on a thinner prepreg has a lower impedance. The dielectric constant appears under a square root, so it matters, but less than the geometry does.</p>
+
+  <h4>Effective dielectric constant</h4>
+  <p>A microstrip's field is partly in the laminate and partly in the air above it, so the signal sees a blend:</p>
+  <div class="eq"><span class="lbl">Effective ε_r</span>
+    ε<sub>eff</sub> = <span class="frac"><span class="n">ε<sub>r</sub> + 1</span><span class="d">2</span></span> +
+    <span class="frac"><span class="n">ε<sub>r</sub> − 1</span><span class="d">2</span></span> ( 1 + 12h/w )<sup>−1/2</sup>
+  </div>
+  <div class="eq"><span class="lbl">Propagation delay</span>t<sub>pd</sub> = <span class="frac"><span class="n">√ε<sub>eff</sub></span><span class="d">c</span></span> = 3.336 √ε<sub>eff</sub>&nbsp;ps/mm</div>
+  <p>This is why microstrip is <em>faster</em> than stripline on the same board: part of its field is in air, where light is quicker.</p>
+
+  <h3>Stripline <span class="tag">a trace buried between two planes</span></h3>
+  <div class="eq"><span class="lbl">IPC-2141 symmetric stripline</span>
+    Z<sub>0</sub> = <span class="frac"><span class="n">60</span><span class="d">√ε<sub>r</sub></span></span>
+    · ln <span class="frac"><span class="n">4 b</span><span class="d">0.67 π ( 0.8 w + t )</span></span>
+  </div>
+  <div class="where"><b>b</b> — plane-to-plane separation, trace centred between them<br>Fitted for w/b &lt; 0.35 and t/b &lt; 0.25</div>
+  <p>Fully enclosed, so ε<sub>eff</sub> = ε<sub>r</sub> exactly, and the trace radiates almost nothing. The trade: it is slower, and for a given impedance it needs to be narrower than microstrip, which makes it more sensitive to etch tolerance.</p>
+
+  <h3>Differential pairs</h3>
+  <p>Two coupled traces pull each other's impedance down. The commonly published approximations are:</p>
+  <div class="eq"><span class="lbl">Differential impedance</span>
+    Z<sub>diff</sub> ≈ 2 Z<sub>0</sub> ( 1 − 0.48 e<sup>−0.96 s/h</sup> )&nbsp;&nbsp;<span style="color:var(--ink-3)">microstrip</span><br>
+    Z<sub>diff</sub> ≈ 2 Z<sub>0</sub> ( 1 − 0.347 e<sup>−2.9 s/b</sup> )&nbsp;&nbsp;<span style="color:var(--ink-3)">stripline</span>
+  </div>
+  <p>The exponential is the point: coupling collapses quickly with spacing. Past about <span class="tt">s = 3h</span> the traces barely see each other and Z<sub>diff</sub> is simply twice Z<sub>0</sub>. Tight coupling gives better noise rejection and narrower routing; loose coupling is far more forgiving of manufacturing tolerance. Most fabs prefer loose.</p>
+
+  <div class="worked">
+    <h5>Worked example · 50 Ω on a 4-layer 1.6 mm board</h5>
+    <div class="body">
+      <p>Signal on layer 1, ground plane on layer 2, 0.2 mm prepreg between them, 1 oz copper, ε<sub>r</sub> = 4.3.</p>
+      <p class="step">t = 0.0348 mm<br>
+      Try w = 0.36 mm:<br>
+      0.8w + t = 0.288 + 0.035 = 0.323<br>
+      5.98h / 0.323 = 1.196 / 0.323 = 3.703 → ln = 1.309<br>
+      87 / √(4.3 + 1.41) = 87 / 2.390 = 36.4<br>
+      Z<sub>0</sub> = 36.4 × 1.310 = <b>47.7 Ω</b></p>
+      <p class="step">Try w = 0.32 mm → 0.8w + t = 0.291 → ln(4.113) = 1.414 → Z<sub>0</sub> = <b>51.5 Ω</b></p>
+      <p class="ans">0.335 mm gets you 50 Ω. Note how little the width had to move — 40 µm of width shifted the impedance by 4 Ω, roughly 8 %. Etch tolerance alone is typically ±20 µm, which is why a ±10 % impedance spec is normal and ±5 % costs extra.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>What this will not capture</h5>
+    <ul>
+      <li><strong>ε<sub>r</sub> is not a constant.</strong> FR-4 falls from about 4.6 at 100 MHz to 4.2 at 1 GHz, and varies between glass-weave and resin-rich regions along a single trace.</li>
+      <li><strong>Etched traces are trapezoidal.</strong> The formulas assume a rectangle.</li>
+      <li><strong>Solder mask lowers microstrip impedance</strong> by roughly 1–2 Ω. Stripline is unaffected.</li>
+      <li><strong>Plane cuts are the real killer.</strong> A trace routed over a split in its reference plane has no defined impedance at all, whatever the arithmetic says. Keep the return path continuous underneath.</li>
+      <li>Roughness on the copper's underside raises loss at GHz frequencies, which these lossless formulas ignore entirely.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 8 · FILTERS & TIME CONSTANTS ───────────────────────── */
+CALCS.push({
+  id:"filter", group:"Signals", name:"RC / RL / LC",
+  eyebrow:"First and second order", title:"Filters and time constants",
+  blurb:"Decoupling, debouncing, anti-aliasing, slew limiting and reset delays are all the same two components in a different mood. One equation covers most of it.",
+  fields:[
+    {k:"net", label:"Network", type:"seg", def:"rc",
+      opts:[{v:"rc",l:"R + C"},{v:"rl",l:"R + L"},{v:"lc",l:"L + C resonant"}]},
+    {k:"mode", label:"Solve for", type:"seg", def:"f",
+      opts:[{v:"f",l:"Frequency"},{v:"c",l:"Component value"}]},
+    {k:"R", label:"Resistance", type:"num", unit:"Ω", def:10000, step:100, min:0.001, show:v=>v.net!=="lc"},
+    {k:"C", label:"Capacitance", type:"num", unit:"nF", def:100, step:1, min:0.000001,
+      show:v=>v.net!=="rl" && !(v.mode==="c" && v.net==="rc")},
+    {k:"L", label:"Inductance", type:"num", unit:"µH", def:100, step:1, min:0.000001,
+      show:v=>v.net!=="rc" && !(v.mode==="c" && v.net!=="rc")},
+    {k:"ft", label:"Target cutoff / resonant frequency", type:"num", unit:"Hz", def:1000, step:10, min:0.0001,
+      show:v=>v.mode==="c"},
+    {k:"ser", label:"Snap to standard values", type:"sel", def:"E12",
+      opts:[{v:"none",l:"Exact value"},{v:"E12",l:"E12 — typical for capacitors"},{v:"E24",l:"E24"},{v:"E96",l:"E96"}],
+      show:v=>v.mode==="c"}
+  ],
+  compute(v){
+    const out=[], flags=[];
+    const C=v.C*1e-9, L=v.L*1e-6;
+    if (v.net==="rc"){
+      if (v.mode==="f"){
+        const f=1/(2*Math.PI*v.R*C), tau=v.R*C;
+        out.push({type:"group", label:"Cutoff"});
+        out.push({type:"res", k:"−3 dB frequency", v:eng(f,"Hz"), cls:"primary"});
+        out.push({type:"res", k:"Time constant τ", v:eng(tau,"s"), note:"63 % of the way to the final value"});
+        out.push({type:"res", k:"10 % → 90 % rise time", v:eng(2.2*tau,"s")});
+        out.push({type:"res", k:"Settled to 1 %", v:eng(4.6*tau,"s"), note:"4.6 τ"});
+        out.push({type:"res", k:"Settled to 0.1 %", v:eng(6.9*tau,"s"), cls:"sub"});
+        out.push({type:"group", label:"Response at a few decades"});
+        [0.1,1,10,100].forEach(m=>{
+          const g=1/Math.sqrt(1+Math.pow(m,2));
+          out.push({type:"res", k:`${fmt(m,3)} × f_c = ${eng(f*m,"Hz")}`, v:fmt(20*Math.log10(g),3), u:"dB"});
+        });
+      } else {
+        const Cn=1/(2*Math.PI*v.R*v.ft);
+        out.push({type:"group", label:"Capacitor needed"});
+        out.push({type:"res", k:"Exact", v:eng(Cn,"F"), cls:"primary"});
+        if (v.ser!=="none"){
+          const s=eNearest(v.ser, Cn*1e12)*1e-12;
+          out.push({type:"res", k:`Nearest ${v.ser}`, v:eng(s,"F")});
+          out.push({type:"res", k:"Resulting cutoff", v:eng(1/(2*Math.PI*v.R*s),"Hz")});
+        }
+      }
+      flags.push({cls:"warn", t:"A first-order RC rolls off at only 20 dB/decade. For anti-aliasing ahead of an ADC that is rarely enough — you need the filter to be well down by half the sample rate, so put f_c a decade below it or use a higher-order filter."});
+      flags.push({cls:"warn", t:"Ceramic capacitors lose capacitance under DC bias. An X7R 0603 rated 16 V can be down 50 % at 10 V applied, moving your cutoff by a factor of two. C0G/NP0 does not do this, but is only available in small values."});
+    }
+    if (v.net==="rl"){
+      const f=v.R/(2*Math.PI*L), tau=L/v.R;
+      out.push({type:"group", label:"Cutoff"});
+      out.push({type:"res", k:"−3 dB frequency", v:eng(f,"Hz"), cls:"primary"});
+      out.push({type:"res", k:"Time constant τ = L/R", v:eng(tau,"s")});
+      out.push({type:"res", k:"Reactance at f_c", v:eng(2*Math.PI*f*L,"Ω"), note:"equal to R, by definition of the cutoff"});
+      flags.push({cls:"warn", t:"An inductor's own series resistance and its self-resonant frequency both limit this. Above self-resonance a real inductor behaves as a capacitor."});
+    }
+    if (v.net==="lc"){
+      if (v.mode==="f"){
+        const f0=1/(2*Math.PI*Math.sqrt(L*C)), Z=Math.sqrt(L/C);
+        out.push({type:"group", label:"Resonance"});
+        out.push({type:"res", k:"Resonant frequency", v:eng(f0,"Hz"), cls:"primary"});
+        out.push({type:"res", k:"Characteristic impedance √(L/C)", v:eng(Z,"Ω")});
+        out.push({type:"res", k:"Reactance of each at f₀", v:eng(2*Math.PI*f0*L,"Ω"), note:"equal and opposite — that is what resonance means"});
+        if (v.R>0){
+          out.push({type:"res", k:"Q with a series R", v:fmt(Z/v.R,3), u:""});
+          out.push({type:"res", k:"−3 dB bandwidth", v:eng(f0/(Z/v.R),"Hz")});
+        }
+      } else {
+        const Ln=1/(Math.pow(2*Math.PI*v.ft,2)*C);
+        out.push({type:"group", label:"Inductor needed"});
+        out.push({type:"res", k:"Exact", v:eng(Ln,"H"), cls:"primary"});
+      }
+      flags.push({cls:"warn", t:"An underdamped LC rings. In a power filter that means it can amplify noise at its resonant frequency rather than remove it — check where f₀ sits relative to your switching frequency, and damp it if it lands badly."});
+    }
+    return {out, flags};
+  },
+  theory:`
+  <h3>One equation, several disguises</h3>
+  <div class="eq"><span class="lbl">First-order cutoff</span>
+    f<sub>c</sub> = <span class="frac"><span class="n">1</span><span class="d">2π R C</span></span>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    f<sub>c</sub> = <span class="frac"><span class="n">R</span><span class="d">2π L</span></span>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    f<sub>0</sub> = <span class="frac"><span class="n">1</span><span class="d">2π √(L C)</span></span>
+  </div>
+  <p>The cutoff is defined as the frequency where the reactance equals the resistance. A capacitor's reactance is <span class="tt">1/(2πfC)</span>; set that equal to R and solve for f, and the first formula falls straight out. At that point the output is <span class="tt">1/√2</span> of the input — down 3 dB, half the power — and the phase has shifted 45°.</p>
+
+  <h4>The time-domain view is often the more useful one</h4>
+  <div class="eq"><span class="lbl">Time constant</span>τ = R C&nbsp;&nbsp;&nbsp;&nbsp;τ = <span class="frac"><span class="n">L</span><span class="d">R</span></span>&nbsp;&nbsp;&nbsp;&nbsp;f<sub>c</sub> = <span class="frac"><span class="n">1</span><span class="d">2π τ</span></span></div>
+  <p>Charging is exponential, so the useful multiples are worth memorising:</p>
+  <table class="ref">
+    <tr><th>Elapsed</th><th>Reached</th><th>Typical use</th></tr>
+    <tr><td>1 τ</td><td class="n">63.2 %</td><td>the definition</td></tr>
+    <tr><td>2.2 τ</td><td class="n">10 % → 90 %</td><td>rise time as a scope measures it</td></tr>
+    <tr><td>3 τ</td><td class="n">95 %</td><td>"close enough" for a debounce</td></tr>
+    <tr><td>4.6 τ</td><td class="n">99 %</td><td>settling for an 8-bit reading</td></tr>
+    <tr><td>6.9 τ</td><td class="n">99.9 %</td><td>settling for a 10-bit reading</td></tr>
+    <tr><td>n·ln2 τ</td><td class="n">1 LSB of n bits</td><td>the general rule</td></tr>
+  </table>
+  <p>That last line is the one that catches people out on ADC front ends: settling to within one least-significant bit of an n-bit converter takes <span class="tt">n × 0.69</span> time constants. Twelve bits needs 8.3 τ.</p>
+
+  <h4>Rolloff</h4>
+  <p>A first-order filter falls at <strong>20 dB per decade</strong> — a factor of ten in frequency buys a factor of ten in attenuation. That is gentle. A decade past cutoff you have only 20 dB; two decades, 40 dB.</p>
+
+  <div class="worked">
+    <h5>Worked example · debouncing a pushbutton</h5>
+    <div class="body">
+      <p>A typical tactile switch bounces for 1–5 ms. You want the input pin to see a clean edge.</p>
+      <p class="step">Target: settle in about 10 ms → 10 ms ≈ 3 τ → τ ≈ 3.3 ms<br>
+      With a 10 kΩ pull-up: C = τ / R = 0.0033 / 10000 = <b>330 nF</b><br>
+      f<sub>c</sub> = 1 / (2π × 10 k × 330 n) = <b>48 Hz</b></p>
+      <p class="ans">Two cautions the equation hides. First, when the switch closes it shorts the capacitor directly to ground — the discharge current is limited only by contact resistance, and repeated over years that pits the contacts. Add 100 Ω in series with the switch. Second, an RC alone gives a slow ramp; feed it into a Schmitt-trigger input, or the microcontroller may see several transitions on the way through its threshold band.</p>
+    </div>
+  </div>`
+});
+
+/* ─── 9 · CURRENT SENSE SHUNT ────────────────────────────── */
+CALCS.push({
+  id:"shunt", group:"Signals", name:"Current sense shunt",
+  eyebrow:"Measuring current with a resistor", title:"Current sense shunt",
+  blurb:"A tug-of-war between two things you want at once: a big enough signal to measure, and a small enough resistor that it does not disturb the circuit or cook itself.",
+  fields:[
+    {k:"Imax", label:"Full-scale current", type:"num", unit:"A", def:5, step:0.1, min:0.0001},
+    {k:"mode", label:"Start from", type:"seg", def:"v",
+      opts:[{v:"v",l:"Target sense voltage"},{v:"r",l:"A shunt I already have"}]},
+    {k:"Vs", label:"Sense voltage at full scale", type:"num", unit:"mV", def:100, step:10, min:0.1,
+      show:v=>v.mode==="v", hint:"50–100 mV is the usual compromise. Higher gives a better signal-to-noise ratio; lower wastes less power."},
+    {k:"R", label:"Shunt resistance", type:"num", unit:"mΩ", def:20, step:1, min:0.0001, show:v=>v.mode==="r"},
+    {k:"tol", label:"Shunt tolerance", type:"num", unit:"%", def:1, step:0.1, min:0},
+    {k:"tcr", label:"Temperature coefficient", type:"num", unit:"ppm/°C", def:50, step:10, min:0,
+      hint:"Metal-film current sense parts are 50–100 ppm/°C. Ordinary thick-film chip resistors can be 200–400."},
+    {k:"rise", label:"Expected temperature rise", type:"num", unit:"°C", def:40, step:5, min:0},
+    {k:"gain", label:"Amplifier gain", type:"num", unit:"×", def:20, step:1, min:1},
+    {k:"Vref", label:"ADC full-scale voltage", type:"num", unit:"V", def:3.3, step:0.1, min:0.1},
+    {k:"bits", label:"ADC resolution", type:"sel", def:12,
+      opts:[{v:8,l:"8 bit"},{v:10,l:"10 bit"},{v:12,l:"12 bit"},{v:16,l:"16 bit"},{v:24,l:"24 bit"}]}
+  ],
+  compute(v){
+    const out=[], flags=[];
+    const R = v.mode==="v" ? (v.Vs/1000)/v.Imax : v.R/1000;
+    const Vs = R*v.Imax, P = v.Imax*v.Imax*R;
+
+    out.push({type:"group", label:"Shunt"});
+    out.push({type:"res", k:"Resistance", v:eng(R,"Ω"), cls:"primary"});
+    out.push({type:"res", k:"Sense voltage at full scale", v:eng(Vs,"V"), cls: v.mode==="r"?"primary":""});
+    out.push({type:"res", k:"Power at full scale", v:eng(P,"W"), note:"choose a part rated at least 2× this"});
+    out.push({type:"res", k:"Suggested package", v: P>2?"2512 / TO-220 / bar":P>1?"2512":P>0.5?"2010":P>0.25?"1206":"0805"});
+
+    out.push({type:"group", label:"Signal chain"});
+    const Vo = Vs*v.gain;
+    out.push({type:"res", k:"Amplifier output at full scale", v:eng(Vo,"V"), cls:"primary"});
+    out.push({type:"res", k:"ADC range used", v:fmt(100*Vo/v.Vref,3), u:"%"});
+    out.push({type:"res", k:"Gain to fill the ADC", v:fmt(v.Vref/Vs,4), u:"×", note:"if you want full scale to land exactly at V_ref"});
+    const lsb = v.Vref/Math.pow(2,v.bits);
+    out.push({type:"res", k:"One ADC count", v:eng(lsb,"V"), note:`${eng(lsb/(v.gain*R),"A")} of current`});
+    out.push({type:"res", k:"Counts used at full scale", v:fmt(Vo/lsb,4), u:"", cls:"sub"});
+
+    out.push({type:"group", label:"Accuracy"});
+    const drift = v.tcr*1e-6*v.rise*100;
+    out.push({type:"res", k:"From shunt tolerance", v:"±"+fmt(v.tol,3), u:"%"});
+    out.push({type:"res", k:`From ${fmt(v.rise,3)} °C of self-heating`, v:"+"+fmt(drift,3), u:"%", note:`${fmt(v.tcr,3)} ppm/°C × ${fmt(v.rise,3)} °C`});
+    out.push({type:"res", k:"Worst case combined", v:"±"+fmt(v.tol+drift,3), u:"%", cls:"primary", note:"before the amplifier's offset and gain error"});
+
+    if (P > 1) flags.push({cls:"warn", t:`${eng(P,"W")} in a chip resistor is serious. It will heat, and its resistance will climb as it does — a measurement error that grows with the current you are measuring.`});
+    if (Vs < 0.02) flags.push({cls:"warn", t:"Below about 20 mV the amplifier's input offset voltage and thermocouple effects at the solder joints start to matter. A zero-drift or chopper amplifier is the usual answer."});
+    if (Vo > v.Vref) flags.push({cls:"bad", t:`The amplifier output reaches ${eng(Vo,"V")}, above the ${eng(v.Vref,"V")} ADC range. Reduce the gain to ${fmt(v.Vref/Vs,3)}× or lower the shunt value.`});
+    else if (Vo < v.Vref*0.5) flags.push({cls:"warn", t:`Only ${fmt(100*Vo/v.Vref,2)} % of the ADC range is used, so you are throwing away resolution. Raise the gain toward ${fmt(v.Vref/Vs,3)}×.`});
+    flags.push({cls:"warn", t:"Use a four-wire Kelvin connection: the sense traces must land on the shunt's own pads, inside the current path, and run to the amplifier as a tight pair. Sensing anywhere along the supply trace measures the trace as well as the shunt."});
+    return {out, flags};
+  },
+  theory:`
+  <h3>The trade-off, stated plainly</h3>
+  <p>You are converting a current into a voltage with Ohm's law:</p>
+  <div class="eq"><span class="lbl">Sense voltage</span>V<sub>sense</sub> = <em>I</em> · R<sub>shunt</sub>&nbsp;&nbsp;&nbsp;&nbsp;P = <em>I</em>² · R<sub>shunt</sub></div>
+  <p>Both scale with the same resistance, and they pull in opposite directions:</p>
+  <ul>
+    <li><strong>Larger R</strong> — bigger signal, less affected by amplifier offset and noise, better resolution.</li>
+    <li><strong>Smaller R</strong> — less power wasted, less voltage stolen from the load, less self-heating, so less drift.</li>
+  </ul>
+  <p>The industry has settled on <strong>50–100 mV at full scale</strong> as the compromise, which is why so many current-sense amplifiers are specified over roughly that input range. Modern zero-drift parts let you work down at 10–25 mV if power matters more than noise.</p>
+
+  <h4>Self-heating is the error nobody budgets for</h4>
+  <p>The shunt dissipates <span class="tt">I²R</span>, warms up, and its resistance rises with temperature. Your reading therefore drifts <em>with the very quantity you are measuring</em> — a nonlinearity, not a fixed offset.</p>
+  <div class="eq"><span class="lbl">Thermal drift</span>ΔR / R = TCR × ΔT&nbsp;&nbsp;&nbsp;<span style="color:var(--ink-3)">TCR in ppm/°C</span></div>
+  <p>An ordinary thick-film chip resistor at 250 ppm/°C, warming 60 °C, drifts 1.5 % — swamping its own 1 % tolerance. A dedicated metal-element sense resistor at 50 ppm/°C drifts 0.3 % over the same rise. That difference is the entire reason current-sense resistors are a separate product category.</p>
+
+  <h4>Kelvin sensing</h4>
+  <p>A 5 mΩ shunt is comparable to the resistance of the solder joints and pads either side of it. If you sense across the whole footprint you are measuring solder as well as shunt, and solder has a temperature coefficient roughly ten times worse than the shunt element does.</p>
+  <p>Four-terminal sense resistors solve this with separate force and sense pads. With a two-terminal part, do it in the layout: bring the heavy current in and out on the outer edges of the pads, and take the sense traces from the inner edges, symmetrically, running to the amplifier as a close-coupled pair.</p>
+
+  <div class="worked">
+    <h5>Worked example · 5 A full scale into a 12-bit ADC on 3.3 V</h5>
+    <div class="body">
+      <p class="step">Choose 100 mV full scale → R = 0.1 / 5 = <b>20 mΩ</b><br>
+      P = 5² × 0.02 = <b>0.5 W</b> → 2010 or 2512 package</p>
+      <p class="step">Gain to fill the ADC: 3.3 / 0.1 = <b>33×</b> — awkward, so use a 20× amplifier and accept 2.0 V full scale (61 % of range), or a 50× part and reduce the shunt to 13 mΩ.</p>
+      <p class="step">Resolution with 20× gain: 1 LSB = 3.3 / 4096 = 806 µV<br>
+      → 806 µV / (20 × 0.02) = <b>2.0 mA per count</b></p>
+      <p class="step">Error budget: shunt ±1 % · self-heat at 50 ppm/°C × 40 °C = +0.2 % · amplifier gain error ±0.5 % · offset 50 µV / 100 mV = ±0.05 %<br>
+      Worst case ≈ <b>±1.75 %</b></p>
+      <p class="ans">±1.75 % of 5 A is ±88 mA — far coarser than the 2 mA the ADC appears to offer. Resolution and accuracy are different things, and the shunt sets the accuracy. Halving the shunt to 10 mΩ would cut the dissipation to 0.25 W but also halve the signal, doubling the relative weight of the amplifier's offset.</p>
+    </div>
+  </div>
+
+  <div class="limits">
+    <h5>Layout and practice</h5>
+    <ul>
+      <li><strong>High side or low side?</strong> Low side is simple but lifts the load's ground by V<sub>sense</sub> and misses faults to ground. High side needs an amplifier that tolerates the full rail as common mode, but sees everything.</li>
+      <li><strong>Thermocouple effects.</strong> Dissimilar metals at different temperatures generate microvolts. Keep the two sense traces symmetrical so their thermal EMFs cancel.</li>
+      <li><strong>Inductance matters in switching circuits.</strong> A shunt has a few nH of parasitic inductance, which produces a voltage spike proportional to di/dt. Four-terminal parts are specified for this; ordinary chip resistors are not.</li>
+      <li><strong>Filter after the amplifier, not before it</strong>, or the filter's resistance adds to the sense path.</li>
+    </ul>
+  </div>`
+});
+
+/* ─── 10 · REFERENCE ─────────────────────────────────────── */
+CALCS.push({
+  id:"ref", group:"Reference", name:"Tables & conversions",
+  eyebrow:"Look-up", title:"Reference tables",
+  blurb:"The numbers this page keeps reaching for, in one place.",
+  theoryOnly:true, fields:[],
+  theory:`
+  <h3>Copper weight</h3>
+  <p>One ounce of copper rolled flat over one square foot. Divide the mass by copper's density and you get a thickness — which is why a mass is quoted as a thickness.</p>
+  <table class="ref">
+    <tr><th>Weight</th><th>µm</th><th>mil</th><th>mm</th><th>mΩ/□ at 20 °C</th><th>Availability</th></tr>
+    <tr><td>0.5 oz</td><td class="n">17.4</td><td class="n">0.685</td><td class="n">0.0174</td><td class="n">0.99</td><td>inner layers, fine pitch</td></tr>
+    <tr><td>1 oz</td><td class="n">34.8</td><td class="n">1.37</td><td class="n">0.0348</td><td class="n">0.49</td><td>the default everywhere</td></tr>
+    <tr><td>2 oz</td><td class="n">69.6</td><td class="n">2.74</td><td class="n">0.0696</td><td class="n">0.25</td><td>small surcharge, widely stocked</td></tr>
+    <tr><td>3 oz</td><td class="n">104</td><td class="n">4.11</td><td class="n">0.104</td><td class="n">0.16</td><td>power boards, wider etch tolerance</td></tr>
+    <tr><td>4 oz</td><td class="n">139</td><td class="n">5.48</td><td class="n">0.139</td><td class="n">0.12</td><td>specialist, coarse features only</td></tr>
+  </table>
+  <p>Heavier copper etches with a wider trapezoid, so minimum trace width and spacing both grow. At 2 oz most fabs want 0.2 mm minimums instead of 0.13 mm; at 3 oz, more again. Check before you rely on it.</p>
+
+  <h3>Length and area</h3>
+  <table class="ref">
+    <tr><th>From</th><th>To</th><th>Multiply by</th></tr>
+    <tr><td>mil</td><td>mm</td><td class="n">0.0254</td></tr>
+    <tr><td>mm</td><td>mil</td><td class="n">39.37</td></tr>
+    <tr><td>mil²</td><td>mm²</td><td class="n">0.000645</td></tr>
+    <tr><td>mm²</td><td>mil²</td><td class="n">1550</td></tr>
+    <tr><td>inch</td><td>mm</td><td class="n">25.4</td></tr>
+  </table>
+  <p>A mil is one thousandth of an inch, not a millimetre. The clash is unfortunate and permanent.</p>
+
+  <h3>Wire gauge for the bits that leave the board</h3>
+  <table class="ref">
+    <tr><th>AWG</th><th>⌀ mm</th><th>mm²</th><th>mΩ/m at 20 °C</th><th>Comfortable current</th></tr>
+    <tr><td>30</td><td class="n">0.255</td><td class="n">0.051</td><td class="n">339</td><td class="n">0.5 A</td></tr>
+    <tr><td>26</td><td class="n">0.405</td><td class="n">0.129</td><td class="n">134</td><td class="n">1.3 A</td></tr>
+    <tr><td>24</td><td class="n">0.511</td><td class="n">0.205</td><td class="n">84</td><td class="n">2.1 A</td></tr>
+    <tr><td>22</td><td class="n">0.644</td><td class="n">0.326</td><td class="n">53</td><td class="n">3 A</td></tr>
+    <tr><td>20</td><td class="n">0.812</td><td class="n">0.518</td><td class="n">33</td><td class="n">5 A</td></tr>
+    <tr><td>18</td><td class="n">1.024</td><td class="n">0.823</td><td class="n">21</td><td class="n">7 A</td></tr>
+    <tr><td>16</td><td class="n">1.291</td><td class="n">1.31</td><td class="n">13</td><td class="n">10 A</td></tr>
+    <tr><td>14</td><td class="n">1.628</td><td class="n">2.08</td><td class="n">8.3</td><td class="n">15 A</td></tr>
+    <tr><td>12</td><td class="n">2.053</td><td class="n">3.31</td><td class="n">5.2</td><td class="n">20 A</td></tr>
+  </table>
+  <p>Gauge numbers run backwards because they originally counted how many times the wire was drawn through a die. Every six gauges is roughly a factor of two in area. The current column is a chassis-wiring rule of thumb, not a standard — bundled wire in an enclosure needs derating.</p>
+
+  <h3>Dielectric constants</h3>
+  <table class="ref">
+    <tr><th>Material</th><th>ε_r</th><th>Notes</th></tr>
+    <tr><td>Air</td><td class="n">1.0006</td><td>the reference</td></tr>
+    <tr><td>FR-4</td><td class="n">4.2 – 4.6</td><td>falls with frequency; varies with glass weave</td></tr>
+    <tr><td>Solder mask</td><td class="n">3.3 – 4.0</td><td>lowers microstrip impedance by 1–2 Ω</td></tr>
+    <tr><td>Polyimide (flex)</td><td class="n">3.4 – 3.5</td><td>stable, expensive</td></tr>
+    <tr><td>Rogers 4350B</td><td class="n">3.48</td><td>tightly controlled, RF work</td></tr>
+    <tr><td>PTFE</td><td class="n">2.1</td><td>lowest loss, hardest to fabricate</td></tr>
+  </table>
+  <p>FR-4 is not a material specification — it is a flammability rating. Two boards both called FR-4 can have meaningfully different ε_r and loss. If impedance matters, name the laminate.</p>
+
+  <h3>E-series</h3>
+  <p>Values are spaced logarithmically so that consecutive ones just overlap at the part's tolerance. E24 has 24 values per decade for 5 % parts; E96 has 96 for 1 % parts.</p>
+  <table class="ref">
+    <tr><th>Series</th><th>Tolerance</th><th>Values per decade</th><th>Step</th></tr>
+    <tr><td>E6</td><td class="n">±20 %</td><td class="n">6</td><td class="n">×1.47</td></tr>
+    <tr><td>E12</td><td class="n">±10 %</td><td class="n">12</td><td class="n">×1.21</td></tr>
+    <tr><td>E24</td><td class="n">±5 %</td><td class="n">24</td><td class="n">×1.10</td></tr>
+    <tr><td>E96</td><td class="n">±1 %</td><td class="n">96</td><td class="n">×1.02</td></tr>
+  </table>
+  <p>Capacitors are usually E6 or E12 only. Do not design a filter that needs an E96 capacitor.</p>
+
+  <h3>What to ask your fabricator</h3>
+  <p>Almost every number on this page depends on something only your board house can tell you. Before a design is committed, get these:</p>
+  <ul>
+    <li><strong>The stackup</strong> — layer order, and the thickness of every core and prepreg. Impedance is meaningless without it.</li>
+    <li><strong>Laminate and its ε_r</strong> at the frequency you care about, not at 1 MHz.</li>
+    <li><strong>Minimum trace and space</strong> at your chosen copper weight.</li>
+    <li><strong>Minimum drill and annular ring</strong>, and whether they do via-in-pad.</li>
+    <li><strong>Guaranteed minimum average barrel plating</strong> — the number that sets via current capacity.</li>
+    <li><strong>Impedance control tolerance</strong> and whether they will adjust your trace widths to hit the target. Most will, and their adjusted width beats any formula on this page.</li>
+  </ul>`
+});
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER ENGINE
+   ═══════════════════════════════════════════════════════════ */
+const STATE = {};
+let CUR = null;
+
+CALCS.forEach(c => {
+  const v = {};
+  (c.fields || []).forEach(f => { v[f.k] = (f.type === "checks") ? Object.assign({}, f.def) : f.def; });
+  STATE[c.id] = v;
+});
+
+function buildRail(){
+  const rail = document.getElementById("rail");
+  let html = "", lastGroup = null, i = 0;
+  for (const c of CALCS){
+    if (c.group !== lastGroup){ html += `<div class="grp">${c.group}</div>`; lastGroup = c.group; }
+    i++;
+    html += `<button class="nav-item" data-id="${c.id}" aria-current="false"><span class="idx">${String(i).padStart(2,"0")}</span>${c.name}</button>`;
+  }
+  rail.innerHTML = html;
+  rail.querySelectorAll(".nav-item").forEach(b => b.onclick = () => { location.hash = b.dataset.id; });
+}
+
+function fieldHTML(f, v){
+  const val = v[f.k];
+  let inner = "";
+  if (f.type === "num"){
+    inner = `<div class="inrow">
+      <input type="number" id="f-${f.k}" data-fk="${f.k}" value="${val}"
+        ${f.step!==undefined?`step="${f.step}"`:""} ${f.min!==undefined?`min="${f.min}"`:""}>
+      ${f.unit ? `<span class="unit">${f.unit}</span>` : ""}</div>`;
+  } else if (f.type === "seg"){
+    inner = `<div class="seg" role="group">` + f.opts.map(o =>
+      `<button type="button" data-fk="${f.k}" data-v="${o.v}" aria-pressed="${String(o.v)===String(val)}">${o.l}</button>`).join("") + `</div>`;
+  } else if (f.type === "sel"){
+    inner = `<select id="f-${f.k}" data-fk="${f.k}">` + f.opts.map((o,i) =>
+      `<option value="${i}" ${String(o.v)===String(val)?"selected":""}>${o.l}</option>`).join("") + `</select>`;
+  } else if (f.type === "checks"){
+    inner = `<div class="checks">` + f.opts.map(o =>
+      `<label><input type="checkbox" data-fk="${f.k}" data-v="${o.v}" ${val[o.v]?"checked":""}><span>${o.l}</span></label>`).join("") + `</div>`;
+  }
+  return `<div class="field" data-field="${f.k}">
+    ${f.type==="checks" ? `<label>${f.label}</label>` : `<label for="f-${f.k}">${f.label}</label>`}
+    ${inner}${f.hint ? `<span class="hint">${f.hint}</span>` : ""}</div>`;
+}
+
+function renderOut(c){
+  const v = STATE[c.id];
+  let r;
+  try { r = c.compute(v); }
+  catch(e){ document.getElementById("outpanel").innerHTML =
+    `<span class="flag bad">Those inputs do not produce a result. Check for a zero or a negative where the equation needs a positive number.</span>`; return; }
+
+  let html = "", openGroup = false;
+  for (const o of r.out){
+    if (o.type === "group"){
+      if (openGroup) html += `</div>`;
+      html += `<div class="res-group"><h4>${o.label}</h4>`; openGroup = true; continue;
+    }
+    html += `<div class="res ${o.cls||""}"><span class="k">${o.k}</span><span class="v">${o.v}${o.u?`<span class="u">${o.u}</span>`:""}</span></div>`;
+    if (o.note) html += `<div class="res-note">${o.note}</div>`;
+  }
+  if (openGroup) html += `</div>`;
+  for (const f of (r.flags||[])) html += `<span class="flag ${f.cls}">${f.t}</span>`;
+  document.getElementById("outpanel").innerHTML = html;
+
+  const fig = document.getElementById("xsec");
+  if (fig){
+    if (r.xsec){
+      fig.style.display = "";
+      fig.innerHTML = `<figcaption><span>${r.xsec.caption}</span><em>${r.xsec.right}</em></figcaption><div class="stage">${r.xsec.svg}</div>`;
+    } else fig.style.display = "none";
+  }
+
+  (c.fields||[]).forEach(f => {
+    if (!f.show) return;
+    const el = document.querySelector(`[data-field="${f.k}"]`);
+    if (el) el.style.display = f.show(v) ? "" : "none";
+  });
+}
+
+function renderCalc(c){
+  CUR = c;
+  const v = STATE[c.id];
+  const main = document.getElementById("main");
+  let html = `<div class="calc-head">
+      <div class="eyebrow">${c.eyebrow}</div>
+      <h2>${c.title}</h2><p>${c.blurb}</p></div>`;
+
+  if (!c.theoryOnly){
+    html += `<div class="bench">
+      <div class="bench-in">
+        <p class="bench-label">Inputs</p>
+        ${c.fields.map(f => fieldHTML(f, v)).join("")}
+      </div>
+      <div class="bench-out">
+        <p class="bench-label">Results</p>
+        <div id="outpanel"></div>
+      </div></div>
+      <figure class="xsec" id="xsec"></figure>`;
+  }
+  html += `<div class="theory">${c.theory}</div>`;
+  main.innerHTML = html;
+
+  if (!c.theoryOnly){
+    main.querySelectorAll('input[type=number]').forEach(el => {
+      el.addEventListener("input", () => {
+        const n = parseFloat(el.value);
+        if (isNaN(n)) return;
+        STATE[c.id][el.dataset.fk] = n;
+        renderOut(c);
+      });
+    });
+    main.querySelectorAll('.seg button').forEach(el => {
+      el.addEventListener("click", () => {
+        const f = c.fields.find(x => x.k === el.dataset.fk);
+        const raw = el.dataset.v;
+        STATE[c.id][f.k] = (typeof f.def === "number") ? parseFloat(raw) : raw;
+        el.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === el));
+        renderOut(c);
+      });
+    });
+    main.querySelectorAll('select').forEach(el => {
+      el.addEventListener("change", () => {
+        const f = c.fields.find(x => x.k === el.dataset.fk);
+        STATE[c.id][f.k] = f.opts[+el.value].v;
+        renderOut(c);
+      });
+    });
+    main.querySelectorAll('input[type=checkbox]').forEach(el => {
+      el.addEventListener("change", () => {
+        STATE[c.id][el.dataset.fk][el.dataset.v] = el.checked;
+        renderOut(c);
+      });
+    });
+    renderOut(c);
+  }
+
+  document.querySelectorAll(".nav-item").forEach(b =>
+    b.setAttribute("aria-current", b.dataset.id === c.id ? "true" : "false"));
+  document.title = c.title + " — Copper & Patina";
+}
+
+function route(){
+  const id = location.hash.replace("#","");
+  const c = CALCS.find(x => x.id === id) || CALCS[0];
+  renderCalc(c);
+  if (id) document.getElementById("main").focus({preventScroll:true});
+}
+
+buildRail();
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>

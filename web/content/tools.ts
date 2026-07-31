@@ -2,7 +2,7 @@ export type Tool = {
   slug: string;
   title: string;
   blurb: string;
-  kind: "calculator" | "reference";
+  kind: "calculator" | "reference" | "field tool";
   /**
    * When set, the tool is a standalone static page (served from public/) and the
    * card links straight to it instead of to a /tools/[slug] React component.
@@ -59,6 +59,21 @@ export const tools: Tool[] = [
       "How tight? Tightening torque for inch sizes, hole strength included.",
     kind: "calculator",
     href: "/tools/fasteners/torque-inch.html",
+  },
+  {
+    slug: "pcb",
+    title: "Copper & Patina — PCB Calculators",
+    blurb:
+      "Ten hobbyist PCB calculators on one page — trace width, vias, impedance, dividers, filters, shunts, and reference tables.",
+    kind: "calculator",
+    href: "/tools/pcb/pcb-calculator.html",
+  },
+  {
+    slug: "qr-sync",
+    title: "QR Time Sync",
+    blurb:
+      "Flash millisecond timestamps as QR codes to sync multi-camera rigs — film the screen, decode the footage, align every recording to one clock.",
+    kind: "field tool",
   },
 ];
 

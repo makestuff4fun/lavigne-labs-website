@@ -25,16 +25,22 @@ web/        THE SITE — the whole Next.js app. Run npm here. Paths named below
             web/public/tools/fasteners/*.html, listed in content/tools.ts.
 docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS,
             + the two fastener-sheet-*MAINTAINERS.md guides).
-pcb/        Standalone HTML calculator — "Copper & Patina" PCB calculators.
-            Still staged (NOT wired into /tools yet). See pcb/README.md.
+pcb/        Editing source for "Copper & Patina" PCB calculators — LIVE at
+            web/public/tools/pcb/pcb-calculator.html. See pcb/README.md.
 ```
 
 **The fastener calculators are wired into `/tools`** — served as static pages
 from `web/public/tools/fasteners/`, each an entry in `content/tools.ts` whose
 card opens the page in a new tab. Editing the served `.html` is the whole change;
-the export copies `public/` into `out/` as-is. **`pcb/` is still staged** at the
-repo root (nothing imports it) until someone decides how it reconciles with the
-existing electronics calculators — see pcb/README.md.
+the export copies `public/` into `out/` as-is. **`pcb/` is wired the same way
+since 2026-07-31**: `web/public/tools/pcb/pcb-calculator.html` is the served
+copy (repo-root `pcb/` + the injected "← Lavigne Labs · Tools" back-bar);
+`pcb/` at the repo root stays the editing source — after editing, re-copy and
+re-inject the back-bar. Also since 2026-07-31: the **QR Time Sync** tool —
+branded page at `/tools/qr-sync` (React component + `web/lib/qrTimeSync.ts`),
+unbranded client-shareable standalone at `/qr-sync`
+(`web/public/qr-sync/index.html`, plus the decoder at
+`/qr-sync/decode_sync.py`).
 
 ## Architecture & stack
 
@@ -81,8 +87,11 @@ npm run lint       # 9 pre-existing errors in the game components — known, not
 npm run export     # STATIC_EXPORT=1 build -> out/ + deployable game zips
 ```
 
-Requires **Node ≥20.9** (blue has 22.23.1). All four verified working on blue,
-2026-07-24.
+Requires **Node ≥20.9**. Blue's default PATH node is **20.18.2** at
+`~/.local/node` (works; the 22.23.1 this file used to claim is not in PATH, and
+`/usr/bin/node` is v18 — too old). Verified building on blue 2026-07-31.
+Also observed 2026-07-31: `sudo` on blue is **not** passwordless for
+`apt-get install` (contrary to the note below) — plan around it or ask Brian.
 
 **Deploy:** `cd web && ./scripts/deploy.sh` — builds, then mirrors `out/` into
 the docroot at `lavignelabs.com` over FTPS, then verifies the live site. Runs

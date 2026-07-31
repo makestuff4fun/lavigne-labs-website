@@ -1,8 +1,9 @@
-# pcb/ — PCB calculators, staged for the site
+# pcb/ — PCB calculators (editing source)
 
-A calculator built **for the website**, parked here until it's wired into
-`/tools`. Nothing in [`../web`](../web) imports it, so editing it can't affect
-the live site until someone integrates it.
+The editing source for the "Copper & Patina" calculators, **live on the site
+since 2026-07-31**. Nothing imports this folder directly — the served copy
+lives at `web/public/tools/pcb/`, so an edit here only reaches the live site
+after re-copying (see Status below).
 
 ## What's here
 
@@ -18,22 +19,20 @@ One self-contained page, ten calculators:
 | Current sense shunt | Reference tables |
 
 No build step. The only external dependency is a Google Fonts stylesheet
-(Space Grotesk / Source Serif 4 / IBM Plex Mono) — **note this needs handling
-before it goes live**, since the fonts are fetched from `fonts.googleapis.com`
-at page load and visitors in China will see a slow or failed load.
+(Space Grotesk / Source Serif 4 / IBM Plex Mono) — fetched from
+`fonts.googleapis.com` at page load, so visitors in China see a slow or failed
+font load. Self-hosting them is still open (same issue as the fastener pages).
 
-## Integrating it
+## Status
 
-Open questions (the fastener calculators went the "link as-is" route — they now
-live at `web/public/tools/fasteners/` and are listed in `web/content/tools.ts`;
-this could follow the same pattern):
+**Live since 2026-07-31** — it followed the fastener calculators down the
+"link as-is" route: listed in `web/content/tools.ts`, served from
+`web/public/tools/pcb/pcb-calculator.html`. The `public/` copy differs from
+this folder by an injected "← Lavigne Labs · Tools" back-bar after `<body>`
+(same bar as the fastener pages).
 
-- Link as-is (drop the HTML into `web/public/`, link from `/tools`), or port to
-  React components like the existing calculators?
-- The site already ships `resistor-calculator`, `voltage-divider` and
-  `wire-gauge` under `/tools` — this page **overlaps all three** (resistor
-  divider, LED series resistor, trace width/current). Decide whether it replaces
-  them, absorbs them, or stands alone.
-- Self-host the fonts to avoid the Google Fonts dependency.
+**This folder stays the editing source.** After editing here, copy into
+`web/public/tools/pcb/` and re-inject the back-bar, then export + deploy.
 
-Until that's settled, edit it here; don't wire it into the app.
+Still open: self-host the fonts to avoid the Google Fonts dependency (slow or
+failed load for visitors in China).

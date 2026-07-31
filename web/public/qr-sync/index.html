@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QR Time Sync</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root {
+    --ground: #f6f6f4;
+    --card: #ffffff;
+    --ink: #15181c;
+    --muted: #5b6168;
+    --line: #dcdedb;
+    --accent: #127f8c;
+    --accent-ink: #ffffff;
+    --run: #2e8f5b;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #111418;
+      --card: #191d22;
+      --ink: #e8e9e6;
+      --muted: #99a0a8;
+      --line: #2a2f36;
+      --accent: #3aa8b5;
+      --accent-ink: #0d1315;
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f6f6f4; --card: #ffffff; --ink: #15181c; --muted: #5b6168;
+    --line: #dcdedb; --accent: #127f8c; --accent-ink: #ffffff;
+  }
+  :root[data-theme="dark"] {
+    --ground: #111418; --card: #191d22; --ink: #e8e9e6; --muted: #99a0a8;
+    --line: #2a2f36; --accent: #3aa8b5; --accent-ink: #0d1315;
+  }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap {
+    max-width: 28rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  header h1 {
+    font-size: 1.45rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+    text-wrap: balance;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+  header p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .row label { font-size: 0.92rem; }
+  .row .hint { display: block; color: var(--muted); font-size: 0.78rem; }
+  select {
+    font: inherit; color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.35rem 0.5rem;
+  }
+  input[type="checkbox"] { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
+  button.start {
+    font: inherit; font-weight: 650; font-size: 1.05rem;
+    background: var(--accent); color: var(--accent-ink);
+    border: none; border-radius: 10px;
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+  }
+  button.start:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  .howto { font-size: 0.88rem; color: var(--muted); }
+  .howto ol { margin: 0.3rem 0 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .howto strong { color: var(--ink); font-weight: 600; }
+  .clockline {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* ---- run mode: deliberately single-theme, max contrast for cameras ---- */
+  #stage {
+    display: none;
+    position: fixed; inset: 0;
+    background: #ffffff; color: #15181c;
+    z-index: 10;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3vmin;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  body.running #stage { display: flex; }
+  body.running .wrap { display: none; }
+  #qrcanvas { image-rendering: pixelated; }
+  #readout {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    line-height: 1.35;
+  }
+  #readout .big { font-size: clamp(1.4rem, 6vmin, 2.6rem); font-weight: 600; }
+  #readout .small { font-size: clamp(0.75rem, 2.6vmin, 1rem); color: #5b6168; }
+  #exithint {
+    position: fixed; bottom: max(0.8rem, env(safe-area-inset-bottom)); left: 0; right: 0;
+    text-align: center;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #9aa0a6;
+  }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Field tool · Camera synchronization</p>
+    <h1>QR Time Sync</h1>
+    <p>Displays a QR code encoding the current time in milliseconds, refreshed every
+    display frame. Film this screen with each camera, then decode the footage to align
+    all recordings on one clock.</p>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <label for="size">QR size
+        <span class="hint">Larger is easier to decode from a distance</span>
+      </label>
+      <select id="size">
+        <option value="0.5">Small</option>
+        <option value="0.75" selected>Medium</option>
+        <option value="0.95">Large</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="readoutToggle">Show time readout
+        <span class="hint">Human-readable clock under the code</span>
+      </label>
+      <input type="checkbox" id="readoutToggle" checked>
+    </div>
+    <button class="start" id="start">Start sync display</button>
+  </div>
+
+  <div class="card howto">
+    <strong>How to use</strong>
+    <ol>
+      <li>Set screen brightness to <strong>maximum</strong> and disable auto-brightness.</li>
+      <li>Tap <strong>Start</strong> — the screen stays awake while running.</li>
+      <li>With every camera already recording, hold this screen in front of each lens
+          for <strong>3–5 seconds</strong>, close enough that the code is sharp.</li>
+      <li>Repeat at the <strong>end</strong> of the session to measure clock drift.</li>
+      <li>Run the <a href="decode_sync.py" download style="color:var(--accent);font-weight:600">decoder script</a> (Python + OpenCV) on the footage to get frame → time mappings.</li>
+    </ol>
+  </div>
+
+  <p class="clockline" id="clockpreview"></p>
+</div>
+
+<div id="stage" role="button" aria-label="Stop sync display (tap anywhere)">
+  <canvas id="qrcanvas"></canvas>
+  <div id="readout">
+    <div class="big" id="ro-clock"></div>
+    <div class="small" id="ro-epoch"></div>
+  </div>
+  <div id="exithint">tap anywhere to stop</div>
+</div>
+
+<script>
+'use strict';
+// ===================== QR encoder: version 1, ECC H, numeric mode, mask 0 =====================
+const GF_EXP = new Uint8Array(512), GF_LOG = new Uint8Array(256);
+(function () {
+  let x = 1;
+  for (let i = 0; i < 255; i++) {
+    GF_EXP[i] = x; GF_LOG[x] = i;
+    x <<= 1; if (x & 0x100) x ^= 0x11d;
+  }
+  for (let i = 255; i < 512; i++) GF_EXP[i] = GF_EXP[i - 255];
+})();
+function gfMul(a, b) { return (a === 0 || b === 0) ? 0 : GF_EXP[GF_LOG[a] + GF_LOG[b]]; }
+function rsGenerator(n) {
+  let g = [1];
+  for (let i = 0; i < n; i++) {
+    const next = new Array(g.length + 1).fill(0);
+    for (let j = 0; j < g.length; j++) {
+      next[j] ^= gfMul(g[j], GF_EXP[i]);
+      next[j + 1] ^= g[j];
+    }
+    g = next;
+  }
+  return g.reverse();
+}
+const RS_GEN_17 = rsGenerator(17);
+function rsEncode(data, nEcc) {
+  const res = data.concat(new Array(nEcc).fill(0));
+  for (let i = 0; i < data.length; i++) {
+    const coef = res[i];
+    if (coef !== 0) for (let j = 1; j < RS_GEN_17.length; j++) res[i + j] ^= gfMul(RS_GEN_17[j], coef);
+  }
+  return res.slice(data.length);
+}
+const QR_SIZE = 21, DATA_CW = 9, ECC_CW = 17;
+function encodeData(digits) {
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  push(0b0001, 4);
+  push(digits.length, 10);
+  for (let i = 0; i + 3 <= digits.length; i += 3) push(parseInt(digits.substr(i, 3), 10), 10);
+  const rem = digits.length % 3;
+  if (rem === 1) push(parseInt(digits.substr(digits.length - 1), 10), 4);
+  else if (rem === 2) push(parseInt(digits.substr(digits.length - 2), 10), 7);
+  push(0, Math.min(4, DATA_CW * 8 - bits.length));
+  while (bits.length % 8 !== 0) bits.push(0);
+  const cw = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    let b = 0;
+    for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j];
+    cw.push(b);
+  }
+  const pads = [0xec, 0x11];
+  let p = 0;
+  while (cw.length < DATA_CW) cw.push(pads[p++ % 2]);
+  return cw;
+}
+// Static parts of the matrix never change; precompute them once.
+const baseM = [], funM = [];
+(function buildBase() {
+  for (let r = 0; r < QR_SIZE; r++) { baseM.push(new Array(QR_SIZE).fill(0)); funM.push(new Array(QR_SIZE).fill(false)); }
+  const set = (r, c, v) => { baseM[r][c] = v ? 1 : 0; funM[r][c] = true; };
+  function finder(r0, c0) {
+    for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++) {
+      const rr = r0 + r, cc = c0 + c;
+      if (rr < 0 || rr >= QR_SIZE || cc < 0 || cc >= QR_SIZE) continue;
+      const inside = r >= 0 && r <= 6 && c >= 0 && c <= 6;
+      const d = inside && (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
+      set(rr, cc, d);
+    }
+  }
+  finder(0, 0); finder(0, QR_SIZE - 7); finder(QR_SIZE - 7, 0);
+  for (let i = 8; i < QR_SIZE - 8; i++) { set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+  set(QR_SIZE - 8, 8, true);
+  for (let i = 0; i < 9; i++) { if (!funM[8][i]) set(8, i, false); if (!funM[i][8]) set(i, 8, false); }
+  for (let i = 0; i < 8; i++) {
+    if (!funM[8][QR_SIZE - 1 - i]) set(8, QR_SIZE - 1 - i, false);
+    if (!funM[QR_SIZE - 1 - i][8]) set(QR_SIZE - 1 - i, 8, false);
+  }
+  // format info: ECC H, mask 0
+  const fmt5 = (0b10 << 3) | 0;
+  let rem = fmt5 << 10;
+  for (let i = 14; i >= 10; i--) if ((rem >> i) & 1) rem ^= 0b10100110111 << (i - 10);
+  const fmt = ((fmt5 << 10) | rem) ^ 0b101010000010010;
+  const A = [[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
+  const B = [[20,8],[19,8],[18,8],[17,8],[16,8],[15,8],[14,8],[8,13],[8,14],[8,15],[8,16],[8,17],[8,18],[8,19],[8,20]];
+  for (let i = 0; i < 15; i++) {
+    const b = (fmt >> (14 - i)) & 1;
+    baseM[A[i][0]][A[i][1]] = b;
+    baseM[B[i][0]][B[i][1]] = b;
+  }
+})();
+// Precompute the zigzag order of data-module coordinates.
+const dataCoords = [];
+(function () {
+  let upward = true;
+  for (let col = QR_SIZE - 1; col > 0; col -= 2) {
+    if (col === 6) col--;
+    for (let i = 0; i < QR_SIZE; i++) {
+      const row = upward ? QR_SIZE - 1 - i : i;
+      for (const c of [col, col - 1]) if (!funM[row][c]) dataCoords.push([row, c]);
+    }
+    upward = !upward;
+  }
+})();
+function buildMatrix(digits) {
+  const data = encodeData(digits);
+  const codewords = data.concat(rsEncode(data, ECC_CW));
+  const m = baseM.map(r => r.slice());
+  let bi = 0;
+  for (const cw of codewords) {
+    for (let k = 7; k >= 0; k--) {
+      const [r, c] = dataCoords[bi++];
+      let bit = (cw >> k) & 1;
+      if ((r + c) % 2 === 0) bit ^= 1;
+      m[r][c] = bit;
+    }
+  }
+  return m;
+}
+
+// ===================== display loop =====================
+const stage = document.getElementById('stage');
+const canvas = document.getElementById('qrcanvas');
+const ctx = canvas.getContext('2d', { alpha: false });
+const roClock = document.getElementById('ro-clock');
+const roEpoch = document.getElementById('ro-epoch');
+const readoutEl = document.getElementById('readout');
+const QUIET = 4; // quiet-zone modules on each side
+let running = false, rafId = 0, wakeLock = null, scale = 10;
+
+function fmtClock(t) {
+  const d = new Date(t);
+  const p = (n, w) => String(n).padStart(w, '0');
+  return p(d.getHours(),2) + ':' + p(d.getMinutes(),2) + ':' + p(d.getSeconds(),2) + '.' + p(d.getMilliseconds(),3);
+}
+
+function layout() {
+  const frac = parseFloat(document.getElementById('size').value);
+  const avail = Math.min(window.innerWidth, window.innerHeight * 0.78) * frac;
+  scale = Math.max(4, Math.floor(avail / (QR_SIZE + 2 * QUIET)));
+  const px = scale * (QR_SIZE + 2 * QUIET);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = px * dpr;
+  canvas.height = px * dpr;
+  canvas.style.width = px + 'px';
+  canvas.style.height = px + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+let lastMs = 0;
+function frame() {
+  if (!running) return;
+  const now = Date.now();
+  if (now !== lastMs) {
+    lastMs = now;
+    const m = buildMatrix(String(now));
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000';
+    for (let r = 0; r < QR_SIZE; r++) {
+      for (let c = 0; c < QR_SIZE; c++) {
+        if (m[r][c]) ctx.fillRect((c + QUIET) * scale, (r + QUIET) * scale, scale, scale);
+      }
+    }
+    if (!readoutEl.hidden) {
+      roClock.textContent = fmtClock(now);
+      roEpoch.textContent = now + ' ms unix';
+    }
+  }
+  rafId = requestAnimationFrame(frame);
+}
+
+async function acquireWakeLock() {
+  try { wakeLock = await navigator.wakeLock.request('screen'); } catch (e) { /* unsupported: rely on user's screen-timeout setting */ }
+}
+
+async function start() {
+  readoutEl.hidden = !document.getElementById('readoutToggle').checked;
+  document.body.classList.add('running');
+  running = true;
+  layout();
+  try { await document.documentElement.requestFullscreen({ navigationUI: 'hide' }); } catch (e) { /* fine without */ }
+  await acquireWakeLock();
+  rafId = requestAnimationFrame(frame);
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(rafId);
+  document.body.classList.remove('running');
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+document.getElementById('start').addEventListener('click', start);
+stage.addEventListener('click', stop);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && running) stop(); });
+window.addEventListener('resize', () => { if (running) layout(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && running) acquireWakeLock();
+});
+
+// idle clock preview on the setup screen
+const preview = document.getElementById('clockpreview');
+setInterval(() => {
+  if (!running) preview.textContent = 'device clock  ' + fmtClock(Date.now()) + '  ·  ' + Date.now();
+}, 100);
+</script>
+
+</body>
+</html>
