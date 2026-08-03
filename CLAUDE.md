@@ -36,11 +36,19 @@ the export copies `public/` into `out/` as-is. **`pcb/` is wired the same way
 since 2026-07-31**: `web/public/tools/pcb/pcb-calculator.html` is the served
 copy (repo-root `pcb/` + the injected "← Lavigne Labs · Tools" back-bar);
 `pcb/` at the repo root stays the editing source — after editing, re-copy and
-re-inject the back-bar. Also since 2026-07-31: the **QR Time Sync** tool —
-branded page at `/tools/qr-sync` (React component + `web/lib/qrTimeSync.ts`),
+re-inject the back-bar. The **QR Time Sync** tool lives on as the
 unbranded client-shareable standalone at `/qr-sync`
 (`web/public/qr-sync/index.html`, plus the decoder at
-`/qr-sync/decode_sync.py`).
+`/qr-sync/decode_sync.py`). **Its branded `/tools/qr-sync` page was removed
+from the `/tools` grid on 2026-08-03** (the whole `/tools/[slug]` route went
+with it — every remaining tool is an `href` static page). The React component
++ `web/lib/qrTimeSync.ts` are still in the repo, unused, so the branded page
+can be restored later; the standalone `/qr-sync` is untouched.
+
+The **`/tools` page is grouped into sections** (`content/tools.ts` carries a
+`category` per tool + a `toolCategories` list; `app/tools/page.tsx` renders one
+section per category). Current sections: **Fasteners** (6) and **Electronics**
+(Copper & Patina PCB).
 
 ## Architecture & stack
 
@@ -97,9 +105,32 @@ Also observed 2026-07-31: `sudo` on blue is **not** passwordless for
 the docroot at `lavignelabs.com` over FTPS, then verifies the live site. Runs
 unattended. Credentials: `~/.config/lavigne-labs/deploy.env` (mode 0600, outside
 the repo; template + verified values at `web/scripts/deploy.env.example`).
-`--dry-run` to preview. **Run it from tunnel-bear** — FTP doesn't survive blue's
-network (control channel connects, transfer hangs); verified working from
-tunnel-bear 2026-07-29.
+`--dry-run` to preview. **Prefer tunnel-bear** — a clean-IP host does a full
+mirror in one shot. But note tunnel-bear may be unreachable from a given blue
+checkout (its `authorized_keys` didn't trust blue's key on 2026-08-03; adding it
+is a Brian action), and all other fleet hosts sit behind tunnel-bear via
+ProxyJump.
+
+**Deploying from blue directly (2026-08-03, works for small diffs):** the plain
+`deploy.sh` from blue hangs/dies — clash TUN in fake-IP mode hijacks the FTP
+host to a `198.18.x` fake address and can't proxy FTP's data channel. The
+working recipe:
+1. Resolve the real IP over DoH (HTTPS *does* work through clash):
+   `curl -s 'https://dns.google/resolve?name=lavignelabs.com&type=A'` →
+   `103.107.107.101`.
+2. Pin a `/32` host route **around** the TUN, and keep re-asserting it because
+   clash re-syncs its table every few seconds:
+   `while :; do sudo ip route replace 103.107.107.101/32 via <lan-gw> dev eth0; sleep 2; done`
+   (`sudo ip` is passwordless on blue; find `<lan-gw>` with `ip route show default`).
+3. Point the deploy at the **IP, not the hostname** (a temp copy of `deploy.env`
+   with `DEPLOY_HOST=<ip>` via `LAVIGNE_DEPLOY_ENV=…`, `DEPLOY_SSL_VERIFY=false`).
+4. Mirror **size-only, single-stream, in a retry loop**: `lftp mirror --reverse
+   --delete --ignore-time --continue --parallel=1 …`. A full 11 MB mirror still
+   dies on the large `work/` images (GFW throttles sustained transfer), but
+   `--ignore-time` skips every byte-identical file so an incremental deploy is a
+   tiny transfer that lands. Afterward, `sudo ip route del <ip>/32` and kill the
+   watchdog to restore normal routing. Scratch scripts: `scripts/` in the
+   session scratchpad if kept.
 
 The mirror runs with `--delete`, so the server ends up exactly matching `out/`.
 `DEPLOY_PROTECT` (default `.well-known cgi-bin`) is never deleted — `.well-known`
