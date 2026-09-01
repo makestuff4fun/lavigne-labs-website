@@ -183,3 +183,61 @@ Web3Forms** or a `mailto:` (see Option B §4).
 Host on **Vercel / Netlify / Cloudflare Pages** (connect this repo). These run the
 contact API route natively and handle image optimization — no static-export
 caveats. Point a domain/subdomain at it.
+
+## SSL certificate renewal (Let's Encrypt, manual → cPanel)
+
+The cert for `lavignelabs.com` is **not** auto-renewed by the host. It is issued
+with certbot **on blue** and then **installed by hand in cPanel**. Verified
+end-to-end 2026-09-01 (cert renewed to 2026-11-30).
+
+**How it works.** certbot uses `authenticator = manual` with an http-01
+challenge. The challenge file has to appear at
+`http://lavignelabs.com/.well-known/acme-challenge/<token>` — so the hook
+uploads it over FTPS **from tunnel-bear** (FTP transfers hang from blue, same
+reason `deploy.sh` runs there). It reuses `deploy.env`, so no second credential.
+
+    blue: certbot ──auth-hook──> ssh tunnel-bear ──FTPS──> docroot/.well-known/
+
+**One-time setup on a fresh machine:**
+
+```bash
+# 1. the uploader, on tunnel-bear (needs ~/.config/lavigne-labs/deploy.env + lftp)
+scp web/scripts/acme-put.sh tunnel-bear:~/acme-put.sh && ssh tunnel-bear chmod +x ~/acme-put.sh
+
+# 2. the hooks, on blue — durable paths, NOT a temp dir
+sudo install -m 755 web/scripts/acme-auth-hook.sh    /usr/local/sbin/lavigne-acme-auth.sh
+sudo install -m 755 web/scripts/acme-cleanup-hook.sh /usr/local/sbin/lavigne-acme-cleanup.sh
+sudo sed -i 's#^manual_auth_hook = .*#manual_auth_hook = /usr/local/sbin/lavigne-acme-auth.sh#; \
+             s#^manual_cleanup_hook = .*#manual_cleanup_hook = /usr/local/sbin/lavigne-acme-cleanup.sh#' \
+  /etc/letsencrypt/renewal/lavignelabs.com.conf
+```
+
+**To renew** (do it with >2 weeks of runway, not 3 days):
+
+```bash
+sudo certbot renew --dry-run          # staging; proves the hooks still work
+sudo certbot renew                    # real issuance
+```
+
+**Then install it in cPanel — this step is manual and cannot be skipped.**
+Issuing the cert does nothing to the live site on its own.
+
+1. cPanel → **Security → SSL/TLS → Manage SSL sites** → pick `lavignelabs.com`.
+2. Paste, from `/etc/letsencrypt/live/lavignelabs.com/`:
+   - **Certificate (CRT)** ← `cert.pem`
+   - **Private Key (KEY)** ← `privkey.pem`
+   - **Certificate Authority Bundle (CABUNDLE)** ← `chain.pem`
+3. **Install Certificate**, then verify:
+   ```bash
+   echo | openssl s_client -servername lavignelabs.com \
+     -connect lavignelabs.com:443 2>/dev/null | openssl x509 -noout -dates
+   ```
+
+> **Never FTP the private key into the docroot.** `privkey.pem` is a secret;
+> anything under the docroot is served publicly. The only file that ever gets
+> uploaded is the ACME challenge token, which the hook handles.
+
+**Known gap:** the cert covers `lavignelabs.com` only. `www.lavignelabs.com`
+resolves to the same IP, so visitors to `www` get a name-mismatch warning. Fix
+by adding `-d www.lavignelabs.com` to the certbot command at the next renewal
+(validate `www` serves `/.well-known/` first, or the whole issuance fails).

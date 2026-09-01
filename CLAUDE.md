@@ -98,8 +98,10 @@ npm run export     # STATIC_EXPORT=1 build -> out/ + deployable game zips
 Requires **Node ≥20.9**. Blue's default PATH node is **20.18.2** at
 `~/.local/node` (works; the 22.23.1 this file used to claim is not in PATH, and
 `/usr/bin/node` is v18 — too old). Verified building on blue 2026-07-31.
-Also observed 2026-07-31: `sudo` on blue is **not** passwordless for
-`apt-get install` (contrary to the note below) — plan around it or ask Brian.
+**Correction (2026-09-01):** `sudo` on blue **is** fully passwordless
+(`(ALL) NOPASSWD: ALL`). Both the 2026-07-31 note that `apt-get install` prompts
+and the "NOPASSWD only for apt/dpkg/…" claim under Network gotchas are wrong —
+measured with `sudo -n -l`, not assumed.
 
 **Deploy:** `cd web && ./scripts/deploy.sh` — builds, then mirrors `out/` into
 the docroot at `lavignelabs.com` over FTPS, then verifies the live site. Runs
@@ -136,6 +138,13 @@ The mirror runs with `--delete`, so the server ends up exactly matching `out/`.
 `DEPLOY_PROTECT` (default `.well-known cgi-bin`) is never deleted — `.well-known`
 carries Let's Encrypt renewal challenges. **No automatic backup**: recovery means
 re-deploying from a known-good commit.
+
+**SSL is NOT auto-renewed.** The cert is issued with certbot on blue (manual
+http-01; the hook uploads the challenge via tunnel-bear, reusing `deploy.env`)
+and then **installed by hand in cPanel** — issuing alone does nothing to the live
+site. `web/scripts/acme-{put,auth-hook,cleanup-hook}.sh`; full runbook in
+docs/DEPLOYMENT.md. Renewed 2026-09-01, **expires 2026-11-30** — renew with
+weeks of runway, not days. Never FTP `privkey.pem` into the docroot.
 
 Alternative: host the Next app on Vercel/Netlify/CF Pages (root directory would
 be `web`). Full procedure: **docs/DEPLOYMENT.md**.
@@ -177,10 +186,8 @@ Then: `cd web && npm install --maxsockets=4 && npm run build` to confirm.
 ## Network gotchas (China / proxy)
 
 - **Node 20.9+ is required** (Next 16 hard-refuses older). blue runs **22.23.1**
-  from NodeSource; Ubuntu's distro Node 18 is too old. Note `sudo` on blue is
-  NOPASSWD **only** for `apt`/`apt-get`/`dpkg`/`systemctl`/`journalctl`/`ip` — so
-  `curl … | sudo bash` installers don't work; install a downloaded `.deb` with
-  `sudo apt-get install ./file.deb` instead.
+  from NodeSource; Ubuntu's distro Node 18 is too old. (`sudo` on blue is
+  passwordless for everything — see the 2026-09-01 correction above.)
 - **`npm install` dies with `ECONNRESET`** — not the GFW. npm's ~50 concurrent
   sockets swamp the local proxy. Throttle it:
   ```bash
