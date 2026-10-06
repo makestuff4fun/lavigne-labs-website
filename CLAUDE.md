@@ -156,7 +156,7 @@ be `web`). Full procedure: **docs/DEPLOYMENT.md**.
   pass). Requires the local proxy on `127.0.0.1:7897` to be up.
 - **tunnel-bear** (Tokyo VPS, always-on, clean IP) — fallback / unattended builds
   and deploys. No GPU needed.
-- **miku** — GFW'd, no proxy; don't install or deploy from it.
+- **cpu88** — GFW'd, no proxy; don't install or deploy from it.
 
 > **Correction (2026-07-24):** this file used to claim blue couldn't run installs
 > or builds and that everything had to happen on tunnel-bear. That was wrong and
