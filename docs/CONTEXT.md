@@ -94,6 +94,7 @@ and is no longer the plan.
    they pull fonts from Google (slow/blocked in China — worth self-hosting).
 5. ~~Go-live~~ **done** — Next.js static export is live at lavignelabs.com.
 6. ~~Swap real game SFX~~ **done** — real WT588F recordings wired (docs/SOUNDS.md).
+7. **Add a JSON API** (Brian, 2026-10-07: *"we need to add json api"*). Captured as stated. Scope, endpoints and what it serves are **not yet decided**. Note the site is a Next.js **static export**, so it cannot run API routes (the same limit as item 1), and the API needs a host or a static-JSON approach. Unbuilt.
 
 ## Things that live OUTSIDE the repo (and how to regenerate)
 
