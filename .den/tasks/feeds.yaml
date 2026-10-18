@@ -1,0 +1,40 @@
+do: |
+  THE JOB: Add two build-time generated feeds to the static export: /feed.json (JSON Feed 1.1,
+  https://jsonfeed.org/version/1.1) and /rss.xml (RSS 2.0). Implement as force-static route
+  handlers web/app/feed.json/route.ts and web/app/rss.xml/route.ts (not under app/api, which the
+  export script moves aside). Read the Next 16 docs in web/node_modules/next/dist/docs/ first.
+  Each item per article from lib/articles.ts, newest first: title, absolute url (site.url),
+  id = url, date (date_published / pubDate RFC 822), summary = excerpt, tags = [tag]. JSON Feed
+  items also carry content_html from the rendered article html, plus an "_markdown_url" is NOT
+  needed. Feed title/description/home_page_url/feed_url from content/site.ts. XML must be
+  escaped properly (titles with & or quotes). Also add <link rel="alternate" type="application/rss+xml"
+  and type="application/feed+json"> in the root layout metadata (alternates.types) if the Next
+  Metadata API supports it. Derive everything from content; hardcode no slugs.
+  THE WHY: Brian wants the site easy for AI agents and readers to consume ("JSON format etc.");
+  machine-readable article indexes are item 3 of docs in the-den ideas-lavignelabs.md.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Do not
+  change llms.txt or the JSON-LD already added. Existing pages must still build.
+  DONE MEANS: after `cd web && npm run export`, out/feed.json is valid JSON Feed with one item per
+  article, and out/rss.xml parses as XML with one item per article.
+done_when: |
+  cd web && npm run export >/tmp/feeds-export.log 2>&1 && python3 - <<'PY'
+  import json,glob,os
+  import xml.etree.ElementTree as ET
+  slugs=[os.path.basename(f)[:-3] for f in glob.glob('content/articles/*.md')]
+  assert slugs
+  j=json.load(open('out/feed.json',encoding='utf8'))
+  assert j['version'].startswith('https://jsonfeed.org/version/1')
+  assert j['title'] and j['home_page_url'] and len(j['items'])==len(slugs)
+  for it in j['items']:
+      assert it['id'] and it['url'] and it['title'] and it['date_published'] and it['summary']
+  urls=' '.join(i['url'] for i in j['items'])
+  for s in slugs: assert '/articles/'+s in urls, s
+  r=ET.parse('out/rss.xml').getroot()
+  assert r.tag=='rss'
+  items=r.findall('./channel/item')
+  assert len(items)==len(slugs)
+  for i in items:
+      assert i.findtext('title') and i.findtext('link') and i.findtext('pubDate') and i.findtext('description')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 25}
