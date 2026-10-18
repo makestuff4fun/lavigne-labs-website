@@ -1,0 +1,33 @@
+do: |
+  THE JOB: Link articles and portfolio projects both ways. (a) Add optional frontmatter `related: ["camera-arm", "microscope-slider"]` (slugs from web/content/projects.ts) to the article model in web/lib/articles.ts. (b) Article pages show a "Related projects" block linking each to /work/<slug>/ (title + one-line summary from projects.ts). (c) Each /work/<slug>/ page shows a "Written up in" block listing every PUBLISHED article whose `related` includes that slug, linking to the article (computed at build time; hidden when none). (d) Add `related` to the 3 existing published articles where a project genuinely fits (judgment; at least 2 of them, by reading what each project is in web/content/projects.ts and projectDetails.ts; never claim a project demonstrates something it does not). (e) Add `related` to ALL 5 drafts in docs/drafts/ (frontmatter only): fast-prototyping-china -> camera-arm and microscope-slider; fast-injection-molds, taobao-factory-sourcing and lowest-cost-manufacturing-china -> the projects that really fit (e.g. 8080-lcd for custom LCDs, hex-puck-lights, custom-dog-leashes, mechanical-keyboard: read the project text and choose only true fits); wechat-shared-history may have none (use an empty list `related: []`). (f) Include `related` in the articles API output and in the markdown alternates' frontmatter if they emit one.
+  THE WHY: Brian (2026-10-18): each article should link to related portfolio projects (e.g. fast prototyping -> camera arm, microscope slider) and the project pages should link back. It shows the articles come from real built products, which is the honest advertising.
+  GUARDRAILS: Read the relevant guide in web/node_modules/next/dist/docs/ before writing Next code (AGENTS.md: this Next 16 differs from what you know); run npm from web/ (`npm install --maxsockets=4` if needed). The site is a static export (`npm run export`), so no server code. Do not deploy, do not touch cPanel/FTP/SSL. Do not publish drafts: files in docs/drafts/ stay there and must not appear in web/content/articles/. Keep every existing page, API endpoint, feed, llms.txt section and JSON-LD working. Do not delete app/api/contact (leave it; the export script already handles it).
+  DONE MEANS: after export, related articles and /work pages link to each other and every `related` slug resolves.
+done_when: |
+  python3 - <<'PY'
+  import subprocess,glob,re,os
+  r=subprocess.run('cd web && npm run export',shell=True,capture_output=True,text=True)
+  assert r.returncode==0,r.stdout[-1500:]+r.stderr[-1500:]
+  slugs=set(re.findall(r'slug:\s*"([^"]+)"',open('web/content/projects.ts',encoding='utf8').read()))
+  def rel(p):
+      fm=open(p,encoding='utf8').read().split('---',2)[1]
+      m=re.search(r'^related:\s*\[(.*?)\]',fm,re.M)
+      return None if not m else re.findall(r'"([^"]+)"',m.group(1))
+  pub={os.path.basename(p)[:-3]:rel(p) for p in glob.glob('web/content/articles/*.md')}
+  with_rel={k:v for k,v in pub.items() if v}
+  assert len(with_rel)>=2,pub
+  for a,v in with_rel.items():
+      h=open(f'web/out/articles/{a}/index.html',encoding='utf8').read()
+      for s in v:
+          assert s in slugs,(a,s)
+          assert f'/work/{s}' in h,(a,s)
+          w=open(f'web/out/work/{s}/index.html',encoding='utf8').read()
+          assert f'/articles/{a}' in w,('no backlink',s,a)
+  for p in glob.glob('docs/drafts/*.md'):
+      v=rel(p); assert v is not None,p+' needs related:'
+      for s in v: assert s in slugs,(p,s)
+  d=rel('docs/drafts/fast-prototyping-china.md'); assert set(d)>={'camera-arm','microscope-slider'},d
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: [series]
