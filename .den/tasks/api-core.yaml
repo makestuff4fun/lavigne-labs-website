@@ -1,0 +1,74 @@
+do: |
+  THE JOB: Start the static, versioned JSON API ("phase 1"), generated at build time from content
+  so it cannot drift. This task builds the mechanism and the content endpoints; later tasks add
+  search-index, tools, openapi and links. Endpoints, all under /api/v1/ in the static export:
+    index.json        lists every endpoint (name, path, absolute url, description, mediaType)
+    articles.json     every article: slug, title, date, tag, excerpt, readingTime, url,
+                      markdownUrl, jsonUrl
+    articles/<slug>.json  one article: the metadata above + full "markdown" (body without
+                      frontmatter) + "html" (rendered) + "text"? not needed
+    services.json    from the `services` export in web/content/site.ts (plus any engagement /
+                      fee model data that already lives in content/)
+    faq.json         from web/content/faq.ts (all FAQs, not just featured)
+    portfolio.json   from web/content/projects.ts
+    contact.json     email, wechat, location/hours, from `site` in content/site.ts
+  Every response is an object with "version": "v1", "generated": ISO date of build, and the data
+  under a named key, plus "site": site.url. No fabricated data: only what content/ holds.
+  MECHANISM: static route handlers (`export const dynamic = "force-static"`) at
+  web/app/api/v1/.../route.ts. PROBLEM TO SOLVE: scripts/export-static.sh currently moves the whole
+  web/app/api aside during the export (no API in a static export), so change it to move aside only
+  app/api/contact (the Resend route) and restore it, keeping its restore-on-failure trap, and update
+  the matching note in CLAUDE.md / docs if one describes the old behaviour. Folders like
+  `index.json/route.ts` are fine (see app/llms.txt/route.ts, app/feed.json/route.ts for the
+  working pattern); for articles/[slug].json use generateStaticParams, and check the exported
+  filename is exactly out/api/v1/articles/<slug>.json (trailingSlash is true, so confirm a route
+  literally named `[slug].json` or similar yields a file and not a directory; if Next cannot do it,
+  generate the files in scripts/export-static.sh after the build instead, from a small node script,
+  and say why). Read the Next 16 docs in web/node_modules/next/dist/docs/ first. Put the data
+  builders in one module (web/lib/api.ts or similar) so later tasks (search-index, tools, openapi)
+  reuse a single endpoint REGISTRY: an array of {path, name, description} that index.json is built
+  from; make adding an endpoint a one-line registry entry.
+  THE WHY: Brian (2026-10-18): "make the site fully AI searchable. json backend etc." Static JSON
+  generated from content, so it never drifts. Live endpoints are phase 2, not now.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Do not break
+  llms.txt, feeds, JSON-LD, markdown alternates, or the contact route (app/api/contact must still
+  exist and still be restored after export; `npm run dev` must still serve it). Do not change
+  visible pages.
+  DONE MEANS: after `cd web && npm run export`, every endpoint above exists as valid JSON under
+  web/out/api/v1/, index.json lists them all, articles.json and per-slug files cover every
+  article with matching markdown, and app/api/contact/route.ts is still in the checkout.
+done_when: |
+  cd web && npm run export >/tmp/api-core-export.log 2>&1 && test -f app/api/contact/route.ts && python3 - <<'PY'
+  import json,glob,os
+  from urllib.parse import urlparse
+  b='out/api/v1/'
+  L=lambda p: json.load(open(b+p,encoding='utf8'))
+  idx=L('index.json')
+  assert idx['version']=='v1'
+  eps=idx['endpoints']
+  paths=[urlparse(e['url']).path for e in eps]
+  for p in ('articles.json','services.json','faq.json','portfolio.json','contact.json'):
+      assert '/api/v1/'+p in paths,p
+      assert os.path.getsize(b+p)>20
+  for e in eps:
+      assert e['description'] and e['mediaType']
+      assert os.path.exists('out'+urlparse(e['url']).path),e['url']
+  srcs=glob.glob('content/articles/*.md')
+  arts=L('articles.json')['articles']
+  assert len(arts)==len(srcs)
+  for f in srcs:
+      s=os.path.basename(f)[:-3]
+      a=L('articles/%s.json'%s)
+      assert a['slug']==s and a['title'] and a['date'] and a['excerpt'] and a['tag']
+      body=open(f,encoding='utf8').read().split('---',2)[2].strip()
+      assert a['markdown'].strip()==body,s
+      assert '<' in a['html']
+      assert any(x['slug']==s for x in arts),s
+  assert len(L('services.json')['services'])>=1
+  assert len(L('faq.json')['faqs'])>=1
+  assert len(L('portfolio.json')['projects'])>=1
+  c=L('contact.json')['contact']
+  assert c['email']=='hello@lavignelabs.com'
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
