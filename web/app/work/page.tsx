@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { mailtoHref } from "@/content/site";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projects } from "@/content/projects";
@@ -46,7 +47,7 @@ export default function WorkPage() {
               Bring your prototype, product, or open role — I&apos;ll help you
               design it and get it built, reliably, at volume.
             </p>
-            <Button href="/contact">
+            <Button href={mailtoHref}>
               Get in touch <ArrowIcon />
             </Button>
           </div>

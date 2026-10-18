@@ -158,3 +158,21 @@ export function pageUrl(path = ""): string {
   const last = p.split("/").pop() ?? "";
   return `${site.url}${p}${last.includes(".") ? "" : "/"}`;
 }
+
+/** Single source for the contact mailto: subject and body prompt. */
+export const contactMail = {
+  subject: "Project inquiry from lavignelabs.com",
+  body: [
+    "Hi Brian,",
+    "",
+    "Here's a bit about my project:",
+    "- What I'm building:",
+    "- Stage (idea / prototype / ready to produce):",
+    "- Quantity:",
+    "- Timeline:",
+    "",
+    "Thanks!",
+  ].join("\n"),
+};
+
+export const mailtoHref = `mailto:${site.email}?subject=${encodeURIComponent(contactMail.subject)}&body=${encodeURIComponent(contactMail.body)}`;

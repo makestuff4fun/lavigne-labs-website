@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { marked } from "marked";
-import { site, pageUrl } from "@/content/site";
+import { site, mailtoHref, pageUrl } from "@/content/site";
 import { Container, Eyebrow, ArrowIcon, Button } from "@/components/ui";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
@@ -153,7 +153,7 @@ export default async function ProjectPage({
             I&apos;m a hardware engineer in Shenzhen — open to full-time roles and
             focused projects.
           </p>
-          <Button href="/contact" className="mt-5">
+          <Button href={mailtoHref} className="mt-5">
             Get in touch <ArrowIcon />
           </Button>
         </div>

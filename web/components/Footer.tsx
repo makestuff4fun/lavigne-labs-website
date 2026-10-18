@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { footerLinks, site } from "@/content/site";
+import { footerLinks, site, mailtoHref } from "@/content/site";
 import { Container } from "./ui";
 
 export function Footer() {
@@ -43,7 +43,7 @@ export function Footer() {
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-white/75">
               <li>
-                <a href={`mailto:${site.email}`} className="transition hover:text-white">
+                <a href={mailtoHref} className="transition hover:text-white">
                   {site.email}
                 </a>
               </li>

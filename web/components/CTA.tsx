@@ -1,5 +1,5 @@
 import { Button, Container, ArrowIcon } from "./ui";
-import { site } from "@/content/site";
+import { site, mailtoHref } from "@/content/site";
 
 export function CTA() {
   return (
@@ -21,10 +21,10 @@ export function CTA() {
               and happy to talk.
             </p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Button href="/contact">
+              <Button href={mailtoHref}>
                 Get in touch <ArrowIcon />
               </Button>
-              <Button href={`mailto:${site.email}`} variant="ghost">
+              <Button href={mailtoHref} variant="ghost">
                 {site.email}
               </Button>
             </div>

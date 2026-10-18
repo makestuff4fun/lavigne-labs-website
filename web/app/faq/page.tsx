@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { mailtoHref } from "@/content/site";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
 import { FaqList } from "@/components/Faq";
 import { faqs } from "@/content/faq";
@@ -49,7 +50,7 @@ export default function FaqPage() {
               Ask me directly — I&apos;ll give you a straight answer, whether or
               not we end up working together.
             </p>
-            <Button href="/contact" className="mt-5">
+            <Button href={mailtoHref} className="mt-5">
               Ask a question <ArrowIcon />
             </Button>
           </div>

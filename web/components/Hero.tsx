@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button, Container, ArrowIcon } from "./ui";
-import { credibility, site } from "@/content/site";
+import { credibility, site, mailtoHref } from "@/content/site";
 
 export function Hero() {
   return (
@@ -27,7 +27,7 @@ export function Hero() {
               full-time — and I take focused projects too.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button href="/contact">
+              <Button href={mailtoHref}>
                 Get in touch <ArrowIcon />
               </Button>
               <Button href="/work" variant="ghost">
