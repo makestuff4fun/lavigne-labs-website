@@ -9,9 +9,14 @@ series: "field-notes"
 seriesOrder: 5
 ---
 
+<!-- REVIEW NOTE
+Corrected: Spelling and grammar tidied silently. Fact fix: you wrote custom heatsinks are "extruded or machined to your drawing". A truly custom extrusion needs its own die, which means a tooling fee and a bigger order, so a Taobao shop usually cuts and machines from existing profiles. The bullet now says that. Nothing else of yours was wrong.
+Added: (1) a stronger opening hook; (2) a "Paying" section: Alipay for foreigners, linking an overseas card or using a trusted China-based payer; (3) 集运 forwarders for shops that ship only inside China, and what to tell them; (4) asking for a 发票 invoice, and individual shop versus registered company; (5) returns and disputes on the platform, including not confirming receipt before you inspect; (6) a measure-and-photograph checklist for the sample on arrival. Strike any you disagree with.
+Unsure: Alipay and Taobao sign-up rules for foreign users change often (phone number, ID checks, which cards work), so the body gives the shape, not the steps. I did not state any fees, limits or timings. Invoice types differ by shop, so I only say to ask.
+-->
 <!-- DRAFT: the owner must read before this moves to web/content/articles/ -->
 
-Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.
+Most people think Taobao is where you buy a phone case. I use it to buy laser-cut and bent parts, custom cables and custom LCDs, straight from the people who make them. Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.
 
 I have spent roughly $1M on Taobao over the years. I am in the highest customer tier. I have had relationships with shops I found there that have lasted many years, with excellent service the whole way. And yes, you can still visit a shop or a factory in person. I have.
 
@@ -34,7 +39,7 @@ That is where the many-years relationships came from. You send a drawing, they d
 Things you can find this way include:
 
 - **Raw-material suppliers**: sheet, bar and extrusion, often cut to length.
-- **Custom heatsinks**: extruded or machined to your drawing.
+- **Custom heatsinks**: cut and machined to your drawing from existing profiles. A brand-new extrusion needs its own die, so that is a tooling job with a bigger order behind it.
 - **Laser cutting and bending**: send a file, get flat or formed parts back.
 - **Custom wire harnesses and cables**: made to your length, connector and pinout.
 - **Connectors**: from common catalogue parts to less common ones.
@@ -87,7 +92,17 @@ Judge them the way you would judge any supplier. Ask for photos or video of your
 
 ## Order samples cheaply
 
-If shops sell by the piece, a sample costs very little compared with a trip or a minimum order elsewhere. Order a few, measure them, test the fit, and compare. Run the same drawing through two or three shops and you learn quickly who holds tolerances and who doesn't. Say plainly in the order note that it is a sample and what you will check. Measure on arrival, photograph the parts, and send your feedback back through the chat: how a shop reacts to "this hole is off" tells you more than the part does. Then place a second, slightly larger order with the one that handled it well. That is how a relationship starts.
+If shops sell by the piece, a sample costs very little compared with a trip or a minimum order elsewhere. Order a few, measure them, test the fit, and compare. Run the same drawing through two or three shops and you learn quickly who holds tolerances and who doesn't. Say plainly in the order note that it is a sample and what you will check. On arrival, photograph the box before you open it, then the parts with a scale in frame, and measure the critical dimensions with calipers, noting hole positions, bend angles and flatness. Send your feedback back through the chat with the photos: how a shop reacts to "this hole is off" tells you more than the part does. Then place a second, slightly larger order with the one that handled it well. That is how a relationship starts.
+
+## Paying, and getting it out of China
+
+**Alipay.** Taobao pays through Alipay. Foreign buyers can usually link an international Visa or Mastercard to Alipay, after identity verification, and pay that way. If that does not work for you, a trusted payer in China can place and pay for the order. Either way, pay through the platform, not by sending money to a stranger. The platform holds your payment until you confirm receipt, and that protection is the point.
+
+**Forwarders (集运).** If a shop ships only inside China, ship to a forwarder's warehouse in China and let them send it on. Give the shop the forwarder's address and your forwarder ID in the address line, and ask for a domestic tracking number. Tell the forwarder what is inside, the real value and material, and ask them to consolidate several shops into one box. It is cheaper than several small international parcels, and you can ask for photos of the parts before they leave.
+
+**Invoices (发票).** Ask before you pay, not after. A registered company can issue a proper invoice; a small individual shop often cannot, or only in a limited form. That does not make an individual shop bad, and I buy from both, but if you need the paperwork for accounting or customs, it decides whom you can use.
+
+**Returns and disputes.** If a part is wrong, open a refund or return request in the order, not just in the chat, and keep the chat record, photos and your drawing. If the two of you cannot agree, the platform can step in and look at the evidence. Do not click confirm receipt until you have inspected the parts, because that releases the money.
 
 ## The limits
 
