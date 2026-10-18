@@ -8,15 +8,21 @@ series: "field-notes"
 seriesOrder: 6
 ---
 
+<!-- REVIEW NOTE
+Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. I rewrote that line. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little".
+Added: Why fast molds wear (aluminium or soft P20 versus hardened H13/S136; pre-hardened steel; wear starts at gate and parting line). Draft angles. Gate and ejector-pin marks, stated up front. Surface finish standards (SPI, MT, VDI 3400) and that texture adds time and cost. First samples (T0/T1) and what to check. Material and shrinkage affecting fit. Get DFM feedback on the 3D file before steel is cut. A closing checklist line.
+Unsure: No exact draft angle, SPI grade or shrinkage numbers given on purpose; they vary by material and texture, so the body only says to ask. Whether your fast molds are aluminium or P20 is not stated; I kept it generic. Your wording for steel-safe on pins is the one I most want you to eyeball.
+-->
+
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
-Ask almost any shop how long injection tooling takes and you will hear the same story. It is a story worth knowing, because it is mostly true for the way most shops work. It is just not the only way to do it.
+Your first shots could be in your hands in 10 days, not 45. Ask almost any shop how long injection tooling takes and you will hear the same story. It is a story worth knowing, because it is mostly true for the way most shops work. It is just not the only way to do it.
 
 ## The standard story
 
 A typical injection mold takes about 30 days to build. Then the first parts come off it, and you find out what needs to change. Mold revisions usually add about 15 days on top. During that time the team is dialling in the tolerances on the parts: a boss sits a little off, a snap fit is too tight, a screw hole does not line up.
 
-Behind this sits a habit called steel-safe. When a toolmaker cuts a mold, the cavity is made from steel, and steel only goes in one direction. You can cut steel away, which adds plastic to the part. You cannot put steel back, which would take plastic away, without re-making the cavity. So the toolmaker starts conservatively: holes small, features undersized, walls a touch thin on the steel side. Then, after the first shots, they trim the steel until the part hits its numbers.
+Behind this sits a habit called steel-safe. When a toolmaker cuts a mold, the cavity is made from steel, and steel only goes in one direction. You can cut steel away, which adds plastic to the part. You cannot put steel back, which would take plastic away, without re-making the cavity. So the toolmaker starts conservatively: holes a touch big, bosses and ribs undersized, walls a touch thin. A hole is formed by a steel pin, so a fat pin gives a big hole. Then, after the first shots, they trim the steel until the part hits its numbers.
 
 That is a sensible way to protect the tool. It is also exactly why the process has a built-in revision loop, and why you hear "30 days, plus another 15 for revisions" from just about every shop you ask.
 
@@ -26,7 +32,7 @@ Your first reaction is probably the same as ours was: no way. That is not possib
 
 There is some truth and some fiction in that reaction.
 
-The fiction is that a fast mold is a toy or a trick. It is a real steel mold that makes real injection-molded parts in your real resin. Nothing about the plastic part is a compromise.
+The fiction is that a fast mold is a toy or a trick. It is a real mold, often aluminium or a softer tool steel, that makes real injection-molded parts in your real resin. The plastic part itself is the real thing.
 
 The truth is that fast molds are built differently. They are simpler, they are built for a short run, and they depend on you giving the toolmaker everything up front. We will get to the catch below. But a real mold in about 10 days is something we see regularly.
 
@@ -59,9 +65,39 @@ None of this is difficult. It just asks for the kind of discipline most teams on
 
 ## What adds time, and what does not
 
-Not every feature costs the same. Slides and side horizontal features usually add no time at all. A good toolmaker handles them as part of a normal day.
+Not every feature costs the same. Slides and side horizontal features usually add little or no time. A good toolmaker handles them as part of a normal day.
 
 Be careful with anything else. Undercuts that need lifters, angled holes and other special features will increase the time. They are not impossible, but each one adds machining, fitting and risk. If you can redesign a feature to avoid a lifter, do it. It is often the cheapest day you will ever save.
+
+## Why fast molds wear
+
+Fast molds are fast partly because the cavity is cut from softer material. For short runs that means aluminium, or a soft tool steel such as P20 (often bought pre-hardened, so it is machined and used without a separate heat treatment). Long-run molds use hardened steels such as H13 or S136, which take far longer to machine and cost more. Soft metal cuts quickly, but it wears sooner.
+
+The wear shows in predictable places. Small cores and thin features go first. At the gate, where plastic enters at speed, the steel erodes. At the parting line, the edges peen over and stop sealing, which is where the flash comes from.
+
+## Design for the mold, not just the part
+
+Four things on the part itself will decide whether the first shots are good.
+
+- **Draft angles.** Every wall that runs in the direction the mold opens needs a slight taper, or the part drags on the steel and scuffs or sticks. Add draft in the 3D file. Textured surfaces need more draft than polished ones, so ask your toolmaker how much.
+- **Gate and ejector-pin marks.** Every molded part carries a small scar where the plastic entered (the gate) and round dimples where pins pushed it out. Decide where they land before the steel is cut, and keep them off the cosmetic face. If you do not choose, the toolmaker will, and it may be the face your customer looks at.
+- **Surface finish.** Finish is named by standards: SPI grades (A to D, from mirror polish down to rough stone finish) for polish, MT numbers for texture, and VDI 3400 for spark-eroded finishes. Choose one and write it on the drawing. Texture adds time and cost, because it is an extra process on the steel.
+- **Material and shrinkage.** Plastic shrinks as it cools, and each resin shrinks by a different amount. The mold is cut oversize to allow for it. Change the resin after the steel is cut and your fit changes with it. Choose the resin first, and tell the toolmaker.
+
+## Get feedback before steel is cut
+
+Send the 3D file for design-for-manufacturing feedback first. A good toolmaker will flag thin walls, missing draft, trapped undercuts and awkward gate positions in a day. A change on screen is free. A change in steel is the delay you cannot afford.
+
+## What to check on the first samples
+
+The first shots are called T0 or T1, the first article. They are not a finished product. Check them for four things:
+
+- **Fit:** do they go together with the real mating parts and the real screws?
+- **Shrinkage:** are the key dimensions where you expected?
+- **Warpage:** are long, flat or thin parts straight?
+- **Flash:** is there excess plastic at the parting line or around moving parts?
+
+Write down what you find before the next shot, not after.
 
 ## These molds wear out
 
@@ -84,7 +120,7 @@ You do the math.
 
 ## Do it yourself, or do it with us
 
-You can do this yourself. The steps above are how: ask for a fast mold, not a regular one, send every mating part and every screw, fix the surface finish on day one, lock your requirements, and keep an eye on lifters and angled holes. Find the cluster, and you will have a real mold in about 10 days.
+You can do this yourself. The steps above are how: ask for a fast mold, not a regular one, send every mating part and every screw, fix the surface finish on day one, lock your requirements, and keep an eye on lifters and angled holes. Add draft, place the gate and pin marks, and ask for design feedback before steel is cut. Find the cluster, and you will have a real mold in about 10 days.
 
 Or we can do it faster and better. We are on the ground in China. We speak the language. We visit the shops in person. And we have years of relationships with trusted shops, which is the one thing that cannot be searched for. Those relationships are why a mold gets started this week instead of waiting in a queue.
 
