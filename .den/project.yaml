@@ -1,0 +1,12 @@
+# den-fleet project config. See ~/projects/den-fleet/docs/using-den.md.
+goal: >-
+  lavignelabs.com, Brian's hardware-in-China consultancy site: a Next.js static export (web/)
+  uploaded over FTPS to a cPanel host's public_html. Backlog: docs/CONTEXT.md "Open / next
+  steps" and the-den docs/ideas-lavignelabs.md. Workers never deploy; the managing agent does.
+branch: main
+# Every worktree shares the checkout's node_modules (built with npm ci on red).
+setup: ln -s "$DEN_REPO/web/node_modules" web/node_modules
+env:
+  HTTP_PROXY: http://127.0.0.1:7890
+  HTTPS_PROXY: http://127.0.0.1:7890
+  NEXT_TELEMETRY_DISABLED: "1"
