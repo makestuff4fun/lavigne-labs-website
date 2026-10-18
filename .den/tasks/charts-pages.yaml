@@ -1,0 +1,39 @@
+do: |
+  THE JOB: Build the four "Shop charts" web pages from web/content/shopCharts.json (already verified data; do not change values). Pages, as static routes in the Next app, each with a clean URL ending in a slash: /tools/charts/metric-tap-drills/, /tools/charts/inch-tap-drills/, /tools/charts/decimal-equivalents/, /tools/charts/cheat-sheet/. Add a "Shop charts" category to web/content/tools.ts (ToolCategory + toolCategories entry with a one-line blurb, and four tool entries with href to the pages) so they show as a section on /tools.
+  Content: (1) metric tap drills: ISO coarse + fine, M1-M24, M1.6-M12 visually most prominent, columns for pitch, tap drill (75%), hard-material (65%), clearance close/normal/loose, SHCS counterbore and FHCS countersink where data exists; (2) inch UNC/UNF #0-1/2": size, TPI, tap drill (number/letter/fraction + decimal), hard-material, close/free clearance; (3) decimal equivalents: fractions 1/64-1" with decimal and mm, number drills #80-#1, letter A-Z, all inch and mm side by side; (4) a one-page cheat sheet of the most-used metric sizes (M2, M2.5, M3, M4, M5, M6, M8, M10, M12) with tap, clearance and cbore.
+  Design: reuse the visual language and the diagrams of web/public/tools/fasteners/fastener-sheet.html: copy/adapt its thread and hole cross-section SVG style (tap drill vs clearance vs counterbore) as static inline SVGs at the top of the metric page and cheat sheet. Banded rows, large readable type (legible at arm's length when printed on a shop wall), a small Lavigne Labs mark, and the footer line "lavignelabs.com/tools/charts/" or the page URL. Generate tables from the JSON at build time (no client JS needed). Add a "Download PDF" block on each page with two links, A4 and US Letter, to /tools/charts/<slug>-a4.pdf and /tools/charts/<slug>-letter.pdf (the PDFs themselves are the NEXT task; links may 404 until then). Add a @media print stylesheet so Ctrl-P also gives a clean page.
+  THE WHY: Brian (2026-10-18): "I want one or a set of those in the Tools section ... make one and make it pretty to look at. diagrams from the metric calculator might help." Data is printed and used at a drill press, so render values exactly as in the JSON (no re-rounding, no recomputation in the page).
+  GUARDRAILS: read web/node_modules/next/dist/docs/ before writing Next code (this Next 16 differs from training data). Static export must keep working (STATIC_EXPORT=1). Do not change existing tool pages or the fastener HTML. No Google-font runtime dependency for these pages if avoidable. No deploy.
+  DONE MEANS: npm run export succeeds; the four pages exist under out/tools/charts/ with the tables, diagrams, PDF links, and the tools grid lists a Shop charts section.
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/charts-pages.log 2>&1 || { tail -30 /tmp/charts-pages.log; exit 1; }
+  python3 - <<'PY'
+  import re,html,json
+  def page(s):
+      t=open(f'out/tools/charts/{s}/index.html',encoding='utf8').read()
+      return t, re.sub(r'\s+',' ',html.unescape(re.sub(r'<(script|style)[^>]*>.*?</\1>','',t,flags=re.S|re.I))) 
+  def rowhas(txt,*needles):
+      return all(n in txt for n in needles)
+  h,t=page('metric-tap-drills')
+  for pat in [r'M3\D{1,40}0\.5\D{1,80}2\.5\b',r'M4\D{1,40}0\.7\D{1,80}3\.3\b',r'M5\D{1,40}0\.8\D{1,80}4\.2\b',r'M6\D{1,40}1\D{1,80}5\.0?\b',r'M8\D{1,40}1\.25\D{1,80}6\.8\b',r'M10\D{1,40}1\.5\D{1,80}8\.5\b']:
+      assert re.search(pat,t),pat
+  assert '<svg' in h
+  h2,t2=page('inch-tap-drills')
+  assert re.search(r'1/4\D{1,4}20\D{1,80}#7\D{1,40}0\.201',t2)
+  assert re.search(r'10\D{1,4}32\D{1,80}#21\D{1,40}0\.159',t2)
+  h3,t3=page('decimal-equivalents')
+  assert re.search(r'#7\D{1,20}0\.2010?',t3) and re.search(r'\bF\b\D{1,20}0\.2570?',t3) and re.search(r'1/4\D{1,20}0\.25\D{1,20}6\.35',t3)
+  assert '#80' in t3 and '#1' in t3 and re.search(r'\bZ\b',t3)
+  h4,t4=page('cheat-sheet')
+  assert 'M6' in t4 and 'M10' in t4 and '<svg' in h4
+  for s in ['metric-tap-drills','inch-tap-drills','decimal-equivalents','cheat-sheet']:
+      hh=open(f'out/tools/charts/{s}/index.html',encoding='utf8').read()
+      assert f'/tools/charts/{s}-a4.pdf' in hh and f'/tools/charts/{s}-letter.pdf' in hh,s
+      assert 'lavignelabs.com' in hh and '@media print' in open(f'out/tools/charts/{s}/index.html',encoding='utf8').read()+''.join(open(p,encoding='utf8').read() for p in __import__('glob').glob('out/_next/static/**/*.css',recursive=True)),s
+  tl=open('out/tools/index.html',encoding='utf8').read()
+  assert 'Shop charts' in tl and '/tools/charts/metric-tap-drills' in tl
+  PY
+protected: [".den/**"]
+runaway: {minutes: 60}
+needs: [charts-data]
