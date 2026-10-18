@@ -1,0 +1,41 @@
+do: |
+  THE JOB: Make every published article fully AI-readable and searchable. (1) For each of the seven Field Notes articles added 2026-10-18 (wechat-shared-history, lowest-cost-manufacturing-china, taobao-factory-sourcing, fast-prototyping-china, fast-injection-molds, designing-moldable-parts, cantilever-snap-fits) and in fact for every article, verify it appears in: out/llms.txt, out/llms-full.txt, /api/v1/articles (list + per-slug JSON), search-index.json, feed.json, rss.xml, sitemap.xml, and has its .md alternate; fix any generator that misses them. (2) Per-article JSON-LD: Article (headline, datePublished, author, image from the hero, isPartOf the series as a CreativeWorkSeries with name "Field Notes from China"), keep the existing fields. Add FAQPage where the article naturally answers 3-5 questions: generate Q&A from the article text (for example "How fast can an injection mold be made in China?"), using a `faq:` list in each article's frontmatter (question + answer) so the generator is data-driven; the answer text must be taken from or be a faithful short summary of sentences that exist in the article. Also render the FAQ visibly at the bottom of the article ("Quick answers") so the markup matches visible content. Add HowTo JSON-LD (name, step list from the article's real headings/steps) for cantilever-snap-fits and designing-moldable-parts and, where it genuinely fits, wechat-shared-history. Include faq and howto in the per-slug /api/v1 JSON and llms-full.txt. (3) Add the FAQ questions to search-index.json. Validate in the build that each JSON-LD block parses.
+  THE WHY: Brian, 2026-10-18: "make sure it's all ai readable and searchable. I'm betting more AI will find these articles than people."
+  GUARDRAILS: FAQ answers must not claim anything the article does not say; name no company/shop; do not say the silent strategy out loud (no "do it yourself or hire us" lines). Do not change article prose except adding frontmatter `faq:` and the visible FAQ section. Keep robots.txt, llms.txt format and existing endpoints working. No deploy.
+  DONE MEANS: every article is in every machine-readable surface; JSON-LD validates; FAQ text matches article content.
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/aistr.log 2>&1 || { tail -30 /tmp/aistr.log; exit 1; }
+  cd .. && python3 - <<'PY'
+  import re,json,glob,os,html
+  slugs=[os.path.basename(f)[:-3] for f in glob.glob('web/content/articles/*.md')]
+  new=["wechat-shared-history","lowest-cost-manufacturing-china","taobao-factory-sourcing","fast-prototyping-china","fast-injection-molds","designing-moldable-parts","cantilever-snap-fits"]
+  assert set(new)<=set(slugs)
+  O='web/out/'
+  def rd(p): return open(O+p,encoding='utf8').read()
+  llms,full,feed,rss=rd('llms.txt'),rd('llms-full.txt'),rd('feed.json'),rd('rss.xml')
+  sm=rd('sitemap.xml'); si=rd('search-index.json') if os.path.exists(O+'search-index.json') else rd('search/search-index.json')
+  for s in slugs:
+      for name,t in (('llms',llms),('full',full),('feed',feed),('rss',rss),('sitemap',sm),('search',si)): assert s in t,(s,name)
+      assert os.path.exists(O+f'articles/{s}.md') or os.path.exists(O+f'articles/{s}/index.md'),(s,'md alt')
+      assert os.path.exists(O+f'api/v1/articles/{s}.json') or os.path.exists(O+f'api/v1/articles/{s}'),(s,'api')
+  for s in new:
+      h=rd(f'articles/{s}/index.html')
+      blocks=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>',h,re.S)]
+      flat=[]
+      for b in blocks: flat+= b['@graph'] if '@graph' in b else [b]
+      types={o.get('@type') for o in flat}
+      assert 'Article' in types,(s,types)
+      a=[o for o in flat if o.get('@type')=='Article'][0]
+      assert a.get('headline') and a.get('datePublished') and a.get('image') and a.get('author') and a.get('isPartOf'),(s,a.keys())
+      txt=html.unescape(re.sub(r'<[^>]+>',' ',h)); txt=re.sub(r'\s+',' ',txt)
+      faq=[o for o in flat if o.get('@type')=='FAQPage']
+      assert faq,(s,'FAQPage'); q=faq[0]['mainEntity']; assert 3<=len(q)<=6,(s,len(q))
+      for e in q:
+          ans=re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',e['acceptedAnswer']['text']))).strip()
+          assert ans[:60] in txt,(s,'FAQ answer not visible on page',ans[:60])
+      if s in ('cantilever-snap-fits','designing-moldable-parts'): assert 'HowTo' in types,(s,'HowTo')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: [article-images]
