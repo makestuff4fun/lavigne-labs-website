@@ -1,0 +1,100 @@
+do: |
+  THE JOB: Two parts, one commit.
+  (1) Rewrite docs/drafts/taobao-factory-sourcing.md (keep it a DRAFT in docs/drafts/, keep frontmatter title
+  "Taobao for Factory Sourcing?", tag "Sourcing", author "淘宝王", the DRAFT comment, 900-1,600 words, and the Chinese
+  search terms section, the platform comparison, and the limits section) in the first-person voice of 淘宝王, a buyer
+  writing from experience. State these as plain fact, unhedged: I have spent roughly $1M on Taobao over the years; I am
+  in the highest customer tier (say "the highest customer tier"; do NOT name any tier); I have had relationships with
+  shops I found on Taobao lasting many years, with excellent service; you can still visit a shop or factory in person,
+  and I have. Core message: what matters is the quality of the supplier, not where you found them. Taobao is a fine place
+  to find even specialised suppliers; the headline example is a custom LCD supplier. Smaller shops make great suppliers
+  and are often very happy to have your business (they depend on few clients; tie in that small-factory point, as in
+  docs/drafts/lowest-cost-manufacturing-china.md). Tone: a little conspiratorial. "This is a real secret" works as
+  voice. End with the Lavigne Labs soft pointer to /contact/ and then a playful close such as "Don't tell anyone you
+  heard it from me." and the sign-off line "— 淘宝王". Keep the existing "limits" honesty (Chinese needed, accounts and
+  payment, shipping, quality varies) but you may tighten it. Keep the English-vs-Chinese-platform point, but state the rule
+  unattributed ("a rule of thumb I use: if the factory can deal with you in English, you can find a lower price"). Do
+  NOT write "Brian's Law" or the name Brian anywhere in this draft, including the HTML comment. Also no shop names, no
+  person names, no tier names, no invented prices or statistics beyond the $1M above.
+  (2) Make sure that a published article with `author: "淘宝王"` can never expose the name Brian anywhere article-specific.
+  The author field already works for Article JSON-LD, /feed.json and rss.xml (d1c0742). Audit and fix the rest in web/:
+  the article page's <meta name="author"> and Next metadata `authors` (web/app/layout.tsx sets authors to the founder
+  for every page; override it per article in generateMetadata in web/app/articles/[slug]/page.tsx when the article has
+  its own author, and set it to the article author), any byline or author box on the page, the /api/v1 article entries
+  and search-index.json (lib/api.ts), llms.txt, llms-full.txt, the markdown alternate (/articles/<slug>.md) and the
+  rss/feed channel. Where the article's own entry carries an author, show the article author; where it carries none and
+  the output is for an article that has a pen name, never fall back to the founder. Existing articles (no author field)
+  must produce byte-identical output to before. Publisher stays the Organization "Lavigne Labs" (fine). Read
+  web/node_modules/next/dist/docs/ before touching Next metadata code.
+  THE WHY: Brian's words: "We don't want names. These are all true. ... Don't tell anyone you heard it from me!" The
+  pen name 淘宝王 is the point: it must not be linkable to Brian anywhere, so no "as told to", no "Brian's Law" in this
+  piece, no founder in its byline, schema, feeds or API author fields. These claims are true, so write them plainly.
+  GUARDRAILS: Do not move the draft into web/content/articles/ (Brian reads it first). Do not publish, do not deploy.
+  Existing articles' output must not change. Do not touch docs/drafts/lowest-cost-manufacturing-china.md (it keeps
+  Brian's Law, it is a separate Brian-signed piece). Lint errors no higher than the known game-component ones.
+  Site-wide text that names Brian on non-article pages is fine.
+  DONE MEANS: the draft reads as described; and a temporary copy of the draft in web/content/articles/ (DRAFT comment
+  removed, then deleted afterwards) builds with 淘宝王 and no "Brian" in the article page HTML, its API/search/feed/rss
+  entries, its .md alternate, or its llms.txt / llms-full.txt entry.
+done_when: |
+  set -e
+  d=docs/drafts/taobao-factory-sourcing.md
+  python3 - <<'PY'
+  import re
+  t=open('docs/drafts/taobao-factory-sourcing.md',encoding='utf8').read()
+  assert t.startswith('---') and 'title: "Taobao for Factory Sourcing?"' in t and 'author: "淘宝王"' in t
+  assert 'Brian' not in t, 'draft must not name Brian'
+  body=t.split('---',2)[2]
+  n=len(re.findall(r"\S+",re.sub(r'<!--.*?-->','',body,flags=re.S)))
+  assert 900<=n<=1600,n
+  for term in ['激光切割','折弯','散热器定制','线束加工','连接器']: assert term in body,term
+  assert 'LCD' in body and '$1M' in body.replace('1 million','$1M').replace('1,000,000','$1M') or 'million' in body
+  assert 'highest customer tier' in body
+  assert body.rstrip().endswith('— 淘宝王')
+  assert 'heard it from me' in body
+  PY
+  cd web
+  f=content/articles/zz-taobao-fixture.md
+  trap 'rm -f "$f"' EXIT
+  sed '/<!-- DRAFT/d' ../$d > "$f"
+  npm run export >/tmp/taobao-voice-export.log 2>&1
+  python3 - <<'PY'
+  import re,json,glob
+  def rd(p): return open(p,encoding='utf8').read()
+  h=rd('out/articles/zz-taobao-fixture/index.html')
+  assert '淘宝王' in h and 'Brian' not in h, 'article html'
+  ld=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json">(.*?)</script>',h,re.S)]
+  assert ld and all('Brian' not in json.dumps(x,ensure_ascii=False) for x in ld)
+  assert '淘宝王' in json.dumps(ld,ensure_ascii=False)
+  fj=json.load(open('out/feed.json',encoding='utf8'))
+  it=[i for i in fj['items'] if 'zz-taobao-fixture' in i['url']][0]
+  assert '淘宝王' in json.dumps(it,ensure_ascii=False) and 'Brian' not in json.dumps(it,ensure_ascii=False)
+  rss=rd('out/rss.xml')
+  m=re.search(r'<item>(?:(?!</item>).)*zz-taobao-fixture.*?</item>',rss,re.S)
+  assert m and '淘宝王' in m.group(0) and 'Brian' not in m.group(0)
+  md=rd('out/articles/zz-taobao-fixture.md')
+  assert 'Brian' not in md
+  # every other file under out/api that mentions the fixture must not name Brian near it
+  for p in glob.glob('out/api/**/*.json',recursive=True)+['out/search-index.json','out/llms.txt','out/llms-full.txt']:
+      try: s=rd(p)
+      except Exception: continue
+      if 'zz-taobao-fixture' not in s: continue
+      if p.endswith('.txt'):
+          for blk in re.split(r'\n(?=#{1,3} |- \[)',s):
+              if 'zz-taobao-fixture' in blk or 'Taobao for Factory Sourcing' in blk:
+                  assert 'Brian' not in blk,(p,blk[:200])
+      else:
+          def walk(o):
+              if isinstance(o,dict):
+                  if 'zz-taobao-fixture' in json.dumps(o,ensure_ascii=False) and not any(isinstance(v,(dict,list)) and 'zz-taobao-fixture' in json.dumps(v,ensure_ascii=False) for v in o.values()):
+                      assert 'Brian' not in json.dumps(o,ensure_ascii=False),(p,o)
+                  for v in o.values(): walk(v)
+              elif isinstance(o,list):
+                  for v in o: walk(v)
+          walk(json.loads(s))
+  # existing article unchanged in spirit
+  v=rd('out/articles/vetting-a-factory/index.html')
+  assert '淘宝王' not in v and 'Brian' in v
+  PY
+protected: [".den/**"]
+runaway: {minutes: 50}
