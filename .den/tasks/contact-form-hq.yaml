@@ -1,0 +1,29 @@
+do: |
+  THE JOB: Replace the placeholder inquiry-form section on /contact (added by reposition-final) with a working client-side form that POSTs to the inquiry endpoint on tunnel-bear. Keep the mailto:hello@lavignelabs.com link on the page as a fallback regardless. Static export, so it is a client component using fetch.
+  ENDPOINT BASE: https://forms.hanquest.com (changed from forms.lavignelabs.com, which cannot resolve; same paths and contract; CORS already allows https://lavignelabs.com). Put the base URL in ONE exported constant, web/content/site.ts `formsEndpoint`, and build every URL from it so it can be switched later. CONTRACT. Token: on render (useEffect), GET https://forms.hanquest.com/v1/token -> {"ts": int, "sig": string}; send both back unchanged as fields "ts" and "sig". A token is valid from 4 s to 2 h after ts and only once: fetch a fresh one on each render and again after every submit. Submit: POST https://forms.hanquest.com/v1/inquiry, JSON (Content-Type: application/json). Required: name (<=100), email (<=254), message (<=5000). Optional (omit or leave empty): company (<=150), website (<=300, one URL), stage = idea | prototype | funded | kickstarter_completed | in_production; funding = yc_or_accelerator | seed_or_series_a | crowdfunded | self_funded | other; funding_detail (<=500); prototypes_needed_by (<=100, free text or date); dev_priority = speed | lowest_dev_cost | polish; production_goal (<=1000, e.g. "lowest unit cost at volume"); product_type (<=200). Use EXACTLY those value strings for the three selects, with friendly labels (e.g. "Kickstarter completed", "Lowest development cost"; keep the tone warm and in the site's 'we' voice; do not word dev_priority rudely). Set maxLength on inputs to the limits. Honeypot: a field named "contact_time", posted EMPTY, in a wrapper hidden from humans by being off-screen (position:absolute; left:-9999px; not display:none alone), aria-hidden="true" on the wrapper, input tabindex="-1" autocomplete="off", with a label "Leave this empty". Server rules to respect in copy/UX: more than 2 URLs across the text fields is rejected; the same email+message twice in a day is dropped; 3 submissions per IP per 10 min. Response: always HTTP 200 with {"ok": true, "message": "..."}; show exactly this confirmation copy on success: "Thanks, we review every inquiry and reply to the ones we can help with." On a network error or non-200, show a plain message with the mailto link instead and keep the typed content. Disable the button while sending. Accessible labels, errors, focus, works on a phone. The endpoint never sends email.
+  THE WHY: Brian wants inquiries from funded startups / Kickstarter teams to come through a form (no third-party service); the managing agent built the receiver (live now at forms.hanquest.com; if the fetch fails in your environment that is expected, do not mock a success into the shipped code). Fields help us see stage, funding, deadline and whether speed or lowest dev cost matters.
+  GUARDRAILS: no deploy; do not put any secret in the code; no third-party scripts; keep the visual design and existing contact copy; the mailto fallback stays; keep llms.txt/API contact.json accurate (add a line that inquiries can also be sent via the form on /contact).
+  DONE MEANS: /contact has the form with all fields and the honeypot, built output contains the endpoint URLs, the success copy, the exact select values, and the mailto fallback.
+context: ["web/app/contact/page.tsx"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/contact-form.log 2>&1 || { tail -30 /tmp/contact-form.log; exit 1; }
+  python3 - <<'PY'
+  import os,re
+  h=open('out/contact/index.html',encoding='utf8').read()
+  js=''
+  for r,_,fs in os.walk('out/_next'):
+      for f in fs:
+          if f.endswith('.js'): js+=open(os.path.join(r,f),encoding='utf8',errors='ignore').read()
+  both=h+js
+  for s in ['forms.hanquest.com','/v1/token','/v1/inquiry','Thanks, we review every inquiry and reply to the ones we can help with.','contact_time','kickstarter_completed','in_production','yc_or_accelerator','seed_or_series_a','lowest_dev_cost','prototypes_needed_by','production_goal','funding_detail']:
+      assert s in both,s
+  assert 'mailto:hello@lavignelabs.com' in h
+  for n in ['name','email','message','company','website','stage','funding','dev_priority','product_type']:
+      assert re.search(r'name="%s"'%n,h),n
+  i=h.index('contact_time'); seg=h[max(0,i-600):i+300]
+  assert 'aria-hidden="true"' in seg and 'tabindex="-1"' in seg.replace('tabIndex','tabindex') and 'autocomplete="off"' in seg.lower().replace('autocomplete','autocomplete'),'honeypot attrs'
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: ["reposition-final"]
