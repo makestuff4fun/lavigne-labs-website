@@ -1,0 +1,57 @@
+do: |
+  THE JOB: Recover the old project descriptions from the Wayback Machine and commit them as content.
+  Create web/content/projectDetails.ts exporting `projectDetails: Record<slug, {description: string
+  (Markdown, the recovered text lightly cleaned: no nav/footer/WordPress chrome, headings kept as
+  Markdown ##), sourceUrl: string (the web.archive.org URL fetched), sourceDate: string, images:
+  string[] (the original wp-content/uploads image URLs found on that archived page, as archive
+  URLs ending in the id_ form), verified: false}>` for all 12 slugs in web/content/projects.ts.
+  Map slug -> archived page (timestamps from the CDX API):
+   microscope-slider -> /portfolio/mcroscope-x-y-slider/ ; micropython-system -> /portfolio/modular-micropython-system/ ;
+   camera-arm -> /portfolio/articulated-camera-arm/ ; mechanical-keyboard -> /portfolio/mechanical-keyboard/ ;
+   whiteboard-plotter -> /portfolio/whiteboard-plotter/ ; hex-puck-lights -> /portfolio/hex-puck-under-cabinet-lights/ ;
+   custom-dog-leashes -> /portfolio/custom-dog-leashes/ ; handheld-sokoban -> /portfolio/handheld-toy/ (check it is the sokoban toy;
+   if not, search the CDX list for the right page) ; pcb-artwork -> /2024/11/07/pcb-artwork/ ;
+   digital-badge -> /2024/11/08/digital-badge-schematic-design/ ; badge-pcb-layout -> /2024/11/08/digital-badge-pcb-layout/ ;
+   8080-lcd -> /2024/11/09/adventures-with-an-i8080-lcd/ .
+  List pages: https://web.archive.org/cdx/search/cdx?url=lavignelabs.com*&output=json&collapse=urlkey&filter=statuscode:200
+  Fetch raw HTML with the `id_` form, e.g. https://web.archive.org/web/20231208062430id_/https://lavignelabs.com/portfolio/articulated-camera-arm/
+  (this works from red; if a fetch fails, retry, or run curl via `ssh tunnel-bear curl ...`). Extract the main post content only
+  (the "More Information" body / entry content). Also save a raw extract per project under docs/work-sources/<slug>.json
+  (sourceUrl, fetched text, image URLs). Keep the 8 inferred blurbs in projects.ts untouched; but where the
+  archived page contradicts a blurb, record it in docs/work-sources/DISCREPANCIES.md for Brian.
+  THE WHY: Brian (2026-10-18): "the work page used to have details about each project and images. but it's
+  not working." The WordPress pages are gone from the host; Wayback is the only text source. This task is
+  step 1 of 3 (text, then images, then pages).
+  GUARDRAILS: Never invent or embellish project facts: only text that appears on the archived page. If a
+  page has no usable text, set description to "" and add the slug to docs/work-sources/MISSING.md; do not write
+  filler. Do not touch pages/components, public/, or deploy. Do not hit the Wayback API in a tight loop
+  (sleep 1-2 s between fetches).
+  DONE MEANS: projectDetails.ts has an entry for every project slug with real recovered text and an
+  archive sourceUrl, plus the per-slug source JSON files.
+done_when: |
+  python3 - <<'PY'
+  import re,json,os
+  t=open('web/content/projectDetails.ts',encoding='utf8').read()
+  slugs=re.findall(r'slug:\s*"([^"]+)"',open('web/content/projects.ts',encoding='utf8').read())
+  assert len(slugs)==12,slugs
+  for s in slugs:
+      p=f'docs/work-sources/{s}.json'
+      assert os.path.exists(p),p
+      j=json.load(open(p,encoding='utf8'))
+      assert j['sourceUrl'].startswith('https://web.archive.org/web/'),s
+  missing=open('docs/work-sources/MISSING.md',encoding='utf8').read() if os.path.exists('docs/work-sources/MISSING.md') else ''
+  ok=0
+  for s in slugs:
+      j=json.load(open(f'docs/work-sources/{s}.json',encoding='utf8'))
+      txt=j.get('text') or j.get('description') or ''
+      if s in missing: continue
+      assert len(txt)>=300,(s,len(txt))
+      assert s in t,s
+      ok+=1
+  assert ok>=9,ok
+  arm=json.load(open('docs/work-sources/camera-arm.json',encoding='utf8'))
+  assert 'lapping' in json.dumps(arm).lower() and 'carbon fiber' in json.dumps(arm).lower()
+  assert 'verified: false' in t or '"verified": false' in t
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
