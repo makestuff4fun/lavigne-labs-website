@@ -35,9 +35,9 @@ Both clients use the same layout (`all_users/`, then `wxid_…/db_storage/` with
 
 ## Why this is safe here, and only here
 
-Two WeChat clients using one history folder at the same time will corrupt each other. A dual-boot machine can never run both operating systems at once, so that can't happen. Don't try this with two computers sharing a network drive.
+Two WeChat clients using one history folder at the same time will corrupt each other. A dual-boot machine can never run both operating systems at once, so that can't happen.
 
-The other requirement is that **Fast Startup must be off in Windows**. With it on, Windows shuts down into a half-hibernated state and leaves the NTFS partition marked in use. Linux may then mount it read-only, or worse. Turn it off in the power settings, or set the registry value `HiberbootEnabled` to `0`.
+The other requirement is that **Fast Startup must be off in Windows**. With it on, Windows shuts down into a half-hibernated state and leaves the NTFS partition marked in use. Linux may then mount it read-only, or worse. Set `HiberbootEnabled` to `0`.
 
 ## Gotchas I hit
 
