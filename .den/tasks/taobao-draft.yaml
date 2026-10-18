@@ -1,0 +1,46 @@
+do: |
+  THE JOB: Write a DRAFT article saved at docs/drafts/taobao-factory-sourcing.md (NOT in web/content/articles/, so it
+  cannot ship). Read the three existing articles in web/content/articles/ first and match their tone (practical, plain
+  headings, no hype) and gray-matter frontmatter. Frontmatter: title "Taobao for Factory Sourcing?" (exact, question
+  mark kept), date "2026-10-18", tag "Sourcing", author "淘宝王", excerpt. Put this HTML comment right after the
+  frontmatter: <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->. Length 900-1,600 words.
+  The article is signed 淘宝王 (not Brian): end it with the line "— 淘宝王" and write in a first-person voice that does not
+  claim to be Brian. Thesis: Taobao, not only 1688 or Alibaba.com, is where many small Chinese factories and workshops
+  advertise, because a shop is cheap to run. There is a hidden B2B ecosystem: raw-material suppliers (sheet, bar,
+  extrusion), custom heatsinks, laser cutting and bending, custom wire harnesses and cables, connectors, and similar
+  custom processes. Explain how to use it: search in Chinese with process terms (give the real terms with a short
+  English gloss, including 激光切割, 折弯, 散热器定制, 线束加工, 连接器, and 型材 / 板材 for material), read listings priced
+  per piece or per sample, message the shop on 旺旺 (Aliwangwang) to get to the factory behind the shop, order samples
+  cheaply, and the limits (shipping out of China, quality variance, needing Chinese, Taobao accounts and payment for
+  foreigners; hedge what you cannot be sure of, e.g. "currently, check before relying on it"). Contrast with 1688
+  (wholesale) and Alibaba.com (export-facing, English, so pricier), tying in Brian's Law from
+  docs/drafts/lowest-cost-manufacturing-china.md: "If the factory can deal with you in English, you can find a lower
+  price." (quote it exactly, attribute it to Brian). Close with a soft call to action pointing to /contact/ (Lavigne Labs
+  can do the Chinese-language legwork).
+  THE WHY: Brian (2026-10-18), verbatim: "write an article called "taobao for facotory sourcing?" Believe it or not
+  taobao is a cheap way for chinese factories to advertise. Material suppliers, custom heatsinks, laser cut and bend,
+  custom wires, connectors, there is a hidden ecosystem sitting right there. sign it "淘宝王"". Wording he has not seen
+  must not go out unread, so this is a draft.
+  GUARDRAILS: No invented statistics, shop names, prices or percentages. Do not add it to web/content/articles/ or any
+  route, feed, sitemap or llms.txt. Touch nothing else. Do not deploy.
+  DONE MEANS: docs/drafts/taobao-factory-sourcing.md exists with the frontmatter above, the draft comment, the Chinese
+  terms, the Law quote, the sign-off, and nothing was added under web/.
+done_when: |
+  python3 - <<'PY'
+  import os
+  t=open('docs/drafts/taobao-factory-sourcing.md',encoding='utf8').read()
+  assert t.startswith('---\n')
+  fm=t.split('---')[1]
+  for k in ('title:','date:','tag:','excerpt:','author:'): assert k in fm,k
+  assert 'title: "Taobao for Factory Sourcing?"' in fm
+  assert '淘宝王' in fm and '— 淘宝王' in t
+  assert 'DRAFT' in t and '/contact' in t
+  assert "If the factory can deal with you in English, you can find a lower price." in t
+  terms=['激光切割','折弯','散热器定制','线束加工','连接器','型材','板材','旺旺','1688']
+  assert sum(x in t for x in terms)>=6,[x for x in terms if x not in t]
+  body=t.split('---',2)[2]
+  assert 900<=len(body.split())<=1600,len(body.split())
+  assert not os.path.exists('web/content/articles/taobao-factory-sourcing.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
