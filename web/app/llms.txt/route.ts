@@ -1,5 +1,6 @@
 import { site, pageUrl } from "@/content/site";
-import { getAllArticles } from "@/lib/articles";
+import { allSeries } from "@/content/series";
+import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { projects } from "@/content/projects";
 import { tools, toolHref } from "@/content/tools";
 
@@ -29,6 +30,15 @@ export function GET() {
     `Full site as one Markdown document: [llms-full.txt](${abs("/llms-full.txt")})`,
     "",
     `JSON API: [index.json](${abs("/api/v1/index.json")}) lists every endpoint; OpenAPI 3.1 description: [openapi.json](${abs("/openapi.json")})`,
+    "",
+    "## Article series",
+    "",
+    ...allSeries.flatMap((s) => [
+      `- [${s.title}](${abs(`/articles/series/${s.slug}`)}): ${s.intro}`,
+      ...getSeriesArticles(s.slug).map(
+        (a, i) => `  ${i + 1}. [${a.title}](${abs(`/articles/${a.slug}`)})`,
+      ),
+    ]),
     "",
     "## Articles",
     "",

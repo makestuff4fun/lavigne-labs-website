@@ -3,6 +3,8 @@ title: "Why 'yes' doesn't always mean yes"
 date: "2026-06-15"
 tag: "Working in China"
 excerpt: "Most manufacturing disasters I've seen weren't technical — they were communication failures. After 13 years here, this is how I keep 'yes' from becoming a $40,000 surprise."
+series: "field-notes"
+seriesOrder: 2
 ---
 
 The hardest part of manufacturing in China usually isn't the manufacturing. It's making sure that what you *think* you agreed to is what the factory *thinks* you agreed to. Those two things drift apart more easily than you'd believe, and by the time the gap shows up, it's sitting in a shipping container.

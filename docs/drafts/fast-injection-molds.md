@@ -3,6 +3,8 @@ title: "Fast Injection Molds in China: Tooling in 10 Days"
 date: "2026-10-18"
 tag: "Sourcing"
 excerpt: "The standard story says a mold takes 30 days plus revisions. There is another way: 10-day injection molds, cheaper than regular tooling. Here is how they work, what the catch is, and when to use them."
+series: "field-notes"
+seriesOrder: 6
 ---
 
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->

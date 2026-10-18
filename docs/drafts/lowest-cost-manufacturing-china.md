@@ -3,6 +3,8 @@ title: "Lowest-cost manufacturing in China: Brian's Law"
 date: "2026-10-18"
 tag: "Sourcing"
 excerpt: "The factory with the polished English-speaking sales team is rarely the cheapest place your part can be made. Here's why, and how to find the people who actually make it."
+series: "field-notes"
+seriesOrder: 4
 ---
 
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->

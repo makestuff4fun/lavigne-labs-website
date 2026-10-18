@@ -4,6 +4,8 @@ date: "2026-10-18"
 tag: "Sourcing"
 author: "淘宝王"
 excerpt: "Taobao looks like a shopping site for phone cases and sneakers. It is also one of the best places to find real factories, including specialised ones. What matters is the supplier, not where you found them."
+series: "field-notes"
+seriesOrder: 5
 ---
 
 <!-- DRAFT: the owner must read before this moves to web/content/articles/ -->

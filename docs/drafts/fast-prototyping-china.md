@@ -3,6 +3,8 @@ title: "Fast Prototyping in China: Stop Asking Factories"
 date: "2026-10-18"
 tag: "Sourcing"
 excerpt: "Many teams prototype with the wrong supplier, then wonder why the replies dry up by revision three. Here's how fast prototyping in China actually works, and who to ask."
+series: "field-notes"
+seriesOrder: 3
 ---
 
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->

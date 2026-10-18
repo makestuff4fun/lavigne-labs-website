@@ -3,6 +3,8 @@ title: "One WeChat history for a dual-boot Windows and Linux PC"
 date: "2026-10-18"
 tag: "China tips"
 excerpt: "WeChat desktop doesn't sync history between computers, so a dual-boot PC ends up with two histories that drift apart. Here is how I pointed both operating systems at one folder, and what went wrong on the way."
+series: "field-notes"
+seriesOrder: 7
 ---
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 

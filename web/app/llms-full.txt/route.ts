@@ -1,7 +1,8 @@
 import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
-import { getAllArticles } from "@/lib/articles";
+import { allSeries } from "@/content/series";
+import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { articleBody } from "@/lib/api";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -36,6 +37,18 @@ export function GET() {
     "## Work",
     "",
     ...projects.flatMap((p) => [`### ${p.title}`, "", `URL: ${pageUrl(`/work/${p.slug}`)}`, "", p.blurb, ""]),
+    "## Article series",
+    "",
+    ...allSeries.flatMap((s) => [
+      `### ${s.title}`,
+      "",
+      `URL: ${pageUrl(`/articles/series/${s.slug}`)}`,
+      "",
+      s.intro,
+      "",
+      ...getSeriesArticles(s.slug).map((a, i) => `${i + 1}. [${a.title}](${pageUrl(`/articles/${a.slug}`)})`),
+      "",
+    ]),
     "## Articles",
     "",
     ...getAllArticles().flatMap((a) => [

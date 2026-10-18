@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
-import { getAllArticles, formatDate } from "@/lib/articles";
+import { allSeries } from "@/content/series";
+import { getAllArticles, getSeriesArticles, formatDate } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Articles",
@@ -30,6 +31,20 @@ export default function ArticlesPage() {
 
       <section className="py-16 sm:py-20">
         <Container>
+          {allSeries.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/articles/series/${s.slug}`}
+              className="group mb-8 block rounded-2xl border border-accent/30 bg-mist p-7 transition hover:border-accent"
+            >
+              <span className="font-mono text-xs uppercase tracking-widest text-accent">Series</span>
+              <h2 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">{s.title}</h2>
+              <p className="mt-2 max-w-3xl leading-relaxed text-slate">{s.intro}</p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                {getSeriesArticles(s.slug).length} articles <ArrowIcon className="transition group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          ))}
           <div className="grid gap-6 lg:grid-cols-2">
             {articles.map((a) => (
               <Link

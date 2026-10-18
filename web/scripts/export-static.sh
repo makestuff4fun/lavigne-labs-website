@@ -23,7 +23,10 @@ STATIC_EXPORT=1 npx next build
 trap - EXIT; restore
 
 # Raw Markdown alternates: out/articles/<slug>.md (beside the <slug>/ page dir)
-for f in content/articles/*.md; do cp "$f" "out/articles/$(basename "$f")"; done
+# (HTML comment blocks starting "<!-- REVIEW NOTE" are stripped: owner-only notes)
+for f in content/articles/*.md; do
+  python3 -c 'import re,sys; sys.stdout.write(re.sub(r"<!--\s*REVIEW NOTE[\s\S]*?-->\s*", "", open(sys.argv[1], encoding="utf8").read()))' "$f" > "out/articles/$(basename "$f")"
+done
 
 # --- assemble the games-only distribution ---
 rm -rf dist-games

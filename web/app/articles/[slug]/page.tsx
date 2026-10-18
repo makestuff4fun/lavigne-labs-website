@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site, pageUrl } from "@/content/site";
+import { getSeries } from "@/content/series";
 import { Container, ArrowIcon, Button } from "@/components/ui";
 import {
   getArticle,
   getArticleSlugs,
   getAllArticles,
+  getSeriesArticles,
   formatDate,
 } from "@/lib/articles";
 
@@ -49,6 +51,12 @@ export default async function ArticlePage({
   const article = getArticle(slug);
   const penName = !!article.author && article.author !== site.founder;
   const more = getAllArticles().filter((a) => a.slug !== slug).slice(0, 2);
+
+  const series = article.series ? getSeries(article.series) : undefined;
+  const members = series ? getSeriesArticles(series.slug) : [];
+  const idx = members.findIndex((a) => a.slug === slug);
+  const prev = idx > 0 ? members[idx - 1] : undefined;
+  const next = idx >= 0 ? members[idx + 1] : undefined;
 
   const url = pageUrl(`/articles/${slug}`);
   const jsonLd = {
@@ -95,6 +103,19 @@ export default async function ArticlePage({
           </span>
         </div>
 
+        {series && idx >= 0 && (
+          <div className="mt-6 rounded-xl border border-accent/30 bg-mist px-5 py-4 text-sm">
+            <span className="font-mono text-xs uppercase tracking-widest text-slate">Series</span>{" "}
+            <Link href={`/articles/series/${series.slug}`} className="font-semibold text-accent hover:underline">
+              {series.title}
+            </Link>
+            <span className="text-slate">
+              {" "}
+              · Part {idx + 1} of {members.length}
+            </span>
+          </div>
+        )}
+
         <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
           {article.title}
         </h1>
@@ -103,6 +124,25 @@ export default async function ArticlePage({
           className="prose prose-slate mt-8 max-w-none prose-headings:tracking-tight prose-h2:text-2xl prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-blockquote:border-accent prose-blockquote:text-ink prose-th:text-left"
           dangerouslySetInnerHTML={{ __html: article.html }}
         />
+
+        {series && (prev || next) && (
+          <nav aria-label={`${series.title} navigation`} className="mt-12 grid gap-4 sm:grid-cols-2">
+            {prev ? (
+              <Link href={`/articles/${prev.slug}`} className="rounded-xl border border-line bg-white p-5 transition hover:border-accent/40">
+                <span className="font-mono text-xs uppercase tracking-widest text-slate">&larr; Previous</span>
+                <span className="mt-1 block font-semibold tracking-tight">{prev.title}</span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <Link href={`/articles/${next.slug}`} className="rounded-xl border border-line bg-white p-5 text-right transition hover:border-accent/40 sm:col-start-2">
+                <span className="font-mono text-xs uppercase tracking-widest text-slate">Next &rarr;</span>
+                <span className="mt-1 block font-semibold tracking-tight">{next.title}</span>
+              </Link>
+            )}
+          </nav>
+        )}
 
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">
           <p className="text-lg font-semibold">Building hardware?</p>

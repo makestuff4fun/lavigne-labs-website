@@ -13,9 +13,22 @@ export type ArticleMeta = {
   tag: string;
   author?: string;
   readingTime: number;
+  series?: string;
+  seriesOrder?: number;
 };
 
 export type Article = ArticleMeta & { html: string };
+
+/** Drops HTML comment blocks starting `<!-- REVIEW NOTE`: notes for the owner, never for readers. */
+export function stripReviewNotes(md: string): string {
+  return md.replace(/<!--\s*REVIEW NOTE[\s\S]*?-->\s*/g, "");
+}
+
+/** Article markdown body (frontmatter and review notes removed). */
+export function getArticleBody(slug: string): string {
+  const raw = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), "utf8");
+  return stripReviewNotes(matter(raw).content).trim();
+}
 
 function readingTime(text: string): number {
   const words = text.trim().split(/\s+/).length;
@@ -33,7 +46,8 @@ export function getArticleSlugs(): string[] {
 export function getArticle(slug: string): Article {
   const fullPath = path.join(ARTICLES_DIR, `${slug}.md`);
   const raw = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(raw);
+  const { data, content: rawContent } = matter(raw);
+  const content = stripReviewNotes(rawContent);
   return {
     slug,
     title: data.title ?? slug,
@@ -42,6 +56,12 @@ export function getArticle(slug: string): Article {
     tag: data.tag ?? "Manufacturing",
     ...(typeof data.author === "string" && data.author.trim()
       ? { author: data.author.trim() }
+      : {}),
+    ...(typeof data.series === "string" && data.series.trim()
+      ? {
+          series: data.series.trim(),
+          ...(typeof data.seriesOrder === "number" ? { seriesOrder: data.seriesOrder } : {}),
+        }
       : {}),
     readingTime: readingTime(content),
     html: marked.parse(content) as string,
@@ -67,4 +87,14 @@ export function formatDate(date: string): string {
     month: "long",
     day: "numeric",
   });
+}
+
+/** Published articles of a series, in reading order (seriesOrder, then date). */
+export function getSeriesArticles(series: string): ArticleMeta[] {
+  return getAllArticles()
+    .filter((a) => a.series === series)
+    .sort(
+      (a, b) =>
+        (a.seriesOrder ?? 1e9) - (b.seriesOrder ?? 1e9) || (a.date < b.date ? -1 : 1),
+    );
 }

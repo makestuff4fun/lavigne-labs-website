@@ -1,13 +1,11 @@
-import matter from "gray-matter";
-import fs from "node:fs";
-import path from "node:path";
 import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
 import { projectGalleries } from "@/content/projectGalleries";
 import { toolSpecs } from "@/content/toolSpecs";
-import { getAllArticles, getArticle, getArticleSlugs } from "@/lib/articles";
+import { getAllArticles, getArticle, getArticleSlugs, getArticleBody, getSeriesArticles } from "@/lib/articles";
+import { allSeries } from "@/content/series";
 
 export const API_BASE = "/api/v1";
 
@@ -39,10 +37,7 @@ const articleLinks = (slug: string) => ({
   jsonUrl: url(`articles/${slug}.json`),
 });
 
-export function articleBody(slug: string): string {
-  const raw = fs.readFileSync(path.join(process.cwd(), "content/articles", `${slug}.md`), "utf8");
-  return matter(raw).content.trim();
-}
+export const articleBody = getArticleBody;
 
 /** Markdown to plain text: drops code fences, images, link syntax, emphasis and heading marks. */
 export function stripMarkdown(md: string): string {
@@ -113,6 +108,27 @@ export const REGISTRY: Endpoint[] = [
     name: "articles",
     description: "Every article: slug, title, date, tag, excerpt, readingTime and links to the page, markdown and JSON.",
     build: () => ({ articles: getAllArticles().map((a) => ({ ...a, ...articleLinks(a.slug) })) }),
+  },
+  {
+    path: "series.json",
+    name: "series",
+    description: "Article series (e.g. Field Notes from China): slug, title, intro, url and the ordered list of published articles.",
+    build: () => ({
+      series: allSeries.map((s) => ({
+        slug: s.slug,
+        title: s.title,
+        intro: s.intro,
+        url: pageUrl(`/articles/series/${s.slug}`),
+        articles: getSeriesArticles(s.slug).map((a, i) => ({
+          order: i + 1,
+          slug: a.slug,
+          title: a.title,
+          date: a.date,
+          excerpt: a.excerpt,
+          ...articleLinks(a.slug),
+        })),
+      })),
+    }),
   },
   {
     path: "services.json",
