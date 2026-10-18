@@ -36,9 +36,67 @@ const articleLinks = (slug: string) => ({
   jsonUrl: url(`articles/${slug}.json`),
 });
 
-function articleBody(slug: string): string {
+export function articleBody(slug: string): string {
   const raw = fs.readFileSync(path.join(process.cwd(), "content/articles", `${slug}.md`), "utf8");
   return matter(raw).content.trim();
+}
+
+/** Markdown to plain text: drops code fences, images, link syntax, emphasis and heading marks. */
+export function stripMarkdown(md: string): string {
+  return md
+    .replace(/```[a-z]*\n?([\s\S]*?)```/g, "$1")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+    .replace(/^\s{0,3}>\s?/gm, "")
+    .replace(/^\s*[-*+]\s+/gm, "")
+    .replace(/^\s*[-*_]{3,}\s*$/gm, "")
+    .replace(/(\*\*|__|\*|_|`)/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+type SearchRecord = { id: string; type: string; title: string; url: string; text: string; [k: string]: unknown };
+
+function searchRecords(): SearchRecord[] {
+  return [
+    ...getAllArticles().map((a) => ({
+      id: `article:${a.slug}`,
+      type: "article",
+      slug: a.slug,
+      title: a.title,
+      url: pageUrl(`/articles/${a.slug}`),
+      tag: a.tag,
+      excerpt: a.excerpt,
+      text: stripMarkdown(articleBody(a.slug)),
+    })),
+    ...faqs.map((f, i) => ({
+      id: `faq:${i + 1}`,
+      type: "faq",
+      title: f.q,
+      url: pageUrl("/faq"),
+      text: f.a,
+    })),
+    ...services.map((s) => ({
+      id: `service:${s.id}`,
+      type: "service",
+      title: s.title,
+      url: pageUrl("/"),
+      text: [s.summary, ...s.points].join("\n"),
+    })),
+    ...projects.map((p) => ({
+      id: `project:${p.slug}`,
+      type: "project",
+      title: p.title,
+      url: pageUrl("/work"),
+      tags: p.tags,
+      text: p.blurb,
+    })),
+    { id: "page:home", type: "page", title: site.name, url: pageUrl("/"), text: site.description },
+    { id: "page:work", type: "page", title: "Work", url: pageUrl("/work"), text: projects.map((p) => p.title).join(", ") },
+    { id: "page:contact", type: "page", title: "Contact", url: pageUrl("/contact"), text: `Email ${site.email}. ${site.hours}` },
+  ];
 }
 
 /**
@@ -75,6 +133,12 @@ export const REGISTRY: Endpoint[] = [
     build: () => ({
       projects: projects.map((p) => ({ ...p, url: pageUrl("/work"), imageUrl: pageUrl(p.image) })),
     }),
+  },
+  {
+    path: "search-index.json",
+    name: "search-index",
+    description: "Flat search index: one record (id, type, title, url, text) per article, FAQ, service and project, with full plain-text article bodies.",
+    build: () => ({ records: searchRecords() }),
   },
   {
     path: "contact.json",

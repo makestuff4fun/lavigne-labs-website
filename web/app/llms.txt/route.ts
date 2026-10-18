@@ -25,6 +25,8 @@ export function GET() {
     "",
     `Contact: ${site.email}`,
     "",
+    `Full site as one Markdown document: [llms-full.txt](${abs("/llms-full.txt")})`,
+    "",
     "## Articles",
     "",
     ...getAllArticles().map(
