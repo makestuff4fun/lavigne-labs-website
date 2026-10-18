@@ -8,9 +8,15 @@ series: "field-notes"
 seriesOrder: 4
 ---
 
+<!-- REVIEW NOTE
+Corrected: Spelling and grammar tidied silently. Two term fixes: (1) the business-licence scope (经营范围) is a clue, not proof. Some traders list 生产 and many real factories also list 销售, so I reworded step 2 to say read it, then check it against the machines and the answers. (2) "Domestic channels" for payment was loose. What matters is a company bank account (对公账户) in the exact name on the contract, so I said that.
+Added: (a) a short opening scenario as the hook; (b) trading company vs factory, with what to look for on the licence and the shop page; (c) pay only to a company account matching the contract and invoice name, never a personal account; (d) the VAT invoice (增值税发票 / fapiao): ask whether the quote includes one, and compare like with like; (e) asking what the factory outsources, folded into the questions in step 5; (f) sample-vs-production consistency (keep the approved sample, check production against it); (g) a 1688 cross-check of the English quote, plus a person on the ground to confirm; (h) matching lines in the checklist. Nothing about draft angles or designing for the tool. Strike any of it you disagree with.
+Unsure: I left out the VAT rate and how export tax refunds work, because they change and I would not state them without checking. Please confirm you are happy with "a factory that will not issue an invoice is a flag" for your usual jobs.
+-->
+
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
-When a client asks me how to get the lowest price out of China, I usually start with a rule I've come to rely on. I call it Brian's Law:
+Picture two quotes for the same part. One comes back in an hour, in perfect English, with a tidy PDF. The other comes back a day later, in short Chinese messages, and is noticeably lower. The second is usually the one closer to the machines. When a client asks me how to get the lowest price out of China, I start with a rule I've come to rely on. I call it Brian's Law:
 
 > **"If the factory can deal with you in English, you can find a lower price."**
 
@@ -62,19 +68,23 @@ This is the recipe I actually follow. It is harder than it sounds, which is why 
 
 **1. Search in Chinese, on Chinese platforms.** On 1688, the domestic wholesale and sourcing platform, search the product by its Chinese name plus the process, not the English listing title. Useful patterns are the product name with 厂家 (factory), 源头工厂 (source factory) or 定制 (custom made), and the process words such as 注塑 (injection molding), 冲压 (stamping), 数控加工 (CNC machining) or 压铸 (die casting). Read the shop page: a real maker shows machines, workshop photos and a business licence, and describes processes. A trader shows a catalogue of unrelated categories.
 
-**2. Tell the factory from the front.** Check the registered business scope on the licence: 生产 (production) points to a maker, 贸易 or 销售 (trade, sales) to a trader. Ask for the 营业执照 (business licence) and look at what the company is registered to do. Ask who owns the tooling and which machines make your part. A maker answers in specifics. A trader answers in generalities.
+**2. Tell the factory from the front.** Ask for the 营业执照 (business licence) and read the registered business scope: 生产 (production) points to a maker, 贸易 or 销售 (trade, sales) to a trading company. Treat it as a clue, not proof, since some traders list production and many real factories also list sales. Then test it. Ask who owns the tooling and which machines make your part. A maker answers in specifics. A trading company answers in generalities. Also check that the address on the licence is a place that has a workshop.
 
 **3. Go to the cluster.** Most product types concentrate in a few towns, with moulds, plating, packaging and materials within a short drive. Search by town and process, then visit the cluster rather than ordering from far away. Suppliers there also know their neighbours, which is how you find the shop one tier down.
 
 **4. Send a clear package.** Drawings, material, finish, tolerances, target quantity and the date you need parts. Ask for a quote broken down by material, processing, tooling and packing, so you can compare like with like.
 
-**5. Ask the questions that expose the truth.** Which processes are done in-house, and which go outside? Which machine will run my part? How many clients do you have, and how much does your largest one matter? What happens to my tooling if we stop working together? Can I see the line running?
+**5. Ask the questions that expose the truth.** Which processes are done in-house, and which does the factory outsource? Which machine will run my part? How many clients do you have, and how much does your largest one matter? What happens to my tooling if we stop working together? Can I see the line running?
 
-**6. Visit in person.** I won't recommend a shop I haven't walked. Look at the machines and their condition, the QC station, the stock of material, whether the workers are busy, and what other clients' parts are on the floor. Trust the floor over the brochure. Agree a reference sample before any production run.
+**6. Visit in person.** I won't recommend a shop I haven't walked. Look at the machines and their condition, the QC station, the stock of material, whether the workers are busy, and what other clients' parts are on the floor. Trust the floor over the brochure. Agree a reference sample before any production run, keep it, and compare the first production parts against it. A good sample proves they can make one part; it does not prove the thousandth will match.
 
-**7. Start small, pay carefully.** Run a trial order. Chinese suppliers expect payment through domestic channels and a deposit before production, and setting up a way to pay safely from outside China is its own project. Pay the tooling and the deposit only against what you have verified, and keep balances tied to inspection.
+**7. Start small, pay carefully.** Run a trial order. Chinese suppliers expect a deposit before production, and setting up a way to pay safely from outside China is its own project. Pay only into a company bank account whose name matches the supplier on the contract and the invoice. A request to pay a personal account, or a different company, is a reason to stop. Pay the tooling and the deposit only against what you have verified, and keep balances tied to inspection.
 
-**8. Build the relationship.** The best prices and the best attention come after years of paying on time, giving honest forecasts and showing up. A factory's owner will bend a schedule for a customer they trust. No search term finds that.
+**8. Settle the invoice question.** Ask whether the quote includes a 增值税发票 (VAT invoice, the fapiao) and which kind. A price with a proper invoice and a price without one are not the same price, so compare quotes on the same basis. An invoice from the same company you are paying also helps confirm who you are really dealing with. A factory that won't issue one at all is a flag.
+
+**9. Cross-check the English quote.** Find the same or a similar part on 1688 and compare the price and the process. If the English quote is several times the domestic one, you know how much layer is in it. Have someone on the ground confirm what the listing says.
+
+**10. Build the relationship.** The best prices and the best attention come after years of paying on time, giving honest forecasts and showing up. A factory's owner will bend a schedule for a customer they trust. No search term finds that.
 
 Be honest about what is hard here. Most of this assumes you can read and speak Chinese, be in the country for visits, and take weeks over something that looks like a quick search. Skip any of it and you are back to guessing.
 
@@ -96,12 +106,13 @@ Also remember that unit price is only part of the story. See my piece on what la
 1. Can the factory deal with you easily in English? If yes, ask who actually makes the part.
 2. Ask to see the line that makes your product, running.
 3. Ask which processes are done in-house and which are subcontracted.
-4. Look for the smaller shop one or two tiers down: 1688, the local cluster, referrals.
+4. Look for the smaller shop one or two tiers down: 1688, the local cluster, referrals. Cross-check the English quote against what the domestic listing suggests.
 5. Visit in person, or send someone who speaks the language.
 6. Ask honestly how many clients they have and how much one client matters.
 7. Check capacity during your production window.
-8. Agree on a reference sample before the run.
-9. Decide whether the savings are worth the risk for this product.
+8. Agree on a reference sample before the run, and check production against it.
+9. Check the licence scope, pay only a company account matching the contract and invoice, and ask about the VAT invoice.
+10. Decide whether the savings are worth the risk for this product.
 
 ## Closing thought
 
