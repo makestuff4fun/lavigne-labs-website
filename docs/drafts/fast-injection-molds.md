@@ -9,9 +9,9 @@ seriesOrder: 6
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. I rewrote that line. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little".
-Added: Why fast molds wear (aluminium or soft P20 versus hardened H13/S136; pre-hardened steel; wear starts at gate and parting line). Draft angles. Gate and ejector-pin marks, stated up front. Surface finish standards (SPI, MT, VDI 3400) and that texture adds time and cost. First samples (T0/T1) and what to check. Material and shrinkage affecting fit. Get DFM feedback on the 3D file before steel is cut. A closing checklist line.
-Unsure: No exact draft angle, SPI grade or shrinkage numbers given on purpose; they vary by material and texture, so the body only says to ask. Whether your fast molds are aluminium or P20 is not stated; I kept it generic. Your wording for steel-safe on pins is the one I most want you to eyeball.
+Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little". (5) An earlier revision of this note told readers to add draft; that was wrong against your practice and is removed everywhere. The piece no longer tells anyone to add draft.
+Added: Your draft story, told in first person (first China mold, all the draft added, designed to avoid a slide, Canadian consultant did the layout, shop rotated the part 90 degrees, added a slide, redid the draft, nicer part, the irony), with your rule as a pull quote, scoped to housings, toys and consumer electronics (automotive likely the exception) and your "Unless you're an expert" line. You supplied this. Practical advice: give the shop a clean model plus requirements and let their engineers choose draft, parting line and slides. Why fast molds wear (aluminium or soft P20 versus hardened H13/S136; pre-hardened steel; wear starts at gate and parting line). Gate and ejector-pin marks, stated up front. Surface finish standards (SPI, MT, VDI 3400) and that texture adds time and cost. First samples (T0/T1) and what to check. Material and shrinkage affecting fit. DFM feedback on the 3D file before steel is cut. Strike any you disagree with.
+Unsure: No exact SPI grade or shrinkage numbers given on purpose; they vary by material and texture. Whether your fast molds are aluminium or P20 is not stated; I kept it generic. Your wording for steel-safe on pins is the one I most want you to eyeball.
 -->
 
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
@@ -67,6 +67,8 @@ None of this is difficult. It just asks for the kind of discipline most teams on
 
 Not every feature costs the same. Slides and side horizontal features usually add little or no time. A good toolmaker handles them as part of a normal day.
 
+Slides fit your own experience too: see the story below, where the shop added one and the part got better.
+
 Be careful with anything else. Undercuts that need lifters, angled holes and other special features will increase the time. They are not impossible, but each one adds machining, fitting and risk. If you can redesign a feature to avoid a lifter, do it. It is often the cheapest day you will ever save.
 
 ## Why fast molds wear
@@ -75,18 +77,29 @@ Fast molds are fast partly because the cavity is cut from softer material. For s
 
 The wear shows in predictable places. Small cores and thin features go first. At the gate, where plastic enters at speed, the steel erodes. At the parting line, the edges peen over and stop sealing, which is where the flash comes from.
 
-## Design for the mold, not just the part
+## Don't design for the mold: the draft story
 
-Four things on the part itself will decide whether the first shots are good.
+Our first China mold, I did everything the textbooks say. I added all the draft angles. I shaped the part so the mold needed no slide, and I was very proud of my work. I even hired a mold consultant in Canada to do the basic mold layout.
 
-- **Draft angles.** Every wall that runs in the direction the mold opens needs a slight taper, or the part drags on the steel and scuffs or sticks. Add draft in the 3D file. Textured surfaces need more draft than polished ones, so ask your toolmaker how much.
-- **Gate and ejector-pin marks.** Every molded part carries a small scar where the plastic entered (the gate) and round dimples where pins pushed it out. Decide where they land before the steel is cut, and keep them off the cosmetic face. If you do not choose, the toolmaker will, and it may be the face your customer looks at.
-- **Surface finish.** Finish is named by standards: SPI grades (A to D, from mirror polish down to rough stone finish) for polish, MT numbers for texture, and VDI 3400 for spark-eroded finishes. Choose one and write it on the drawing. Texture adds time and cost, because it is an extra process on the steel.
+Then the mold shop rotated the part 90 degrees, added a slide and changed all the draft angles. Their explanation was simple: it produced a nicer part.
+
+The irony is that the features that became nicer were the ones I had added to reduce mold complexity, not for looks.
+
+> Adding draft makes your model hard to change and does not reduce mold cost or time.
+
+That is our rule for standard housings, toys and consumer electronics. Automotive is probably the exception. Unless you're an expert, you're likely doing it wrong.
+
+So give the mold shop a clean model plus your requirements: which faces are cosmetic, which parts mate with it, and what finish you want. Let their mold engineers choose the draft, the parting line and the slides.
+
+Three things on the part do still need your decision, because the shop cannot guess them.
+
+- **Gate and ejector-pin marks.** Every molded part carries a small scar where the plastic entered (the gate) and round dimples where pins pushed it out. Say where they may land before the steel is cut, and keep them off the cosmetic face. If you do not choose, the toolmaker will, and it may be the face your customer looks at.
+- **Surface finish.** Finish is named by standards: SPI grades (A to D, from mirror polish down to rough stone finish) for polish, MT numbers for texture, and VDI 3400 for spark-eroded finishes. Choose one and write it down. Texture adds time and cost, because it is an extra process on the steel.
 - **Material and shrinkage.** Plastic shrinks as it cools, and each resin shrinks by a different amount. The mold is cut oversize to allow for it. Change the resin after the steel is cut and your fit changes with it. Choose the resin first, and tell the toolmaker.
 
 ## Get feedback before steel is cut
 
-Send the 3D file for design-for-manufacturing feedback first. A good toolmaker will flag thin walls, missing draft, trapped undercuts and awkward gate positions in a day. A change on screen is free. A change in steel is the delay you cannot afford.
+Send the 3D file for design-for-manufacturing feedback first. A good toolmaker will flag thin walls, trapped undercuts and awkward gate positions in a day. A change on screen is free. A change in steel is the delay you cannot afford.
 
 ## What to check on the first samples
 
@@ -120,7 +133,7 @@ You do the math.
 
 ## Do it yourself, or do it with us
 
-You can do this yourself. The steps above are how: ask for a fast mold, not a regular one, send every mating part and every screw, fix the surface finish on day one, lock your requirements, and keep an eye on lifters and angled holes. Add draft, place the gate and pin marks, and ask for design feedback before steel is cut. Find the cluster, and you will have a real mold in about 10 days.
+You can do this yourself. The steps above are how: ask for a fast mold, not a regular one, send every mating part and every screw, fix the surface finish on day one, lock your requirements, and keep an eye on lifters and angled holes. Place the gate and pin marks, hand over a clean model, and ask for design feedback before steel is cut. Find the cluster, and you will have a real mold in about 10 days.
 
 Or we can do it faster and better. We are on the ground in China. We speak the language. We visit the shops in person. And we have years of relationships with trusted shops, which is the one thing that cannot be searched for. Those relationships are why a mold gets started this week instead of waiting in a queue.
 
