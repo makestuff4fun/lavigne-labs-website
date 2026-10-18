@@ -1,0 +1,41 @@
+do: |
+  THE JOB: Write a DRAFT article, saved at docs/drafts/wechat-shared-history.md (NOT in
+  web/content/articles/, so it cannot ship). Use the same gray-matter frontmatter as the existing
+  articles (title, date "2026-10-18", tag "China tips", excerpt) and the same voice as
+  web/content/articles/yes-doesnt-always-mean-yes.md (first person, Brian, practical, plain
+  headings, no hype). Source of truth is ONLY the brief at
+  /home/bairui/projects/the-den/docs/miku/article-idea-wechat-shared-history.md (read it in full).
+  Cover: the problem (no history sync, drift between two clients on a dual-boot, ~30 GB); the fix
+  (one xwechat_files on the shared NTFS partition; Windows moves it in Settings > Storage; Linux
+  symlink with `ln -s`); why it is safe (never both OSes at once; Fast Startup OFF,
+  HiberbootEnabled=0); gotchas (phone VPN breaks "same network" migration; winget
+  Tencent.WeChat is the old 3.9 client, use Tencent.WeChat.Universal; dual-boot 8-hour clock fix
+  RealTimeIsUniversal=1); honest caveats (unofficial, Linux client lags, a Linux update can silently
+  bypass the symlink and create a second xwechat_files, keep a backup); and what was measured
+  (30 GB / 145k files; 138 files written by Ubuntu in 5 minutes; Windows opened instantly with
+  them). Put a short "tested for only about an hour in each direction so far" caveat near the top
+  of the body, since the brief says it has been verified very briefly. Add an HTML comment on
+  line after the frontmatter: <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->.
+  Do not claim anything the brief does not state. 700-1100 words.
+  THE WHY: Brian (2026-10-10): "It's not hardware, but it is China tips and could drive traffic to
+  the site. Especially if such an article doesn't exist." Wording he has not seen must not go out
+  unread, so this is a draft for him to read, not a publish.
+  GUARDRAILS: Do not add it to web/content/articles/ or any route, feed or llms.txt. Touch nothing
+  else. Do not deploy.
+  DONE MEANS: docs/drafts/wechat-shared-history.md exists with valid frontmatter and all the
+  topics above, and nothing was added under web/.
+done_when: |
+  python3 - <<'PY'
+  import re,os,subprocess
+  t=open('docs/drafts/wechat-shared-history.md',encoding='utf8').read()
+  assert t.startswith('---\n')
+  fm=t.split('---')[1]
+  for k in ('title:','date:','tag:','excerpt:'): assert k in fm,k
+  assert 'China tips' in fm
+  for s in ('xwechat_files','ln -s','HiberbootEnabled','Tencent.WeChat.Universal','RealTimeIsUniversal','DRAFT','VPN','backup'):
+      assert s in t,s
+  assert 700<=len(t.split())<=1500,len(t.split())
+  assert not os.path.exists('web/content/articles/wechat-shared-history.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 20}
