@@ -8,7 +8,7 @@ excerpt: "Taobao looks like a shopping site for phone cases and sneakers. It is 
 
 <!-- DRAFT: the owner must read before this moves to web/content/articles/ -->
 
-Let me tell you something most people sourcing in China never hear. This is a real secret, and I'm only sharing it because it has served me so well.
+Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.
 
 I have spent roughly $1M on Taobao over the years. I am in the highest customer tier. I have had relationships with shops I found there that have lasted many years, with excellent service the whole way. And yes, you can still visit a shop or a factory in person. I have.
 
@@ -39,7 +39,11 @@ Things you can find this way include:
 
 ## How the three platforms differ
 
-**Alibaba.com** is export-facing. The listings are in English, the sales reps speak English, and that is the convenience. It is also the cost. A rule of thumb I use: if the factory can deal with you in English, you can find a lower price. It is a rule of thumb, not a physical law, but it explains why the English-friendly platform is rarely the cheapest one.
+**Alibaba.com** is export-facing. The listings are in English, the sales reps speak English, and that is the convenience. It is also the cost. I call it Brian's Law:
+
+> **"If the factory can deal with you in English, you can find a lower price."**
+
+It is a rule of thumb, not a physical law, but it explains why the English-friendly platform is rarely the cheapest one.
 
 **1688** is Alibaba's domestic wholesale site. It is Chinese-language and aimed at buyers who order in volume, so minimum order quantities often don't suit a prototype run.
 
@@ -91,6 +95,6 @@ For prototypes, small runs and custom parts like cut and bent sheet, heatsinks, 
 
 If you'd like to try this but don't read Chinese, or don't have an account that works, that is legwork Lavigne Labs can do for you: searching in Chinese, talking to the shops, and ordering samples. Get in touch at [/contact/](/contact/).
 
-Don't tell anyone you heard it from me.
+The king of Taobao has now given away his best-kept trick. Use it well, and go find yourself a good deal.
 
 — 淘宝王
