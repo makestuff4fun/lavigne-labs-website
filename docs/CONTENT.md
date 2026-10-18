@@ -116,6 +116,20 @@ Working rules:
 - **Let the close turn that into the CTA:** "you can do this yourself, and here's how, or we can do it faster and better because we already have the relationships." Warm and confident, not salesy.
 - **The point is honest advertising.** Everything we say is true and useful on its own; the reader decides whether to do it themselves or hand it to us.
 
+## Editorial mandate: correct, enhance, add
+
+Brian's standing editorial mandate (2026-10-18), verbatim:
+
+> of course, correct spelling, correct me, enhance, add knowledge you know that I missed.
+
+Working rules:
+
+- **Correct spelling and grammar silently.** No need to flag these in the review note.
+- **Correct Brian when he is wrong** (facts, physics, terms), and say so in the review note's Corrected part.
+- **Enhance:** structure, a stronger hook, clearer examples.
+- **Add solid, well-established knowledge he missed**, always recipe not ingredients (no shop names). List it in the review note's Added part.
+- **Every draft ships with a short review note at the top of the file**, so Brian approves in one read. It is an HTML comment block starting `<!-- REVIEW NOTE`, with Corrected / Added / Unsure parts (Unsure = anything not certain, for Brian to confirm). Strip it before publishing.
+
 ## Engineering tools — `content/tools.ts`
 
 Lists the tool/calculator pages (the interactive UI is in
