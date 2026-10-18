@@ -130,6 +130,18 @@ Working rules:
 - **Add solid, well-established knowledge he missed**, always recipe not ingredients (no shop names). List it in the review note's Added part.
 - **Every draft ships with a short review note at the top of the file**, so Brian approves in one read. It is an HTML comment block starting `<!-- REVIEW NOTE`, with Corrected / Added / Unsure parts (Unsure = anything not certain, for Brian to confirm). Strip it before publishing.
 
+### Standing rule: Brian's field experience beats textbook DFM advice
+
+- When an addition contradicts what Brian actually does, **his practice wins**. Textbook DFM tips (add draft everywhere, over-engineer for the tool) are what a generic writer adds; Brian does the opposite, and is right for his products.
+- Additions must be the kind of thing he would agree with. When in doubt, leave it out or put it under Unsure.
+- **Every addition is listed in the review note's Added part**, so he can strike it.
+- Scope: standard housings, toys, consumer electronics. Automotive is probably the exception.
+- Published phrasing of the example below: "Unless you're an expert, you're likely doing it wrong."
+
+Worked example, verbatim:
+
+> Oh yeah, don't waste your time adding draft to your models. Unless you are an expert, you are doing it wrong. The first mold I did in china I added all the draft, made the part for mold with no slide and very proud of my work. I even hired a mold consultant in Canada to do the basic mold layout. Know what happened then? The mold shop rotated the part 90 degrees, added a slide and changed all the draft angles. Explanation? It produced a nicer part. Irony is that the features that became nicer were ones I added to reduce mold complexity, not for aesthetic purposes. Adding draft makes your model hard to change and does not reduce mold cost or time. Exception probably in automotive, I'm talking about standard housings, toys, consumer electronics etc.
+
 ## Engineering tools — `content/tools.ts`
 
 Lists the tool/calculator pages (the interactive UI is in
