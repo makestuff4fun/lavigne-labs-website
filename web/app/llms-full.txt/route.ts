@@ -42,7 +42,7 @@ export function GET() {
       `### ${a.title}`,
       "",
       `URL: ${pageUrl(`/articles/${a.slug}`)}`,
-      `Tag: ${a.tag} | Date: ${a.date}`,
+      `Tag: ${a.tag} | Date: ${a.date}${a.author ? ` | Author: ${a.author}` : ""}`,
       "",
       articleBody(a.slug),
       "",

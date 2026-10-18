@@ -72,6 +72,7 @@ function searchRecords(): SearchRecord[] {
       url: pageUrl(`/articles/${a.slug}`),
       tag: a.tag,
       excerpt: a.excerpt,
+      ...(a.author ? { author: a.author } : {}),
       text: stripMarkdown(articleBody(a.slug)),
     })),
     ...faqs.map((f, i) => ({

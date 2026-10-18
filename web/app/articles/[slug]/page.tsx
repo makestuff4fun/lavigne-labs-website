@@ -22,9 +22,18 @@ export async function generateMetadata({
   const { slug } = await params;
   if (!getArticleSlugs().includes(slug)) return {};
   const a = getArticle(slug);
+  const penName = !!a.author && a.author !== site.founder;
   return {
     title: a.title,
     description: a.excerpt,
+    // A pen-named article must not inherit the founder from the root layout
+    // (authors, and the twitter description which is the site description).
+    ...(penName
+      ? {
+          authors: [{ name: a.author }],
+          twitter: { card: "summary_large_image", title: a.title, description: a.excerpt },
+        }
+      : {}),
     openGraph: { title: a.title, description: a.excerpt, type: "article" },
     alternates: { types: { "text/markdown": `/articles/${slug}.md` } },
   };
@@ -38,6 +47,7 @@ export default async function ArticlePage({
   const { slug } = await params;
   if (!getArticleSlugs().includes(slug)) notFound();
   const article = getArticle(slug);
+  const penName = !!article.author && article.author !== site.founder;
   const more = getAllArticles().filter((a) => a.slug !== slug).slice(0, 2);
 
   const url = pageUrl(`/articles/${slug}`);
@@ -97,8 +107,9 @@ export default async function ArticlePage({
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">
           <p className="text-lg font-semibold">Building hardware?</p>
           <p className="mt-2 text-slate">
-            I&apos;m a hardware engineer in Shenzhen — open to full-time roles and
-            focused projects.
+            {penName
+              ? "Lavigne Labs helps hardware teams manufacture in China — get in touch."
+              : "I\u2019m a hardware engineer in Shenzhen — open to full-time roles and focused projects."}
           </p>
           <Button href="/contact" className="mt-5">
             Get in touch <ArrowIcon />
