@@ -1,0 +1,45 @@
+do: |
+  THE JOB: Build the verified DATA layer for a new "Shop charts" set of printable drill charts, plus a test script. No pages yet.
+  (0) First, read-only search Brian's OneDrive for a partly done tap-drill chart: grep CONTENTS of .xlsx (unzip -p file xl/sharedStrings.xml | grep -i -E "tap|drill") and .pdf (pdftotext) under "/tank/cloud/onedrive2/Lavigne Labs" and "/tank/cloud/onedrive2/Documents" (also onedrive1 if quick). If one exists, note its layout and ideas in the commit message and docs/shop-charts.md; if not, say so there. Never write to OneDrive.
+  (1) Create web/content/shopCharts.json with exactly these top-level keys:
+   "metricTap": list of rows {"size":"M3","d":3,"pitch":0.5,"series":"coarse"|"fine","tap":2.5,"tapHard":2.6,"clearClose":3.2,"clearNormal":3.4,"clearLoose":3.6,"shcsCbore":6.0,"shcsCboreDepth":3.0,"fhcsCsink":6.7}. Cover ISO coarse M1, M1.2, M1.4, M1.6, M1.8, M2, M2.2, M2.5, M3, M3.5, M4, M5, M6, M7, M8, M10, M12, M14, M16, M18, M20, M22, M24 and the common fine pitches (M6x0.75, M8x1, M10x1, M10x1.25, M12x1.25, M12x1.5, M14x1.5, M16x1.5, M18x1.5, M20x1.5, M20x2, M22x1.5, M24x1.5, M24x2). "tap" is the ~75% thread drill (D - 0.9743 P, rounded to the standard drill: 0.05 mm steps below 3, 0.1 above), "tapHard" is the ~65% drill for hard material (D - 0.8446 P rounded the same way, always >= tap). Clearance holes from ISO 273 (close/normal/loose; use the standard table values, e.g. M6 6.4/6.6/7.0, M8 8.4/9/10, M10 10.5/11/12). Counterbore/countersink fields may be null where no standard value applies (SHCS cbore per ISO 4762/DIN 974 typical, FHCS csink diameter per ISO 10642); derive from the existing fastener-sheet data where it has them.
+   "inchTap": rows {"size":"1/4-20","series":"UNC"|"UNF","major":0.25,"tpi":20,"tap":"#7","tapDec":0.201,"tapHard":"...","tapHardDec":...,"clearClose":"...","clearCloseDec":...,"clearFree":"...","clearFreeDec":...} for UNC and UNF #0 through 1/2" (#0-80 UNF, #1-64/72, #2-56/64, #3-48/56, #4-40/48, #5-40/44, #6-32/40, #8-32/36, #10-24/32, #12-24/28, 1/4-20/28, 5/16-18/24, 3/8-16/24, 7/16-14/20, 1/2-13/20). Tap drill per ASME B1.1 / standard tap-drill tables (number/letter/fraction plus decimal), clearance close/free per Machinery's Handbook.
+   "decimals": {"fractions": [{"frac":"1/64","in":0.015625,"mm":0.397}, ... every 64th up to 1"], "number": [{"n":80,"in":0.0135,"mm":0.343}, ... #1 = 0.2280], "letter": [{"l":"A","in":0.234,"mm":5.944}, ... Z = 0.413]}. Standard drill-gauge decimals (#7 = 0.2010, #21 = 0.1590, F = 0.2570); mm = in x 25.4 to 3 decimals.
+  (2) Write web/scripts/check-shop-charts.py (python3, stdlib only) that loads the JSON and asserts: the known values below, plus recomputation checks that every metric tap is within 0.12 mm of D - 0.9743 P, every inch tapDec within 0.006 in of major - 0.9743/tpi, tapHard >= tap, close<=normal<=loose, number drills strictly decreasing in size from #80 to #1, fractions are exactly n/64 for n=1..64, letters A..Z strictly increasing, and mm == in*25.4 within 0.001. Exit non-zero with a clear message on failure.
+  Also cross-check against web/content/toolSpecs.ts and web/public/tools/fasteners/fastener-sheet.html (the M2-M20 thread "tap" values and clearance values there): any disagreement must be resolved by checking the standard, and noted in docs/shop-charts.md (which also documents sources: ISO 261/262/273, ASME B1.1, drill gauge tables, and the schema).
+  THE WHY: Brian (2026-10-18): "fastener sheet metric is a go to calculator for me. Know those tap drill and decimal charts? I want one or a set of those in the Tools section ... make one and make it pretty to look at ... downloadable PDF that can be printed A4 or letter." These get printed and used at a drill press, so DATA ACCURACY IS EVERYTHING.
+  GUARDRAILS: data and docs only; do not touch pages, tools.ts or the export yet. Do not edit existing tool HTML. No deploy.
+  DONE MEANS: shopCharts.json exists with all four sections; the check script passes; docs/shop-charts.md lists sources and any discrepancies found.
+done_when: |
+  set -e
+  cd web
+  python3 scripts/check-shop-charts.py
+  python3 - <<'PY'
+  import json
+  d=json.load(open('content/shopCharts.json'))
+  for r in d['metricTap']: assert abs(r['tap']-(r['d']-0.9743*r['pitch']))<=0.12,r; assert r['tapHard']>=r['tap'],r; assert r['clearClose']<=r['clearNormal']<=r['clearLoose'],r
+  for r in d['inchTap']: assert abs(r['tapDec']-(r['major']-0.9743/r['tpi']))<=0.006,r
+  n=[x['in'] for x in d['decimals']['number']]; assert all(a<b for a,b in zip(n,n[1:])),'number drills'
+  l=[x['in'] for x in d['decimals']['letter']]; assert all(a<b for a,b in zip(l,l[1:]))
+  for k in ('fractions','number','letter'):
+      for x in d['decimals'][k]: assert abs(x['mm']-x['in']*25.4)<=0.001,x
+  PY
+  python3 - <<'PY'
+  import json
+  d=json.load(open('content/shopCharts.json'))
+  m={(r['size'],r['pitch']):r for r in d['metricTap']}
+  for k,v in {('M3',0.5):2.5,('M4',0.7):3.3,('M5',0.8):4.2,('M6',1):5.0,('M8',1.25):6.8,('M10',1.5):8.5}.items(): assert abs(m[k]['tap']-v)<1e-9,(k,m[k]['tap'])
+  assert len(d['metricTap'])>=40
+  i={r['size']:r for r in d['inchTap']}
+  assert i['1/4-20']['tap']=='#7' and abs(i['1/4-20']['tapDec']-0.201)<1e-9
+  assert i['10-32']['tap']=='#21' and abs(i['10-32']['tapDec']-0.159)<1e-9
+  dec=d['decimals']
+  assert {x['n']:x['in'] for x in dec['number']}[7]==0.201
+  assert {x['l']:x['in'] for x in dec['letter']}['F']==0.257
+  q=[x for x in dec['fractions'] if x['frac']=='1/4'][0]; assert abs(q['mm']-6.35)<0.001
+  assert len(dec['number'])==80 and len(dec['letter'])==26 and len(dec['fractions'])==64
+  PY
+  test -s ../docs/shop-charts.md
+protected: [".den/**"]
+runaway: {minutes: 60}
+needs: [ai-structured]
