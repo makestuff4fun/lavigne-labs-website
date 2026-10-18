@@ -15,8 +15,8 @@ export function Footer() {
               {site.name}
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-              Helping North American hardware teams manufacture in China —
-              vetted factories, real quality control, on the ground.
+              A Shenzhen hardware product-development team. Prototype sprints,
+              development to production, and production support.
             </p>
           </div>
 

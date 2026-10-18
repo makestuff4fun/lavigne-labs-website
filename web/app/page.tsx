@@ -2,7 +2,7 @@ import { Hero } from "@/components/Hero";
 import { ProblemSolution } from "@/components/ProblemSolution";
 import { Services } from "@/components/Services";
 import { Process } from "@/components/Process";
-import { HowIWork } from "@/components/HowIWork";
+import { HowWeWork } from "@/components/HowWeWork";
 import { FeaturedWork } from "@/components/FeaturedWork";
 import { About } from "@/components/About";
 import { FaqSection } from "@/components/Faq";
@@ -25,7 +25,7 @@ export default function Home() {
       <ProblemSolution />
       <Services />
       <Process />
-      <HowIWork />
+      <HowWeWork />
       <FeaturedWork />
       <About />
       <FaqSection items={featuredFaqs} />

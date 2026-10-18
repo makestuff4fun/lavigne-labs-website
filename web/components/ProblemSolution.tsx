@@ -13,7 +13,7 @@ export function ProblemSolution() {
           <p className="mt-4 text-lg leading-relaxed text-slate">
             The gap between a working prototype and thousands of reliable units
             in the field is where products stall. The four places teams get
-            stuck — and how I take them off the table.
+            stuck — and how we take them off the table.
           </p>
         </div>
 

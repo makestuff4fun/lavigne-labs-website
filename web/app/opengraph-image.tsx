@@ -53,12 +53,12 @@ export default function OpengraphImage() {
               maxWidth: 980,
             }}
           >
-            <span>Manufacture in China without the&nbsp;</span>
-            <span style={{ color: "#93c5fd" }}>costly mistakes.</span>
+            <span>Hardware, built fast in&nbsp;</span>
+            <span style={{ color: "#93c5fd" }}>Shenzhen.</span>
           </div>
           <div style={{ fontSize: 30, color: "rgba(255,255,255,0.65)", maxWidth: 820 }}>
-            Electronics, prototyping &amp; on-the-ground production management for
-            US &amp; Canadian hardware teams.
+            A Shenzhen hardware product-development team: prototype sprints,
+            development to production, and production support.
           </div>
         </div>
       </div>

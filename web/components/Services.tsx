@@ -6,9 +6,9 @@ export function Services() {
     <section id="services" className="scroll-mt-20 py-20 sm:py-28">
       <Container>
         <div className="max-w-2xl">
-          <Eyebrow>What I do</Eyebrow>
+          <Eyebrow>What we do</Eyebrow>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            One partner from schematic to shipping container.
+            One team from schematic to shipping container.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate">
             Engineering and manufacturing under one roof — so your design,

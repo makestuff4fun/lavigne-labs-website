@@ -13,12 +13,12 @@ export function CTA() {
           />
           <div className="relative mx-auto max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Looking for a hardware engineer?
+              Have a device to build?
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-white/70">
-              Whether you&apos;re hiring or have a device to build, tell me what
-              you&apos;re working on. I&apos;m in Shenzhen, close to the build,
-              and happy to talk.
+              Tell us what you&apos;re working on. We&apos;re in Shenzhen, close
+              to the build, and ready to help. Brian Barrett will reply
+              personally.
             </p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
               <Button href={mailtoHref}>

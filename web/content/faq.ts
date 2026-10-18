@@ -6,8 +6,8 @@ export type Faq = {
 
 export const faqs: Faq[] = [
   {
-    q: "Are you open to a full-time role, or just contract work?",
-    a: "Both — but full-time is what I'm really after. The ideal fit is joining a team as the engineer who owns hardware end to end, on the ground in Shenzhen. I also take focused projects when that's a better fit for where you are.",
+    q: "Who do you work with, and how do you take on projects?",
+    a: "We work best with funded startups and teams with a completed Kickstarter, and we love working with them. Lavigne Labs leads every project, matched to a vetted Shenzhen engineering team. We start with prototype sprints, then development to production, then production support, and we can join at any stage.",
     featured: true,
   },
   {

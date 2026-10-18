@@ -17,11 +17,11 @@ export default function WorkPage() {
         <Container>
           <Eyebrow>Portfolio</Eyebrow>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-            Things I&apos;ve designed, built, and made real.
+            Things we&apos;ve designed, built, and made real.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
             Each of these blends electronics, mechanical design, and a path to
-            production. It&apos;s the same approach I bring to taking your product
+            production. It&apos;s the same approach we bring to taking your product
             to manufacturing.
           </p>
         </Container>
@@ -41,11 +41,11 @@ export default function WorkPage() {
         <Container>
           <div className="flex flex-col items-center gap-5 rounded-3xl border border-line bg-white px-7 py-14 text-center shadow-card">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Want this kind of engineer on your team?
+              Have a product to build?
             </h2>
             <p className="max-w-xl text-slate">
-              Bring your prototype, product, or open role — I&apos;ll help you
-              design it and get it built, reliably, at volume.
+              Bring your prototype or product. We&apos;ll help you design it
+              and get it built, reliably, at volume.
             </p>
             <Button href={mailtoHref}>
               Get in touch <ArrowIcon />

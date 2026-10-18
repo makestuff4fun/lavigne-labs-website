@@ -1,19 +1,19 @@
 import { Container, Eyebrow } from "./ui";
-import { engagement } from "@/content/site";
+import { engagement, philosophy, bestFit } from "@/content/site";
 
-export function HowIWork() {
+export function HowWeWork() {
   return (
-    <section id="how-i-work" className="scroll-mt-20 py-20 sm:py-28">
+    <section id="how-we-work" className="scroll-mt-20 py-20 sm:py-28">
       <Container>
         <div className="max-w-2xl">
           <Eyebrow>Working together</Eyebrow>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Full-time, or a focused project.
+            How we work together.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate">{engagement.intro}</p>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {engagement.models.map((model) => (
             <div
               key={model.name}
@@ -28,6 +28,17 @@ export function HowIWork() {
               <p className="mt-3 leading-relaxed text-slate">{model.body}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-line bg-white p-7 shadow-card">
+          <p className="text-xl font-semibold tracking-tight">{philosophy.line}</p>
+          <p className="mt-3 leading-relaxed text-slate">{philosophy.body}</p>
+          <h3 className="mt-6 font-semibold">{bestFit.title}</h3>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-slate">
+            {bestFit.lines.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
         </div>
 
         <div className="mt-6 flex items-start gap-4 rounded-2xl bg-ink p-7 text-white">

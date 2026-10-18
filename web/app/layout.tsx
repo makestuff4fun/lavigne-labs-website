@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   },
   description: site.description,
   keywords: [
-    "hardware engineer",
-    "hardware engineering Shenzhen",
+    "hardware product development",
+    "Shenzhen hardware development team",
     "PCB design",
     "electronics design",
     "rapid prototyping",

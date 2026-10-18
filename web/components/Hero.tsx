@@ -14,17 +14,17 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="eyebrow text-accent-300">
-              Hardware engineer · Based in Shenzhen
+              Hardware product development · Shenzhen
             </p>
             <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              I design hardware — and{" "}
+              We design hardware, and{" "}
               <span className="text-accent-300">get it built.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              I&apos;m {site.founder} — a hardware and manufacturing engineer with
-              13+ years in Shenzhen, taking electronics and devices from schematic
-              to shipped product. I&apos;m looking for the right team to build with
-              full-time — and I take focused projects too.
+              {site.name} is a Shenzhen hardware product-development team, ready to
+              help you. We move fast: prototype sprints, development to
+              production, and production support, led by {site.founder}, who
+              puts his reputation on the results.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button href={mailtoHref}>
@@ -47,7 +47,7 @@ export function Hero() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-card">
               <Image
                 src="/brand/office.jpg"
-                alt="Brian Barrett's hardware workshop in Shenzhen"
+                alt="The Lavigne Labs hardware workshop in Shenzhen"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 45vw"
@@ -56,7 +56,7 @@ export function Hero() {
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-white px-5 py-4 text-ink shadow-card sm:block">
               <p className="font-mono text-2xl font-bold">13+ yrs</p>
-              <p className="text-xs text-slate">on the factory floor</p>
+              <p className="text-xs text-slate">founder on the factory floor</p>
             </div>
           </div>
         </div>
