@@ -145,3 +145,15 @@ export const process = [
     body: "Production ramps with ongoing oversight on quality, cost, and timeline — your hardware, in the field.",
   },
 ];
+
+/**
+ * Absolute URL in its final form (the host redirects page routes to a trailing
+ * slash): page routes get "/", paths with a file extension are left alone, and
+ * the bare root stays `site.url`.
+ */
+export function pageUrl(path = ""): string {
+  const p = path.replace(/\/+$/, "");
+  if (p === "") return site.url;
+  const last = p.split("/").pop() ?? "";
+  return `${site.url}${p}${last.includes(".") ? "" : "/"}`;
+}

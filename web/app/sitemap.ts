@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { getArticleSlugs } from "@/lib/articles";
 import { tools, toolHref } from "@/content/tools";
 
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const toolRoutes = tools.map(toolHref);
 
   return [...staticRoutes, ...articleRoutes, ...toolRoutes].map((path) => ({
-    url: `${site.url}${path}`,
+    url: pageUrl(path),
     changeFrequency: "monthly",
     priority: path === "" ? 1 : 0.7,
   }));

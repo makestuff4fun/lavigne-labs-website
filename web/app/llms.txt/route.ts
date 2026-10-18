@@ -1,10 +1,10 @@
-import { site } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { getAllArticles } from "@/lib/articles";
 import { tools, toolHref } from "@/content/tools";
 
 export const dynamic = "force-static"; // for `output: export`
 
-const abs = (path: string) => `${site.url}${path}`;
+const abs = pageUrl;
 
 const pages = [
   { title: "Home", path: "/", note: "Services and how I work" },

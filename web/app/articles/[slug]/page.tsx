@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { site } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { Container, ArrowIcon, Button } from "@/components/ui";
 import {
   getArticle,
@@ -40,7 +40,7 @@ export default async function ArticlePage({
   const article = getArticle(slug);
   const more = getAllArticles().filter((a) => a.slug !== slug).slice(0, 2);
 
-  const url = `${site.url}/articles/${slug}`;
+  const url = pageUrl(`/articles/${slug}`);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",

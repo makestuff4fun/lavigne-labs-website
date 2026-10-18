@@ -1,4 +1,4 @@
-import { site } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { getAllArticles, getArticle } from "@/lib/articles";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -13,7 +13,7 @@ export function GET() {
     language: "en",
     authors: [{ name: site.founder }],
     items: getAllArticles().map((a) => {
-      const url = `${site.url}/articles/${a.slug}`;
+      const url = pageUrl(`/articles/${a.slug}`);
       return {
         id: url,
         url,

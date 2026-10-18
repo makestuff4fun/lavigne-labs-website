@@ -1,7 +1,7 @@
 import matter from "gray-matter";
 import fs from "node:fs";
 import path from "node:path";
-import { site, services, engagement, process as howIWork } from "@/content/site";
+import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { getAllArticles, getArticle, getArticleSlugs } from "@/lib/articles";
@@ -31,8 +31,8 @@ const envelope = (data: Envelope): Envelope => ({
 });
 
 const articleLinks = (slug: string) => ({
-  url: `${site.url}/articles/${slug}`,
-  markdownUrl: `${site.url}/articles/${slug}.md`,
+  url: pageUrl(`/articles/${slug}`),
+  markdownUrl: pageUrl(`/articles/${slug}.md`),
   jsonUrl: url(`articles/${slug}.json`),
 });
 
@@ -73,7 +73,7 @@ export const REGISTRY: Endpoint[] = [
     name: "portfolio",
     description: "Selected projects with summaries, tags and images.",
     build: () => ({
-      projects: projects.map((p) => ({ ...p, url: `${site.url}/work`, imageUrl: `${site.url}${p.image}` })),
+      projects: projects.map((p) => ({ ...p, url: pageUrl("/work"), imageUrl: pageUrl(p.image) })),
     }),
   },
   {
@@ -86,7 +86,7 @@ export const REGISTRY: Endpoint[] = [
         email: site.email,
         wechat: site.wechat,
         location: site.hours,
-        contactPage: `${site.url}/contact`,
+        contactPage: pageUrl("/contact"),
       },
     }),
   },
