@@ -1,0 +1,42 @@
+do: |
+  THE JOB: Make the seven Field Notes articles (wechat-shared-history, lowest-cost-manufacturing-china, taobao-factory-sourcing, fast-prototyping-china, fast-injection-molds, designing-moldable-parts, cantilever-snap-fits in web/content/articles/) visually richer. (1) Support a `hero:` frontmatter field (path under /images/articles/..., plus `heroAlt:`) in web/lib/articles.ts and app/articles/[slug]/page.tsx: render a hero image at the top, and use it as og:image / twitter image in metadata and in the Article JSON-LD `image`. Inline images in Markdown get descriptive alt text and are rendered with captions where useful (figure/figcaption). Add the hero as a thumbnail on the /articles list if it fits the existing design. (2) Image sources, in priority order: (a) Brian's REAL photos where they fit: first the /work project images already in web/public/work (camera arm, microscope slider, hex puck lights, 8080 LCD, etc.; use them for prototyping, molds, moldable-parts, lowest-cost) and, if reachable, `rclone` remote onedrive2:Lavigne Labs/Website/Images (try `rclone lsf "onedrive2:Lavigne Labs/Website/Images"`; if the remote is not available, skip it and say so in your report). Real beats stock. (b) For the rest, free-licensed stock under the Unsplash or Pexels licence (commercial use allowed, no attribution required): factory floor, CNC machining, injection molding machine, Shenzhen skyline, parcels/packages for the Taobao piece, close-up circuit board/laptop for the WeChat piece, plastic parts for snap fits. Download through the local proxy (`curl -x http://127.0.0.1:7897 ...`; --retry 5 --retry-all-errors), pick only images whose licence page confirms the free licence; NO watermarked, editorial-only, "free for personal use", or Getty/Shutterstock images. Resize to <=1600 px wide and <=250 KB each (WebP or JPG; use ImageMagick/cwebp/pillow). Put them in web/public/images/articles/. (3) Record EVERY non-Brian image in web/content/image-credits.json: array of {file, article, sourceUrl, photographer, license, licenseUrl, alt}; also serve it at /api/v1/image-credits.json (see web/lib/api.ts REGISTRY, one entry) and list it in /openapi.json and llms.txt if those enumerate endpoints. Brian's own photos need no credit entry. Each article gets one hero (<= 250 KB) and 1-3 inline images placed where they illustrate the text; every image has descriptive alt text. (4) Make the pages less boring, in the existing visual style (clean/technical; check app/globals.css and Tailwind v4): style blockquote pull quotes distinctively, style Markdown tables (the rules-of-thumb tables) with a header row, zebra or borders and mobile overflow scroll, and add a short callout box component for "Common mistakes" / "Rule of thumb" style blocks, usable from Markdown (for example a blockquote starting with **Common mistakes** or **Rule of thumb**, or a simple remark pass in the loader that wraps it; keep it working with `marked`). Apply the callout to existing "Common mistakes" boxes in the seven articles by markup only; do not change wording.
+  THE WHY: Brian, 2026-10-18: "Add some stock images if you can. make them less boring to look at." Real photos build trust; stock only fills the gaps. The credits file keeps licences auditable and gives AI crawlers a provenance record.
+  GUARDRAILS: Do not change article wording. Only freely licensed images; record every one. Keep each page light: hero <= 250 KB, lazy-load inline images with width/height set to avoid layout shift. Do not touch deploy scripts, cPanel or credentials. Static export must still work (`npm run export`). Images must not show recognisable company logos or brands, or identifiable faces if avoidable.
+  DONE MEANS: all seven article pages show a hero plus inline images with alt text, og:image points at the hero, credits cover every stock image, tables and callouts are styled, export builds.
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/ai.log 2>&1 || { tail -30 /tmp/ai.log; exit 1; }
+  cd .. && python3 - <<'PY'
+  import os,re,json,glob
+  slugs=["wechat-shared-history","lowest-cost-manufacturing-china","taobao-factory-sourcing","fast-prototyping-china","fast-injection-molds","designing-moldable-parts","cantilever-snap-fits"]
+  creds=json.load(open('web/content/image-credits.json',encoding='utf8'))
+  credfiles={c['file'].split('/')[-1] for c in creds}
+  for c in creds:
+      for k in ('file','article','sourceUrl','photographer','license','alt'): assert c.get(k),(c,k)
+      assert c['sourceUrl'].startswith('https://')
+      assert re.search(r'unsplash|pexels',c['license']+c['licenseUrl'],re.I),c
+  assert os.path.exists('web/out/api/v1/image-credits.json') or os.path.exists('web/out/api/v1/image-credits'),'api credits'
+  work=set(os.listdir('web/public/work')) if os.path.isdir('web/public/work') else set()
+  for s in slugs:
+      h=open(f'web/out/articles/{s}/index.html',encoding='utf8').read()
+      og=re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"',h) or re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"',h)
+      assert og,(s,'no og:image')
+      p=re.sub(r'^https?://[^/]+','',og.group(1)); assert os.path.exists('web/out'+p),(s,p)
+      assert os.path.getsize('web/out'+p)<=260*1024,(s,'og image too big')
+      imgs=re.findall(r'<img\b[^>]*>',h)
+      art=[i for i in imgs if '/images/articles/' in i or '/work/' in i]
+      assert len(art)>=2,(s,'need hero+inline',len(art))
+      for i in art:
+          assert re.search(r'alt="[^"]{12,}"',i),(s,i[:120])
+          src=re.search(r'src="([^"]+)"',i) 
+          if src and src.group(1).startswith('/') and '/_next/' not in src.group(1): assert os.path.exists('web/out'+src.group(1).split('?')[0]),(s,src.group(1))
+      ld=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>',h,re.S)]
+      arts=[o for o in ld if o.get('@type')=='Article']; assert arts and arts[0].get('image'),(s,'Article image')
+  for f in glob.glob('web/public/images/articles/*'):
+      assert os.path.getsize(f)<=260*1024,f
+  stock=[os.path.basename(f) for f in glob.glob('web/public/images/articles/*')]
+  miss=[f for f in stock if f not in credfiles]; assert not miss,('uncredited (Brian photos belong in /work, not here)',miss)
+  PY
+protected: [".den/**"]
+runaway: {minutes: 60}
+needs: [publish-field-notes]
