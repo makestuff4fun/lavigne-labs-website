@@ -1,0 +1,13 @@
+do: |
+  THE JOB: In docs/CONTENT.md, in the "Editorial mandate: correct, enhance, add" section, add a short standing rule: Brian's field experience beats textbook DFM advice. When an addition contradicts what Brian does, his practice wins. Additions must be the kind of thing he would agree with, and every addition is listed in the draft's review note so he can strike it. Include his worked example, verbatim: "Oh yeah, don't waste your time adding draft to your models. Unless you are an expert, you are doing it wrong. The first mold I did in china I added all the draft, made the part for mold with no slide and very proud of my work. I even hired a mold consultant in Canada to do the basic mold layout. Know what happened then? The mold shop rotated the part 90 degrees, added a slide and changed all the draft angles. Explanation? It produced a nicer part. Irony is that the features that became nicer were ones I added to reduce mold complexity, not for aesthetic purposes. Adding draft makes your model hard to change and does not reduce mold cost or time. Exception probably in automotive, I'm talking about standard housings, toys, consumer electronics etc." Note the scope (housings, toys, consumer electronics; automotive likely the exception) and that the published phrasing is "Unless you're an expert, you're likely doing it wrong."
+  THE WHY: textbook DFM tips (add draft, over-engineer for the tool) are what a generic writer adds; Brian does the opposite and is right for his products. The articles are his voice.
+  GUARDRAILS: Edit only docs/CONTENT.md. Do not remove existing text.
+  DONE MEANS: the rule and the example are in the section, readable in under a minute.
+done_when: |
+  python3 - <<'PY'
+  t=open('docs/CONTENT.md',encoding='utf8').read()
+  assert 'does not reduce mold cost or time' in t and 'field experience beats' in t.lower() and "you're likely doing it wrong" in t
+  PY
+protected: [".den/**"]
+runaway: {minutes: 15}
+needs: [contact-mailto]
