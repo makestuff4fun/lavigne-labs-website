@@ -7,6 +7,8 @@ excerpt: "Taobao looks like a shopping site for phone cases and sneakers. It is 
 related: ["8080-lcd"]
 series: "field-notes"
 seriesOrder: 5
+hero: "/work/article-parcels.jpg"
+heroAlt: "Cardboard parcels and foam-wrapped parts stacked on a workshop table and floor, with a Chinese-labelled box beside them."
 ---
 
 Most people think Taobao is where you buy a phone case. I use it to buy laser-cut and bent parts, custom cables and custom LCDs, straight from the people who make them. Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.
@@ -82,6 +84,8 @@ The shop is the front door. Taobao buyers talk to sellers through **旺旺** (Al
 A friendly, specific answer from the person at the machines is how you find out there is a real factory behind the listing, and that it will quote you a proper price. Slow, vague or copy-pasted replies tell you something too. When the chat gets complicated, a phone call clears up in minutes what takes a day of typing.
 
 Judge them the way you would judge any supplier. Ask for photos or video of your kind of work, and don't accept "no problem" as the answer to every requirement. When it matters, go and see them. The good ones are glad to be visited.
+
+![A shelf and bench lined with small parcels and blue parts bins, with samples ordered from several shops.](/work/article-sourcing-bench.jpg "Samples from several small shops arrive in days, not weeks.")
 
 ## Order samples cheaply
 

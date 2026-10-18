@@ -57,3 +57,114 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Article body: figures, pull quotes, tables, callouts */
+.article-body figure {
+  margin: 2rem 0;
+}
+.article-body figure img,
+.article-body > p > img {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  height: auto;
+  width: 100%;
+  margin: 0;
+}
+.article-body figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--color-slate);
+  text-align: center;
+}
+.article-body blockquote:not(.callout) {
+  margin: 2rem 0;
+  padding: 1.1rem 1.5rem;
+  border-left: 4px solid var(--color-accent);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: var(--color-mist);
+  font-size: 1.2rem;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-style: normal;
+  color: var(--color-ink);
+}
+.article-body blockquote:not(.callout) p {
+  margin: 0;
+}
+.article-body blockquote:not(.callout) p::before,
+.article-body blockquote:not(.callout) p::after {
+  content: none;
+}
+.article-body .table-scroll {
+  overflow-x: auto;
+  margin: 1.75rem 0;
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+}
+.article-body table {
+  margin: 0;
+  min-width: 32rem;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.article-body thead {
+  background: var(--color-ink);
+  border: 0;
+}
+.article-body thead th {
+  color: #fff;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.article-body tbody td {
+  padding: 0.7rem 1rem;
+  vertical-align: top;
+}
+.article-body tbody tr:nth-child(even) {
+  background: var(--color-mist);
+}
+.article-body tbody tr {
+  border-color: var(--color-line);
+}
+.article-body blockquote.callout {
+  margin: 2rem 0;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--color-line);
+  border-left-width: 4px;
+  border-radius: 0.75rem;
+  background: var(--color-mist);
+  font-style: normal;
+  font-weight: 400;
+  color: var(--color-ink);
+}
+.article-body blockquote.callout p::before,
+.article-body blockquote.callout p::after {
+  content: none;
+}
+.article-body blockquote.callout > p:first-child {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.article-body blockquote.callout ul {
+  margin: 0;
+}
+.article-body blockquote.callout-mistakes {
+  border-left-color: #d97706;
+  background: #fffbeb;
+}
+.article-body blockquote.callout-mistakes > p:first-child {
+  color: #b45309;
+}
+.article-body blockquote.callout-tip {
+  border-left-color: var(--color-accent);
+}
+.article-body blockquote.callout-tip > p:first-child {
+  color: var(--color-accent-600);
+}

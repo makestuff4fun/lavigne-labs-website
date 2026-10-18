@@ -6,6 +6,8 @@ excerpt: "The standard story says a mold takes 30 days plus revisions. There is 
 related: ["hex-puck-lights"]
 series: "field-notes"
 seriesOrder: 6
+hero: "/work/article-hex-pucks.jpg"
+heroAlt: "Six hexagonal LED puck lights glowing in red, orange, yellow, green, blue and purple on a black background."
 ---
 
 Your first shots could be in your hands in 10 days, not 45. Ask almost any shop how long injection tooling takes and you will hear the same story. It is a story worth knowing, because it is mostly true for the way most shops work. It is just not the only way to do it.
@@ -92,6 +94,8 @@ Three things on the part do still need your decision, because the shop cannot gu
 ## Get feedback before steel is cut
 
 Send the 3D file for design-for-manufacturing feedback first. A good toolmaker will flag thin walls, trapped undercuts and awkward gate positions in a day. A change on screen is free. A change in steel is the delay you cannot afford.
+
+![A hexagonal LED puck light with a molded plastic housing.](/work/article-hex-puck.jpg "First-shot parts from a fast mold: a molded hex puck housing.")
 
 ## What to check on the first samples
 

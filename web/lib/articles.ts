@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { marked } from "marked";
+import { marked, Renderer } from "marked";
 
 const ARTICLES_DIR = path.join(process.cwd(), "content/articles");
 
@@ -17,6 +17,9 @@ export type ArticleMeta = {
   seriesOrder?: number;
   /** Slugs of portfolio projects (web/content/projects.ts) this article draws on. */
   related?: string[];
+  /** Hero image path (under /images/articles/ or /work/) and its alt text. */
+  hero?: string;
+  heroAlt?: string;
 };
 
 export type Article = ArticleMeta & { html: string };
@@ -30,6 +33,49 @@ export function stripReviewNotes(md: string): string {
 export function getArticleBody(slug: string): string {
   const raw = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), "utf8");
   return stripReviewNotes(matter(raw).content).trim();
+}
+
+/** Pixel size of a JPEG under web/public (undefined if unreadable): lets <img> carry width/height. */
+function jpegSize(src: string): { w: number; h: number } | undefined {
+  try {
+    const b = fs.readFileSync(path.join(process.cwd(), "public", src));
+    let i = 2;
+    while (i + 9 < b.length) {
+      if (b[i] !== 0xff) { i++; continue; }
+      const m = b[i + 1];
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc)
+        return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+  } catch {}
+  return undefined;
+}
+
+const escAttr = (t: string) =>
+  t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+/** Inline images: lazy, sized (no layout shift), and a <figure> with <figcaption> when a title is given. */
+const renderer = new Renderer();
+renderer.image = ({ href, title, text }) => {
+  const size = jpegSize(href);
+  const img = `<img src="${escAttr(href)}" alt="${escAttr(text)}" loading="lazy" decoding="async"${
+    size ? ` width="${size.w}" height="${size.h}"` : ""
+  } />`;
+  return title ? `<figure>${img}<figcaption>${escAttr(title)}</figcaption></figure>` : img;
+};
+
+const CALLOUT = /<blockquote>(\s*<p><strong>(Common mistakes|Rules? of thumb|Tip|Note)<\/strong>)/g;
+
+/** Markdown -> HTML. A blockquote opening with **Common mistakes** / **Rule of thumb** becomes a callout box. */
+function renderMarkdown(md: string): string {
+  const html = marked.parse(md, { renderer }) as string;
+  return html
+    .replace(/<table>/g, '<div class="table-scroll"><table>')
+    .replace(/<\/table>/g, "</table></div>")
+    .replace(CALLOUT, (_m, rest: string, kind: string) => {
+    const k = kind.toLowerCase().startsWith("common") ? "mistakes" : "tip";
+    return `<blockquote class="callout callout-${k}">${rest}`;
+  });
 }
 
 function readingTime(text: string): number {
@@ -68,8 +114,14 @@ export function getArticle(slug: string): Article {
     ...(Array.isArray(data.related) && data.related.length
       ? { related: data.related.filter((s): s is string => typeof s === "string") }
       : {}),
+    ...(typeof data.hero === "string" && data.hero.trim()
+      ? {
+          hero: data.hero.trim(),
+          heroAlt: typeof data.heroAlt === "string" ? data.heroAlt.trim() : data.title ?? slug,
+        }
+      : {}),
     readingTime: readingTime(content),
-    html: marked.parse(content) as string,
+    html: renderMarkdown(content),
   };
 }
 

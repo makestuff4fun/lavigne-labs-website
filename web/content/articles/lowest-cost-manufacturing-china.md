@@ -6,6 +6,8 @@ excerpt: "The factory with the polished English-speaking sales team is rarely th
 related: ["mechanical-keyboard", "8080-lcd"]
 series: "field-notes"
 seriesOrder: 4
+hero: "/work/article-machine-shop.jpg"
+heroAlt: "A small machine shop in China with a manual lathe and milling equipment on a crowded floor."
 ---
 
 Picture two quotes for the same part. One comes back in an hour, in perfect English, with a tidy PDF. The other comes back a day later, in short Chinese messages, and is noticeably lower. The second is usually the one closer to the machines. When a client asks me how to get the lowest price out of China, I start with a rule I've come to rely on. I call it Brian's Law:
@@ -36,6 +38,8 @@ Signs that it may be happening:
 
 This is why the first rule of my factory vetting is to see the line that makes your kind of product. If the big factory is subcontracting, you want to know, and often you'll want to go meet the subcontractor.
 
+![A small Chinese electronics workshop with benches, tools and blue parts bins.](/work/article-workbench.jpg "A small workshop: modest premises, direct access to the person who sets the price.")
+
 ## Small factories: the upside and the risk
 
 The smaller shops one or two tiers down often have only a handful of clients, and they depend heavily on them. That cuts both ways.
@@ -53,6 +57,8 @@ The smaller shops one or two tiers down often have only a handful of clients, an
 - **Capacity gets squeezed.** When the big client calls with a rush, your job can be bumped. You're the small customer now, and the shop's loyalty goes to whoever pays the bills.
 
 Neither side is automatically better. A dependent small factory can be an excellent partner or a ticking clock, and you only find out by looking closely.
+
+![Interior of a small assembly and test workshop with green floor, benches and a laser cutter.](/work/article-lab.jpg)
 
 ## How to find and vet them
 

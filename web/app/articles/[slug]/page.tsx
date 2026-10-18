@@ -34,10 +34,23 @@ export async function generateMetadata({
     ...(penName
       ? {
           authors: [{ name: a.author }],
-          twitter: { card: "summary_large_image", title: a.title, description: a.excerpt },
+          twitter: {
+            card: "summary_large_image",
+            title: a.title,
+            description: a.excerpt,
+            ...(a.hero ? { images: [a.hero] } : {}),
+          },
         }
       : {}),
-    openGraph: { title: a.title, description: a.excerpt, type: "article" },
+    openGraph: {
+      title: a.title,
+      description: a.excerpt,
+      type: "article",
+      ...(a.hero ? { images: [{ url: a.hero, alt: a.heroAlt }] } : {}),
+    },
+    ...(a.hero && !penName
+      ? { twitter: { card: "summary_large_image", title: a.title, description: a.excerpt, images: [a.hero] } }
+      : {}),
     alternates: { types: { "text/markdown": `/articles/${slug}.md` } },
   };
 }
@@ -72,6 +85,7 @@ export default async function ArticlePage({
     datePublished: article.date,
     dateModified: article.date,
     articleSection: article.tag,
+    ...(article.hero ? { image: [pageUrl(article.hero)] } : {}),
     url,
     mainEntityOfPage: url,
     inLanguage: "en",
@@ -125,8 +139,20 @@ export default async function ArticlePage({
           {article.title}
         </h1>
 
+        {article.hero && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={article.hero}
+            alt={article.heroAlt ?? article.title}
+            width={1600}
+            height={900}
+            fetchPriority="high"
+            className="mt-8 aspect-[16/9] w-full rounded-2xl border border-line object-cover shadow-card"
+          />
+        )}
+
         <div
-          className="prose prose-slate mt-8 max-w-none prose-headings:tracking-tight prose-h2:text-2xl prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-blockquote:border-accent prose-blockquote:text-ink prose-th:text-left"
+          className="article-body prose prose-slate mt-8 max-w-none prose-headings:tracking-tight prose-h2:text-2xl prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-blockquote:border-accent prose-blockquote:text-ink prose-th:text-left"
           dangerouslySetInnerHTML={{ __html: article.html }}
         />
 

@@ -5,6 +5,7 @@ import { projectDetails } from "@/content/projectDetails";
 import { projectGalleries } from "@/content/projectGalleries";
 import { toolSpecs } from "@/content/toolSpecs";
 import { getAllArticles, getArticle, getArticleSlugs, getArticleBody, getSeriesArticles } from "@/lib/articles";
+import imageCredits from "@/content/image-credits.json";
 import { allSeries } from "@/content/series";
 
 export const API_BASE = "/api/v1";
@@ -103,6 +104,17 @@ function searchRecords(): SearchRecord[] {
  * static route (app/api/v1/[...endpoint]) pick it up automatically.
  */
 export const REGISTRY: Endpoint[] = [
+  {
+    path: "image-credits.json",
+    name: "image-credits",
+    description: "Provenance of every stock (non-original) image used in articles: file, article, source URL, photographer, licence (Unsplash/Pexels) and alt text.",
+    build: () => ({
+      images: (imageCredits as Array<Record<string, string>>).map((c) => ({
+        ...c,
+        url: pageUrl(c.file.startsWith("/") ? c.file : `/images/articles/${c.file}`),
+      })),
+    }),
+  },
   {
     path: "articles.json",
     name: "articles",

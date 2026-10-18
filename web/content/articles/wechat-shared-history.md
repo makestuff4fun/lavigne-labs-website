@@ -6,6 +6,8 @@ excerpt: "WeChat desktop doesn't sync history between computers, so a dual-boot 
 related: []
 series: "field-notes"
 seriesOrder: 7
+hero: "/work/article-laptop.jpg"
+heroAlt: "A glossy gold and blue laptop on a pale background, standing in for the PC that runs both Windows and Linux."
 ---
 
 Your supplier sent the drawing at 9 a.m. on Windows. At 9 p.m. you are in Linux and it isn't there. If you work in China, WeChat is where the work happens: quotes, photos of parts, voice messages from the factory. I run a dual-boot PC, Windows 11 and Ubuntu 24.04, and I wanted the same WeChat history in both.
@@ -48,6 +50,8 @@ UUID=<your-uuid>  /home/you/Data  ntfs3  uid=1000,gid=1000,umask=022,windows_nam
 ```
 
 `uid` and `gid` make your user own everything, `windows_names` stops Linux creating file names Windows can't open, and `nofail` keeps boot from hanging if the partition is missing. The older `ntfs-3g` driver takes the same `uid`, `gid`, `umask` and `windows_names` options. If the partition mounts read-only, don't force it: boot Windows, shut it down fully (see below), and try again.
+
+![A stylised blue desk telephone, a reminder that WeChat is how suppliers reach you.](/work/article-phone.jpg "The chat that has to follow you across both operating systems.")
 
 ## Why this is safe here, and only here
 

@@ -6,6 +6,8 @@ excerpt: "Many teams prototype with the wrong supplier, then wonder why the repl
 related: ["camera-arm", "microscope-slider"]
 series: "field-notes"
 seriesOrder: 3
+hero: "/work/camera-arm.jpg"
+heroAlt: "A prototype camera arm built from machined and laser-cut parts, seen from above on a workshop floor."
 ---
 
 The prototype that goes quiet is rarely bad luck. Almost every hardware team that comes to us has the same story about their prototype. The first version came back quickly and looked decent. The second took a little longer. By the third or fourth, messages sat unanswered for days, and then they stopped getting answered at all. The product wasn't finished, and the supplier had quietly gone cold.
@@ -88,6 +90,8 @@ The recipe is simple to write down and harder to carry out. Someone has to do th
 - **Fit and assemble by hand.** When a part rubs or a hole is off, you decide what changes, and you send the revision the same day.
 - **Judge the shops.** Photos and quotes look alike. Which shop holds its dimensions, answers at night and tells you when your drawing is wrong is something you learn over many orders, and often only by walking in the door.
 
+![A prototype microscope slider assembled from custom-made parts.](/work/microscope-slider.jpg "A microscope slider: parts cut by a prototype shop rather than a factory.")
+
 ## Why it works
 
 These suppliers make money on each order. A prototype shop gets paid for every part it makes, so a revision is simply another order. They don't care if you do 50 revisions. Show me the money, and the next part is on the machine.
@@ -95,6 +99,8 @@ These suppliers make money on each order. A prototype shop gets paid for every p
 The incentives line up. You aren't asking for a favour or borrowing goodwill against a future contract, and you aren't hoping a busy engineer remembers you. You're a customer placing a normal order with someone whose business is exactly that order. Responsiveness stays high because every message you send is a reason for them to get paid.
 
 That also changes how you can work. You can afford to be wrong. You can change a dimension, try a different material, or test two versions side by side, without worrying that you're spending someone's patience.
+
+![A small test and assembly lab with benches, a drone and a laser cutter.](/work/article-lab.jpg)
 
 ## The cost of getting it wrong
 

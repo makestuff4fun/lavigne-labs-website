@@ -50,8 +50,20 @@ export default function ArticlesPage() {
               <Link
                 key={a.slug}
                 href={`/articles/${a.slug}`}
-                className="group flex flex-col rounded-2xl border border-line bg-white p-7 shadow-card transition hover:border-accent/40"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition hover:border-accent/40"
               >
+                {a.hero && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={a.hero}
+                    alt={a.heroAlt ?? a.title}
+                    width={1600}
+                    height={900}
+                    loading="lazy"
+                    className="aspect-[16/9] w-full border-b border-line object-cover"
+                  />
+                )}
+                <div className="flex flex-1 flex-col p-7">
                 <div className="flex items-center gap-3 text-xs">
                   <span className="rounded-full bg-accent/10 px-2.5 py-1 font-mono uppercase tracking-wide text-accent">
                     {a.tag}
@@ -67,6 +79,7 @@ export default function ArticlesPage() {
                 <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
                   Read <ArrowIcon className="transition group-hover:translate-x-0.5" />
                 </span>
+                </div>
               </Link>
             ))}
           </div>

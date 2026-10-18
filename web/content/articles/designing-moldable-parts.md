@@ -6,6 +6,8 @@ excerpt: "Most injection molding problems are designed in, long before the mold 
 related: ["hex-puck-lights"]
 series: "field-notes"
 seriesOrder: 8
+hero: "/work/article-hex-puck.jpg"
+heroAlt: "A hexagonal LED puck light with a molded plastic housing."
 ---
 
 Most injection molding problems are designed in, long before anyone cuts steel. The good news is that the same dozen mistakes cause most of them. This is the checklist we run through before a file goes to a mold shop.
@@ -63,6 +65,8 @@ Sharp inside corners concentrate stress and make plastic flow badly. Add a radiu
 
 The outside corner should follow the inside one: outside radius = inside radius + wall thickness. That keeps the wall an even thickness around the bend, which brings us back to rule 1.
 
+![Six glowing hexagonal LED puck lights in different colours, each with a molded housing.](/work/article-hex-pucks.jpg "Small molded housings like these live or die on wall thickness, draft and snap features.")
+
 ## 7. Undercuts and snap-fits
 
 Undercuts trap the part in the mold. Design them to work in the pull direction where you can. A snap-fit hook can often be molded through a window in the wall so that both sides open straight, with no slide. If an undercut has to be sideways, accept a slide and its cost.
@@ -113,14 +117,14 @@ Our rule, for standard housings, toys and consumer electronics: Adding draft mak
 
 The only thing we ask of you is to flag textured and cosmetic faces early, because the shop drafts those surfaces differently. The longer story is in [our molds article](/articles/fast-injection-molds/).
 
-## Common mistakes
-
-- Solid, thick bosses and ribs as thick as the wall.
-- Sharp inside corners.
-- Angled and side features that could have lined up with the pull.
-- Tolerances on every dimension.
-- Not telling the shop which faces are cosmetic.
-- Choosing a finish after the mold is cut.
+> **Common mistakes**
+>
+> - Solid, thick bosses and ribs as thick as the wall.
+> - Sharp inside corners.
+> - Angled and side features that could have lined up with the pull.
+> - Tolerances on every dimension.
+> - Not telling the shop which faces are cosmetic.
+> - Choosing a finish after the mold is cut.
 
 For the earlier steps, see [our prototyping article](/articles/fast-prototyping-china/).
 

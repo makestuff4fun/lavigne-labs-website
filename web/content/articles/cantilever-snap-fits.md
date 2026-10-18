@@ -6,6 +6,8 @@ excerpt: "Snap fits are some of our favourite features to design. The maths is n
 related: ["hex-puck-lights"]
 series: "field-notes"
 seriesOrder: 9
+hero: "/work/article-hex-pucks.jpg"
+heroAlt: "Six hexagonal LED puck lights glowing in different colours, each a small molded plastic housing."
 ---
 
 Cantilever snap fits are one of our favourite features to design. A bit of plastic bends out of the way, clicks home, and two parts are held together with no screw, no glue and no extra line item on the bill of materials. Done well, it feels wonderful in the hand. Done badly, it snaps off on the second assembly.
@@ -72,6 +74,8 @@ Width scales the force, not the strain. Doubling the width of the beam roughly d
 Assembly force is also affected by friction. Slippery materials like POM and nylon assemble more easily than PC or ABS at the same geometry. Rounded edges on a hook act like a gentler lead-in angle.
 
 A permanent snap should still be serviceable, because products come back. Give it a way in: a small release slot, or a gap where a thin tool can reach the hook. Otherwise the repair is a hammer.
+
+![A hexagonal LED puck light whose molded housing closes with snap features.](/work/article-hex-puck.jpg)
 
 ## Hook direction and moldability
 
