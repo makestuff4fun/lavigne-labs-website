@@ -1,5 +1,6 @@
 import "./charts.css";
 import { chartJsonLd, getChartMeta } from "@/lib/charts";
+import { site } from "@/content/site";
 
 const pages = [
   { slug: "metric-tap-drills", label: "Metric tap drills" },
@@ -19,7 +20,7 @@ export function ChartShell({
   sub: string;
   children: React.ReactNode;
 }) {
-  const url = `lavignelabs.com/tools/charts/${slug}/`;
+  const url = `${site.url.replace(/^https?:\/\//, "")}/tools/charts/${slug}/`;
   const howTo = getChartMeta(slug)?.howTo;
   return (
     <div className="chart-page">

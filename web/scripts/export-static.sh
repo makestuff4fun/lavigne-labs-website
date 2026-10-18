@@ -46,6 +46,9 @@ if bad:
 print(f"JSON-LD: {n} blocks parse OK")
 PY
 
+# The canonical domain is lavignelabs.net: no old-domain URL may ship.
+python3 scripts/check-domain.py out
+
 # Print-ready shop chart PDFs (A4 + Letter) from the built chart pages.
 echo "Chart PDFs:"
 node scripts/make-chart-pdfs.cjs

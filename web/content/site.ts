@@ -3,9 +3,9 @@ export const site = {
   tagline: "A Shenzhen hardware product-development team, ready to help you.",
   description:
     "Lavigne Labs is a Shenzhen hardware product-development team. We move fast: prototype sprints, development to production, and production support, each project matched to a vetted Shenzhen engineering team and led by Brian Barrett, who puts his reputation on the results.",
-  url: "https://lavignelabs.com",
+  url: "https://lavignelabs.net",
   founder: "Brian Barrett",
-  email: "hello@lavignelabs.com",
+  email: "hello@lavignelabs.net",
   wechat: "briantb",
   hours: "Based in Shenzhen, China · GMT+8",
 } as const;
@@ -188,7 +188,7 @@ export function pageUrl(path = ""): string {
 
 /** Single source for the contact mailto: subject and body prompt. */
 export const contactMail = {
-  subject: "Project inquiry from lavignelabs.com",
+  subject: "Project inquiry from lavignelabs.net",
   body: [
     "Hi Brian and team,",
     "",
@@ -205,4 +205,4 @@ export const contactMail = {
 export const mailtoHref = `mailto:${site.email}?subject=${encodeURIComponent(contactMail.subject)}&body=${encodeURIComponent(contactMail.body)}`;
 
 /** Base URL of the inquiry endpoint; every form URL is built from this. */
-export const formsEndpoint = "https://forms.hanquest.com";
+export const formsEndpoint = "https://forms.lavignelabs.net";

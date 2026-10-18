@@ -3,11 +3,60 @@
 > **Paths & commands in this doc are relative to `web/`** — the Next.js site
 > lives there. `cd web` before any `npm` command.
 
-> **Status:** `lavignelabs.com` is **live with the Next.js static export**
-> (games at `/play`). The WordPress-freeze route below (Option D) is kept for
-> history — it is no longer the deploy path.
+> **Status (2026-10-18): the canonical site is `https://lavignelabs.net`, served by
+> Caddy on tunnel-bear** and published with `scripts/deploy-net.sh` (below).
+> `lavignelabs.com` (old cPanel host, FTPS) still serves the previous copy until
+> its 301 to `.net` is flipped; the FTPS route under "Old host" is only for that.
 
-## The one command
+## lavignelabs.net (the live site): `scripts/deploy-net.sh`
+
+```bash
+cd web
+./scripts/deploy-net.sh              # build on red, upload a release, swap, verify
+./scripts/deploy-net.sh --skip-build # reuse the existing out/
+./scripts/deploy-net.sh --rollback   # point `current` at the previous release
+```
+
+Run it **on red**. It needs nothing but the `tunnel-bear` ssh alias: no
+credentials, no FTP, nothing to put in an env file.
+
+1. `npm run export` builds `out/`. The export fails if any JSON-LD block does not
+   parse, or if **any `lavignelabs.com` reference remains** (`scripts/check-domain.py`;
+   the only allowed ones are the Organization JSON-LD `sameAs` and Wayback Machine
+   image URLs that embed the old domain).
+2. rsync `out/` to `tunnel-bear:/srv/lavignelabs.net/releases/<UTC ts>/`, with
+   `--link-dest` against the live release so unchanged files are hard links
+   (a no-change release costs ~200 KB).
+3. Swap `/srv/lavignelabs.net/current` atomically (new symlink + `mv -T`) and keep
+   the newest 3 releases.
+4. Verify over HTTPS: `/`, `/work/`, `/articles/`, `/contact/`, `/api/v1/index.json`,
+   `/llms.txt`, `/sitemap.xml`, `/robots.txt` return 200 and a missing page 404.
+   On failure it exits 1 and prints the rollback command.
+
+**Where the config lives (not in this repo):**
+- DNS: Porkbun (domain paid to 2036). A records `@`, `www`, `forms` ->
+  `154.213.178.159`, TTL 600; the MX/SPF records are Porkbun email forwarding
+  (`hello@lavignelabs.net`). API key: the-den `secrets.env` (`PORKBUN_*`).
+- Caddy: the `lavignelabs.net` / `www.lavignelabs.net` blocks in
+  `the-den/tunnel-bear/Caddyfile.template`, published by
+  `the-den/bin/tunnel-bear/push-caddyfile.sh`. Never edit the live Caddyfile.
+  `try_files {path} {path}/ {path}/index.html {path}.html`, zstd/gzip,
+  `/_next/static/*` cached a year (immutable), `404.html` for misses, `www` 301 to the apex.
+- Form receiver: `forms.lavignelabs.net` (also `forms.hanquest.com`,
+  `forms.lavignelabs.com`) -> repo `lavigne-inquiries`; CORS allows both
+  `https://lavignelabs.net` and `https://lavignelabs.com`. The site's endpoint
+  is the one constant `formsEndpoint` in `content/site.ts`.
+
+**Flipping lavignelabs.com to .net (prepared, NOT applied):**
+`scripts/htaccess-redirect.txt` is the old host's `.htaccess` (PHP handler kept)
+plus a 301 of every path on `lavignelabs.com` and `www` to the same path on
+`https://lavignelabs.net`. The original is saved as `docs/htaccess.orig`. To flip,
+upload it as `.htaccess` to the old docroot over FTPS from tunnel-bear; to undo,
+upload `docs/htaccess.orig`. Let's Encrypt renewals under `/.well-known/` stay
+un-redirected so the old host's cert keeps renewing while the redirect lives.
+
+## Old host: lavignelabs.com over FTPS (`scripts/deploy.sh`)
+
 
 ```bash
 cd web

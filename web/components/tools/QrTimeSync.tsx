@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { buildMatrix, QR_SIZE } from "@/lib/qrTimeSync";
+import { site } from "@/content/site";
 
 const QUIET = 4; // quiet-zone modules on each side of the code
 
@@ -192,7 +193,7 @@ export function QrTimeSync() {
           Every camera films the same screen, so display latency cancels and the relative sync
           between cameras is sub-frame after the decoder&apos;s linear fit — the same technique
           large egocentric-video datasets use to align head-mounted and tripod cameras. Quick
-          link for the field: <span className="font-mono text-ink">lavignelabs.com/qr-sync</span>
+          link for the field: <span className="font-mono text-ink">{site.url.replace(/^https?:\/\//, "")}/qr-sync</span>
         </p>
       </div>
 
