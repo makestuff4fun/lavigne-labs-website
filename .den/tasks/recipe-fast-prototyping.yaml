@@ -1,0 +1,29 @@
+do: |
+  THE JOB: Revise docs/drafts/fast-prototyping-china.md to the recipe-not-ingredients strategy. It is already generous; make the method a bit more concrete where it is thin (what to put in the request to a prototype shop, how to split and sequence parts, what you handle yourself: hand fitting, assembly, payment through the platforms and accounts the shops use, speaking to shops in Chinese) without inventing numbers beyond Brian's (CNC 24-48 h, anodizing ~4 h). Let the hard parts show naturally in the body. Rewrite the final section ("When to go back to the factory") so it ends with the CTA in the strategy's spirit: you can do this yourself and here is how; or we can do it faster and better because we already have the trusted shop relationships and are on the ground. Keep Brian's exact closing two sentences ("This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to.") and the pull quote. 1,000-1,700 words.
+  THE WHY: Brian's editorial strategy for every article (2026-10-18), verbatim: "The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute. Most readers aren't in china, don't speak chinese and can't do these things. It seems like giving away the secrets but it's really clever "honest advertising". I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationships with trusted suppliers." So: be genuinely generous and specific (real steps, real Chinese search terms, real timelines; it must read as honest, not a teaser), name no shops or suppliers, let the hard parts show naturally without bragging (being on the ground in China, speaking Chinese, visiting in person, payment and accounts, and above all years of trusted supplier relationships that cannot be bought), and let the close turn that into the CTA: you can do this yourself, and here is how; or we can do it faster and better because we already have the relationships. Warm and confident, never salesy.
+  GUARDRAILS: Stay a DRAFT in docs/drafts/ (do not move into web/content/articles/, no publish, no deploy). Keep the frontmatter fields (title, date, tag, excerpt, and author if present) and the DRAFT comment. Keep every existing exact phrase the draft already carries (pull quotes, Brian's Law sentence, byline and sign-off). Do not add invented numbers, prices or statistics, and do not name any company, shop, supplier or person except JLC (Brian named it). Do not touch other drafts or any other file.
+  DONE MEANS: the draft follows the strategy and the checks pass.
+done_when: |
+  python3 - <<'PY'
+  import re,sys
+  t=open('docs/drafts/fast-prototyping-china.md',encoding='utf8').read()
+  fm=t.split('---',2)[1]; body=t.split('---',2)[2]
+  txt=re.sub(r'<!--.*?-->','',body,flags=re.S)
+  n=len(re.findall(r"\S+",txt))
+  assert 1000<=n<=1700,n
+  assert 'DRAFT' in body
+  bad=re.findall(r"Co\.,? ?Ltd|\bLtd\b|\bInc\.|\bLLC\b|Foxconn|Huawei|\bDJI\b|Xiaomi|Shenzhen [A-Z][a-z]+ (?:Tech|Electronics)|(?!)",txt)
+  assert not bad,bad
+  last=txt.split('\n## ')[-1].lower()
+  assert re.search(r"relationship|on the ground|in person|in china",last),'closing must mention relationships / on the ground'
+  assert re.search(r"relationship",last),'closing must mention relationships'
+  assert re.search(r"/contact/",last),'closing needs contact pointer'
+  assert 'yourself' in last and 'faster and better' in last,'closing needs the do-it-yourself / faster-and-better CTA'
+  assert "Factories lose money on custom prototypes, even if you paid for them." in body
+  assert "This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to." in body
+  assert len(re.findall(r"^\s*(?:[-*]|\d+\.)\s",txt,flags=re.M))>=5
+  assert 'JLC' in txt
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
+needs: [editorial-strategy-doc]
