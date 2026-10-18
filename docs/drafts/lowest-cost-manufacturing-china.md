@@ -55,14 +55,25 @@ Neither side is automatically better. A dependent small factory can be an excell
 
 ## How to find and vet them
 
-The honest answer is that this is harder than it sounds, and it's why most buyers stop at the English-speaking layer.
+This is the recipe I actually follow. It is harder than it sounds, which is why most buyers stop at the English-speaking layer, but every step is doable.
 
-- **1688.** The domestic Chinese wholesale and sourcing platform, 1688, lists makers in Chinese, at prices aimed at domestic buyers. It's not a sourcing strategy by itself, but it shows you who exists and roughly what they charge.
-- **Industrial clusters.** Many product types are concentrated in particular regions, with whole supply chains within a short drive. Going to the cluster beats searching from far away.
-- **Visit in person.** I won't recommend a small factory I haven't walked. Look at the machines, the QC, the floor, who's actually working, and how much work is in the shop from other clients.
-- **Use a Chinese-speaking agent or engineer.** The people who run these shops often don't work in English, and the real conversation about tolerances, materials and process happens in Chinese. That is what we do at Lavigne Labs: we speak with the factory directly, on site, and make sure what you meant is what they heard.
+**1. Search in Chinese, on Chinese platforms.** On 1688, the domestic wholesale and sourcing platform, search the product by its Chinese name plus the process, not the English listing title. Useful patterns are the product name with 厂家 (factory), 源头工厂 (source factory) or 定制 (custom made), and the process words such as 注塑 (injection molding), 冲压 (stamping), 数控加工 (CNC machining) or 压铸 (die casting). Read the shop page: a real maker shows machines, workshop photos and a business licence, and describes processes. A trader shows a catalogue of unrelated categories.
 
-Everything in my vetting checklist still applies: capability against your real tolerances, capacity during your window, a reference sample everyone agrees on. A smaller factory just needs it more, because there is less margin for error.
+**2. Tell the factory from the front.** Check the registered business scope on the licence: 生产 (production) points to a maker, 贸易 or 销售 (trade, sales) to a trader. Ask for the 营业执照 (business licence) and look at what the company is registered to do. Ask who owns the tooling and which machines make your part. A maker answers in specifics. A trader answers in generalities.
+
+**3. Go to the cluster.** Most product types concentrate in a few towns, with moulds, plating, packaging and materials within a short drive. Search by town and process, then visit the cluster rather than ordering from far away. Suppliers there also know their neighbours, which is how you find the shop one tier down.
+
+**4. Send a clear package.** Drawings, material, finish, tolerances, target quantity and the date you need parts. Ask for a quote broken down by material, processing, tooling and packing, so you can compare like with like.
+
+**5. Ask the questions that expose the truth.** Which processes are done in-house, and which go outside? Which machine will run my part? How many clients do you have, and how much does your largest one matter? What happens to my tooling if we stop working together? Can I see the line running?
+
+**6. Visit in person.** I won't recommend a shop I haven't walked. Look at the machines and their condition, the QC station, the stock of material, whether the workers are busy, and what other clients' parts are on the floor. Trust the floor over the brochure. Agree a reference sample before any production run.
+
+**7. Start small, pay carefully.** Run a trial order. Chinese suppliers expect payment through domestic channels and a deposit before production, and setting up a way to pay safely from outside China is its own project. Pay the tooling and the deposit only against what you have verified, and keep balances tied to inspection.
+
+**8. Build the relationship.** The best prices and the best attention come after years of paying on time, giving honest forecasts and showing up. A factory's owner will bend a schedule for a customer they trust. No search term finds that.
+
+Be honest about what is hard here. Most of this assumes you can read and speak Chinese, be in the country for visits, and take weeks over something that looks like a quick search. Skip any of it and you are back to guessing.
 
 ## When not to chase the lowest price
 
@@ -93,4 +104,6 @@ Also remember that unit price is only part of the story. See my piece on what la
 
 Brian's Law isn't a promise of a cheaper price. It's a prompt to keep digging when everything is too easy. Sometimes the easy path is right, but you should choose it knowingly, not because it's the only one you could see.
 
-If you'd like help finding and vetting the people who actually make your part, [get in touch](/contact/) and tell me what you're building.
+You can do all of this yourself, and the steps above are how. Learn the Chinese search terms, plan the trips, read the licences, walk the floors, and expect to spend real time on it. Plenty of people have, and it works.
+
+Or we can do it for you, faster and better, because we are already on the ground in China and already have the relationships. I have spent years building trust with suppliers who know me, speak to me in Chinese and answer when I call. That is the part you can't search for. Either way, [get in touch](/contact/) and tell me what you're building. I'm happy to point you in the right direction even if you do it yourself.
