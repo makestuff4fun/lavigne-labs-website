@@ -1,0 +1,37 @@
+do: |
+  THE JOB: Write a new DRAFT article at docs/drafts/fast-injection-molds.md (do NOT put it in web/content/articles/). Frontmatter like docs/drafts/fast-prototyping-china.md: title, date "2026-10-18", tag "Sourcing", excerpt, no author field (default Lavigne Labs voice, "we"), then the line `<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->`. Title suggestion: "Fast Injection Molds in China: Tooling in 10 Days". 1,000-1,700 words. Structure, in order:
+  1. The standard story: a typical mold takes about 30 days, plus about 15 days for mold revisions, and parts get dialled in on tolerance. Explain "steel-safe" correctly: tooling starts with holes small and features undersized because you can cut steel away to add plastic, but you cannot put steel back without re-making the cavity.
+  2. "What if I told you there are 10-day injection molds?" The reaction: no way, they must be fake or terrible. Truth vs fiction.
+  3. How: fast molds come from a tightly interconnected cluster of steel, CNC, EDM, mold-assembly and injection shops that hand work to each other, fast and cheap. A secret supply chain in the outskirts of Zhejiang (say exactly that; nothing more specific).
+  4. When it is right: a housing or a toy in about two weeks, when you do not want 3D printing. 5,000 parts in 14 days if you know what you are doing.
+  5. The catch: you get one shot. Supply every mating part and every screw for test fitment, specify the surface finish up front, and do not change a requirement mid-way, or you get delays.
+  6. What adds time: slides and side horizontal features usually add none; undercuts needing lifters, angled holes and other special features do.
+  7. Wear: these molds wear out; around 20,000 pieces you may see more flash than at the start. Why that is usually fine: most tooling runs one production batch and is then abandoned; a tool running batch after batch is rare.
+  8. Economics: a small fast mold about $2-3k versus a regular small mold about $5-10k. Show a short markdown table "fast mold vs 3D printing vs regular tooling" using only the numbers given in this brief (lead time, rough cost, tool life, what it is best for); for 3D printing use qualitative words, no numbers. Add "you do the math".
+  9. Close: apply the recipe-not-ingredients CTA: you can do this yourself, and the steps above are how; or we can do it faster and better, because we are on the ground in China, speak the language, visit in person, and have years of relationships with trusted shops, which cannot be searched for. Include a link to /contact/. The article's final sentence is Brian's question: "Could this speed up your first production batch?"
+  THE WHY: Brian's notes (2026-10-18), verbatim: "Fast injection molds. What is a fast injection mold? Typical process is 30 days and another 15 days for mold revisons. Dial in the tolerances on parts. Holes start big, you can add plastic but can't take it away without molding. That's the story you get from just aboue every shop. What if I told you there are 10 day injection mold? You'd say no way, that's not possible. They must be fake or terrible. There is some truth and some fiction in there. Fast molds are made in very well interconnected suppliers. Steel, CNC, EDM, mold assembly and injection shops. They do things fast and cheap. If you need a housing or toy in 2 weeks, don't want to do 3D printing fast molds are the solution. What's the downside? You get 1 shot. If you don't supply all the parts for test fitment, all the screws, specify surface finish are change a requirement, there will be delays. But if you know what you are doing, you can get 5000 parts in 14 days. Slides, side horzizontal features, usually don't add time but be carful undercuts needing lifters , angled holes or other special features will increase time. These molds wear out. 20,000 pieces and you might be getting more flash than originally. The truth is most tuling does one production batch and then is abandoned. It's rare a tool does batch after batch. Economics a small fast mold is about $2-3k, and a regular small mold is $5-10k you do the math. This option beats 3D printing in many scenarios and it's a secret supply chain hidden in the outskirts of zhejian known only to those of us who've spend year on the ground hunting. Now you know too, could this speed up your first production batch?" His numbers are first-hand and true: use them exactly and invent no others. Editorial strategy (docs/CONTENT.md, "Editorial strategy: the recipe, not the ingredients"): be genuinely generous and specific about the method, name no shops or suppliers, let the hard parts show without bragging, close with a warm confident CTA.
+  GUARDRAILS: Draft only; no publish, no deploy, touch no other file. Fix his spelling (Zhejiang, mold, tooling). Name no company, shop, supplier or place more specific than "the outskirts of Zhejiang". No numbers beyond: 30 days, 15 days, 10 days, 14 days, 5,000 parts, 20,000 pieces, $2-3k, $5-10k, "2 weeks".
+  DONE MEANS: a readable, honest, generous draft in Brian's substance that passes the check.
+done_when: |
+  python3 - <<'PY'
+  import re
+  t=open('docs/drafts/fast-injection-molds.md',encoding='utf8').read()
+  fm=t.split('---',2)[1]; body=t.split('---',2)[2]
+  for k in ('title:','date:','tag:','excerpt:'): assert k in fm,k
+  assert 'author:' not in fm
+  assert 'DRAFT' in body
+  txt=re.sub(r'<!--.*?-->','',body,flags=re.S)
+  n=len(re.findall(r"\S+",txt)); assert 1000<=n<=1700,n
+  assert re.search(r"10[- ]day",txt) and '5,000' in txt and '14 days' in txt and '$2' in txt and 'Zhejiang' in txt
+  assert '20,000' in txt and '$5' in txt and '30 days' in txt and '15 days' in txt
+  assert re.search(r"lifter",txt,re.I) and re.search(r"flash",txt,re.I) and re.search(r"EDM",txt)
+  assert re.search(r"^\|.*\|\s*$",txt,flags=re.M),'table'
+  bad=re.findall(r"Co\.,? ?Ltd|\bLtd\b|\bInc\.|\bLLC\b|Foxconn|Huawei|\bDJI\b|Xiaomi|JLC|Ningbo|Yuyao|Taizhou|Huangyan|Hangzhou|Wenzhou",txt)
+  assert not bad,bad
+  assert txt.rstrip().endswith('Could this speed up your first production batch?'),txt.rstrip()[-80:]
+  last=txt.split('\n## ')[-1].lower()
+  assert 'relationship' in last and 'yourself' in last and 'faster and better' in last and '/contact/' in last
+  import os; assert not os.path.exists('web/content/articles/fast-injection-molds.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
