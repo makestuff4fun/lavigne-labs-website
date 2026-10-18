@@ -137,6 +137,23 @@ const schemas: Record<string, Schema> = {
     },
     required: ["id", "title", "kind", "summary", "url", "jsonUrl"],
   },
+  ChartLinks: obj({ pageUrl: uri, pdfA4Url: uri, pdfLetterUrl: uri, jsonUrl: uri }),
+  Chart: {
+    type: "object",
+    properties: {
+      slug: str,
+      title: str,
+      description: str,
+      license: str,
+      pageUrl: uri,
+      pdfA4Url: uri,
+      pdfLetterUrl: uri,
+      jsonUrl: uri,
+      howTo: obj({ name: str, steps: arr(obj({ name: str, text: str })) }),
+      data: { type: "object", description: "Table rows from the printable chart, with units and column notes." },
+    },
+    required: ["slug", "title", "description", "pageUrl", "pdfA4Url", "pdfLetterUrl", "jsonUrl", "data"],
+  },
   IndexEntry: obj({
     name: str,
     path: { type: "string", description: "Site-relative path." },
@@ -160,6 +177,7 @@ const responses: Record<string, Schema> = {
   "search-index": body({ records: arr(ref("SearchRecord")) }),
   contact: body({ contact: ref("Contact") }),
   tools: body({ tools: arr(ref("ToolListItem")) }),
+  charts: body({ license: str, charts: arr(ref("Chart")) }),
 };
 
 /** Parametrised endpoint families (registry entries with listed:false), keyed by directory. */
@@ -176,6 +194,12 @@ const families: Record<string, { param: string; summary: string; description: st
         html: str,
       },
     ),
+  },
+  charts: {
+    param: "slug",
+    summary: "One shop chart",
+    description: "One printable shop chart as data (tap drills, decimal equivalents, cheat sheet): table rows plus page and PDF links.",
+    schema: { allOf: [ref("Envelope"), ref("Chart")] },
   },
   tools: {
     param: "id",

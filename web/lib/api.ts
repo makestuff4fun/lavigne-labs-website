@@ -7,6 +7,7 @@ import { toolSpecs } from "@/content/toolSpecs";
 import { getAllArticles, getArticle, getArticleSlugs, getArticleBody, getSeriesArticles } from "@/lib/articles";
 import imageCredits from "@/content/image-credits.json";
 import { allSeries } from "@/content/series";
+import { chartMetas, chartsCatalog, chartData, chartLinks, chartLicense } from "@/lib/charts";
 
 export const API_BASE = "/api/v1";
 
@@ -102,6 +103,14 @@ function searchRecords(): SearchRecord[] {
       url: pageUrl(`/work/${p.slug}`),
       tags: p.tags,
       text: [p.blurb, stripMarkdown(projectDetails[p.slug]?.description ?? "")].filter(Boolean).join("\n\n"),
+    })),
+    ...chartMetas.map((m) => ({
+      id: `chart:${m.slug}`,
+      type: "tool",
+      slug: m.slug,
+      title: m.title,
+      url: chartLinks(m.slug).pageUrl,
+      text: [m.description, ...(m.howTo?.steps.map((st) => `${st.name}: ${st.text}`) ?? [])].join("\n"),
     })),
     { id: "page:home", type: "page", title: site.name, url: pageUrl("/"), text: site.description },
     { id: "page:work", type: "page", title: "Work", url: pageUrl("/work"), text: projects.map((p) => p.title).join(", ") },
@@ -213,9 +222,68 @@ export const REGISTRY: Endpoint[] = [
         summary: t.summary,
         jsonUrl: url(`tools/${t.id}.json`),
         pageUrl: t.url,
+      })).concat(
+        chartMetas.map((m) => ({
+          id: m.toolId,
+          title: m.title,
+          kind: "reference",
+          summary: m.description,
+          ...chartLinks(m.slug),
+        })),
+      ),
+    }),
+  },
+  {
+    path: "charts.json",
+    name: "charts",
+    description: "Shop charts as data: metric and inch tap drills, decimal equivalents and the M2–M12 cheat sheet, with the full tables from the printable charts plus page and PDF (A4, US Letter) links.",
+    build: () => ({
+      license: chartLicense,
+      charts: chartMetas.map((m) => ({
+        slug: m.slug,
+        title: m.title,
+        description: m.description,
+        ...chartLinks(m.slug),
+        data: chartData(m.slug),
       })),
     }),
   },
+  ...chartMetas.map(
+    (m): Endpoint => ({
+      path: `charts/${m.slug}.json`,
+      name: `chart:${m.slug}`,
+      description: `Chart ${m.slug}`,
+      listed: false,
+      build: () => ({
+        slug: m.slug,
+        title: m.title,
+        description: m.description,
+        license: chartLicense,
+        ...chartLinks(m.slug),
+        ...(m.howTo ? { howTo: m.howTo } : {}),
+        data: chartData(m.slug),
+      }),
+    }),
+  ),
+  // Per-chart tool entries: tools/<toolId>.json, same payload as the chart file.
+  ...chartMetas.map(
+    (m): Endpoint => ({
+      path: `tools/${m.toolId}.json`,
+      name: `tool:${m.toolId}`,
+      description: `Spec for tool ${m.toolId}`,
+      listed: false,
+      build: () => ({
+        id: m.toolId,
+        title: m.title,
+        kind: "reference",
+        summary: m.description,
+        url: chartLinks(m.slug).pageUrl,
+        ...chartLinks(m.slug),
+        ...(m.howTo ? { howTo: m.howTo } : {}),
+        data: chartData(m.slug),
+      }),
+    }),
+  ),
   // Per-tool specs: served at tools/<id>.json, not listed individually.
   ...toolSpecs.map(
     (spec): Endpoint => ({

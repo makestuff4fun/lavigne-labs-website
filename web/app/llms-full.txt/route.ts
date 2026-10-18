@@ -3,6 +3,7 @@ import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { allSeries } from "@/content/series";
 import { getAllArticles, getSeriesArticles } from "@/lib/articles";
+import { chartMetas, chartLinks, chartMarkdown, chartLicense } from "@/lib/charts";
 import { articleBody } from "@/lib/api";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -37,6 +38,25 @@ export function GET() {
     "## Work",
     "",
     ...projects.flatMap((p) => [`### ${p.title}`, "", `URL: ${pageUrl(`/work/${p.slug}`)}`, "", p.blurb, ""]),
+    "## Shop charts",
+    "",
+    `Printable reference charts, also served as data at ${pageUrl("/api/v1/charts.json")}. ${chartLicense}`,
+    "",
+    ...chartMetas.flatMap((m) => {
+      const l = chartLinks(m.slug);
+      return [
+        `### ${m.title}`,
+        "",
+        `URL: ${l.pageUrl}`,
+        `JSON: ${l.jsonUrl} | PDF: ${l.pdfA4Url} (A4), ${l.pdfLetterUrl} (US Letter)`,
+        "",
+        m.description,
+        "",
+        chartMarkdown(m.slug),
+        "",
+        ...(m.howTo ? [`#### HowTo: ${m.howTo.name}`, "", ...m.howTo.steps.map((s, i) => `${i + 1}. ${s.name}: ${s.text}`), ""] : []),
+      ];
+    }),
     "## Article series",
     "",
     ...allSeries.flatMap((s) => [

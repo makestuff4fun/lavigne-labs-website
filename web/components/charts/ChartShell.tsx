@@ -1,4 +1,5 @@
 import "./charts.css";
+import { chartJsonLd, getChartMeta } from "@/lib/charts";
 
 const pages = [
   { slug: "metric-tap-drills", label: "Metric tap drills" },
@@ -19,8 +20,16 @@ export function ChartShell({
   children: React.ReactNode;
 }) {
   const url = `lavignelabs.com/tools/charts/${slug}/`;
+  const howTo = getChartMeta(slug)?.howTo;
   return (
     <div className="chart-page">
+      {chartJsonLd(slug).map((ld, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }}
+        />
+      ))}
       <div className="chart-sheet">
         <div className="chart-head">
           <div>
@@ -48,6 +57,19 @@ export function ChartShell({
           ))}
         </nav>
         {children}
+        {howTo && (
+          <section className="chart-sec chart-howto" id="how-to-use">
+            <h2>How to use</h2>
+            <p className="chart-note">{howTo.name}:</p>
+            <ol>
+              {howTo.steps.map((s) => (
+                <li key={s.name}>
+                  <strong>{s.name}.</strong> {s.text}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
         <div className="chart-pdf no-print">
           <strong>Download PDF</strong>
           <a href={`/tools/charts/${slug}-a4.pdf`}>A4</a>

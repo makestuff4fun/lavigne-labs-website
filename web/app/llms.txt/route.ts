@@ -2,6 +2,7 @@ import { site, pageUrl } from "@/content/site";
 import { allSeries } from "@/content/series";
 import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { projects } from "@/content/projects";
+import { chartMetas, chartLinks } from "@/lib/charts";
 import { tools, toolHref } from "@/content/tools";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -53,6 +54,14 @@ export function GET() {
     "## Tools",
     "",
     ...tools.map((t) => `- [${t.title}](${abs(toolHref(t))}): ${t.blurb}`),
+    "",
+    "## Shop charts (data + printable PDFs)",
+    "",
+    `- [All charts as JSON](${abs("/api/v1/charts.json")}): full tables for the four charts below`,
+    ...chartMetas.map((m) => {
+      const l = chartLinks(m.slug);
+      return `- [${m.title}](${l.pageUrl}): ${m.description} ([JSON](${l.jsonUrl}), [A4 PDF](${l.pdfA4Url}), [Letter PDF](${l.pdfLetterUrl}))`;
+    }),
     "",
     "## Pages",
     "",
