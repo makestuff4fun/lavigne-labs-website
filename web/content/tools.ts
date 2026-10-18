@@ -1,4 +1,4 @@
-export type ToolCategory = "Fasteners" | "Electronics";
+export type ToolCategory = "Fasteners" | "Shop charts" | "Electronics";
 
 export type Tool = {
   slug: string;
@@ -21,6 +21,11 @@ export const toolCategories: { name: ToolCategory; blurb: string }[] = [
     name: "Fasteners",
     blurb:
       "Screw and nut sizing — dimensions, hole prep, holding force, and tightening torque, in metric and inch.",
+  },
+  {
+    name: "Shop charts",
+    blurb:
+      "Printable wall charts for the drill press — tap drills, decimal equivalents, and a one-page cheat sheet.",
   },
   {
     name: "Electronics",
@@ -81,6 +86,38 @@ export const tools: Tool[] = [
     kind: "calculator",
     category: "Fasteners",
     href: "/tools/fasteners/torque-inch.html",
+  },
+  {
+    slug: "chart-metric-tap-drills",
+    title: "Metric Tap Drill Chart",
+    blurb: "ISO coarse and fine M1–M24: tap, hard-material, clearance, counterbore.",
+    kind: "reference",
+    category: "Shop charts",
+    href: "/tools/charts/metric-tap-drills/",
+  },
+  {
+    slug: "chart-inch-tap-drills",
+    title: "Inch Tap Drill Chart",
+    blurb: "UNC/UNF #0–1/2in with drill designation and decimal.",
+    kind: "reference",
+    category: "Shop charts",
+    href: "/tools/charts/inch-tap-drills/",
+  },
+  {
+    slug: "chart-decimal-equivalents",
+    title: "Decimal Equivalents",
+    blurb: "Fraction, number and letter drills in inch and mm.",
+    kind: "reference",
+    category: "Shop charts",
+    href: "/tools/charts/decimal-equivalents/",
+  },
+  {
+    slug: "chart-cheat-sheet",
+    title: "Drill Press Cheat Sheet",
+    blurb: "One page: tap, clearance and counterbore for M2–M12.",
+    kind: "reference",
+    category: "Shop charts",
+    href: "/tools/charts/cheat-sheet/",
   },
   {
     slug: "pcb",
