@@ -1,0 +1,28 @@
+do: |
+  THE JOB: Replace the contact form with plain mailto links. The Contact page (web/app/contact/page.tsx, web/components/ContactForm.tsx) currently builds a mailto in JavaScript from a form. Remove the form and make the page a short, warm explanation plus clear `mailto:hello@lavignelabs.com?subject=...` links with a prefilled, URL-encoded subject (e.g. "Project inquiry from lavignelabs.com") and a short prefilled body prompt listing what to tell us (what you're building, stage, quantity, timeline). Every CTA across the site (components/CTA.tsx, Hero, Header button if it points to contact, FAQ, work pages, article footers/CTAs) should go to the same prefilled mailto, or to /contact/ where it is a nav link; keep the WeChat id and other contact details already on the page. Put the email, subject and body prompt in one place (content/site.ts) so there is a single source. Keep the Resend route file app/api/contact in place but unused; do not add any third-party form service.
+  THE WHY: Brian (2026-10-18): the contact page and every CTA go to a working mailto:hello@lavignelabs.com with a prefilled subject, replacing the dead form. No third-party form service for now; the choice of form service (Formspree/Web3Forms) waits for Brian's pick, and it would send his email to a third party.
+  GUARDRAILS: Read the relevant guide in web/node_modules/next/dist/docs/ before writing Next code (AGENTS.md: this Next 16 differs from what you know); run npm from web/ (`npm install --maxsockets=4` if needed). The site is a static export (`npm run export`), so no server code. Do not deploy, do not touch cPanel/FTP/SSL. Do not publish drafts: files in docs/drafts/ stay there and must not appear in web/content/articles/. Keep every existing page, API endpoint, feed, llms.txt section and JSON-LD working. Do not delete app/api/contact (leave it; the export script already handles it).
+  DONE MEANS: no form on /contact/, working prefilled mailto links on the Contact page, home and article pages.
+done_when: |
+  python3 - <<'PY'
+  import subprocess,glob,re
+  r=subprocess.run('cd web && npm run export',shell=True,capture_output=True,text=True)
+  assert r.returncode==0,r.stdout[-1500:]+r.stderr[-1500:]
+  c=open('web/out/contact/index.html',encoding='utf8').read()
+  assert '<form' not in c,'form still present'
+  m=re.findall(r'href="mailto:hello@lavignelabs\.com\?subject=[^"]+',c)
+  assert m,'no prefilled mailto on contact page'
+  assert 'briantb' in c or 'WeChat' in c
+  home=open('web/out/index.html',encoding='utf8').read()
+  assert re.search(r'href="mailto:hello@lavignelabs\.com\?subject=',home),'home CTA'
+  arts=glob.glob('web/out/articles/*/index.html')
+  assert arts
+  assert any(re.search(r'href="mailto:hello@lavignelabs\.com\?subject=',open(p,encoding='utf8').read()) for p in arts),'article CTA'
+  for p in glob.glob('web/out/**/index.html',recursive=True):
+      h=open(p,encoding='utf8').read()
+      assert 'formspree' not in h.lower() and 'web3forms' not in h.lower(),p
+      for mm in re.findall(r'href="mailto:([^"?]+)',h): assert mm=='hello@lavignelabs.com',(p,mm)
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: [proof-links]
