@@ -12,7 +12,7 @@ export const projects: Project[] = [
     slug: "microscope-slider",
     title: "Microscope X/Y Slider",
     blurb:
-      "A precision motorized X/Y stage for digital microscopy — mechanical design, motion control, and a custom driver board.",
+      "A sliding stand for a digital microscope: an X/Y table under the workbench with linear rails and cable chains, so the microscope glides into place with a push.",
     image: "/work/microscope-slider.jpg",
     tags: ["Mechanical", "Motion control", "PCB"],
     featured: true,
@@ -21,7 +21,7 @@ export const projects: Project[] = [
     slug: "micropython-system",
     title: "Modular MicroPython System",
     blurb:
-      "A stackable, modular hardware platform with a clean MicroPython API — designed to be reconfigured and reused across projects.",
+      "PyBikeBrain, a modular microPython board for E-bikes, inspired by the pyBoard, with stackable layers for serial, power and more.",
     image: "/work/micropython-system.jpg",
     tags: ["PCB", "Firmware", "Modular"],
     featured: true,
@@ -30,7 +30,7 @@ export const projects: Project[] = [
     slug: "camera-arm",
     title: "Articulated Camera Arm",
     blurb:
-      "A rigid, smoothly-articulating camera arm engineered for repeatable positioning on the bench.",
+      "An articulated camera arm of carbon fiber tubes, polished steel spheres and red aluminum pressure plates, inspired by Robin Renzetti's design.",
     image: "/work/camera-arm.jpg",
     tags: ["Mechanical", "Product design"],
     featured: true,
@@ -39,7 +39,7 @@ export const projects: Project[] = [
     slug: "mechanical-keyboard",
     title: "Mechanical Keyboard",
     blurb:
-      "A custom mechanical keyboard from PCB to case — switch matrix, firmware, and a machined enclosure.",
+      "A reproduction of Input Club's open source K-type keyboard, built to study manufacturing and find ways to cut BOM cost.",
     image: "/work/keyboard.jpg",
     tags: ["PCB", "Firmware", "Enclosure"],
     featured: true,
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     slug: "whiteboard-plotter",
     title: "Whiteboard Plotter",
     blurb:
-      "A wall-mounted plotter that draws on a whiteboard — motion system, control board, and toolpath software.",
+      "A whiteboard plotter inspired by draw bots, built on plywood with linear rails, a 3D printer control board and open-source software.",
     image: "/work/plotter.jpg",
     tags: ["Mechanical", "Motion control"],
     featured: true,
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     slug: "hex-puck-lights",
     title: "Hex Puck Lights",
     blurb:
-      "Modular hexagonal RGB light tiles — addressable LEDs, a tidy interconnect, and a manufacturable PCB.",
+      "Black + Decker Hex Puck under cabinet lighting: a master puck with satellite pucks and a low-profile, screwless clip-together housing.",
     image: "/work/hex-puck.png",
     tags: ["PCB", "Lighting", "Product design"],
     featured: true,
@@ -66,7 +66,7 @@ export const projects: Project[] = [
     slug: "custom-dog-leashes",
     title: "Custom Dog Leashes",
     blurb:
-      "A small-batch product run — material sourcing, hardware, and production managed end to end.",
+      "Custom leashes printed with pet names, made with a purpose-built heat press and a CNC sewing machine.",
     image: "/work/dog-leash.jpg",
     tags: ["Product", "Production", "Sourcing"],
   },
@@ -74,7 +74,7 @@ export const projects: Project[] = [
     slug: "handheld-sokoban",
     title: "Handheld Sokoban",
     blurb:
-      "A pocketable handheld game console — custom PCB, display, controls, and firmware in one tidy package.",
+      "Freezing Fortress, an unreleased Sokoban-style handheld game with a D-pad, two buttons and a 7\" retro LED screen.",
     image: "/work/sokoban.jpg",
     tags: ["PCB", "Firmware", "Enclosure"],
   },
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     slug: "pcb-artwork",
     title: "PCB Artwork",
     blurb:
-      "Functional art on copper and soldermask — pushing what a printed circuit board can look like.",
+      "Tips for adding artwork to PCB designs, treating copper, soldermask and silkscreen like easter eggs in a video game.",
     image: "/work/pcb-artwork.png",
     tags: ["PCB", "Art"],
   },
@@ -90,7 +90,7 @@ export const projects: Project[] = [
     slug: "digital-badge",
     title: "Digital Badge",
     blurb:
-      "An interactive electronic conference badge — playful hardware with a real production path.",
+      "A digital badge built around an ESP32-S3 and a 2.4\" LCD for Maker Faire Shenzhen, with a Flappy Bird style game.",
     image: "/work/digital-badge.png",
     tags: ["PCB", "Firmware"],
   },
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     slug: "badge-pcb-layout",
     title: "Digital Badge PCB Layout",
     blurb:
-      "The board behind the badge — a compact, manufacturable layout balancing aesthetics and DFM.",
+      "A walkthrough of the digital badge's PCB layout, from layer stackup to the ESP32, antenna, USB Type C and power areas.",
     image: "/work/badge-pcb.png",
     tags: ["PCB", "Layout"],
   },
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     slug: "8080-lcd",
     title: "Adventures with an 8080 LCD",
     blurb:
-      "Bringing up a parallel 8080-interface LCD from scratch — bus timing, drivers, and a working display.",
+      "Getting a 2.4\" 8080-interface TFT with an ST7789P3 controller running on an ESP32-S3, and speeding it up for a Flappy Bird style game.",
     image: "/work/lcd-8080.png",
     tags: ["Firmware", "Bring-up"],
   },

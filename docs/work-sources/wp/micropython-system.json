@@ -1,0 +1,20 @@
+{
+  "slug": "micropython-system",
+  "wpTitle": "MODULAR MICROPYTHON SYSTEM",
+  "wpPostId": 1509,
+  "text": "### PyBikeBrain: Revolutionizing E-bike Interaction\n\n**Introducing PyBikeBrain:**\n\nLavigne Labs proudly presents the PyBikeBrain, a modular microPython multipurpose board designed to enhance the functionality and interactivity of E-bikes. Inspired by the versatile pyBoard, PyBikeBrain is capable of a wide range of digital electronic tasks, significantly enhancing the e-bike experience.\n\n**Core Capabilities and Features:**\n\n- **Versatile Functionality:** PyBikeBrain serves as the brain of your E-bike, handling inputs and outputs, adding logic and logging, and connecting to various bike components.\n\n- **Advanced Interconnectivity:** It can control displays, log data, manage lighting and security, and communicate with motor controllers and battery management systems.\n\n**Modular Design - Layers of Innovation:**\n\n- **Main Control Layer:** Acts as the heart of the system with extensive functionality packed into a compact design.\n\n- **Additional Layers:** Each 'Layer' adds specific functionalities, from serial ports in the Serial Layer to power management in the Power Layer, and more.\n\n**Layer Breakdown:**\n\n- **Control Layer:** Central pyBoard v1.1 compatible board with USB, SD Card, Buzzer, and more.\n\n- **Serial Layer:** Adds 4 Serial ports with debugging features.\n\n- **Input Layer:** Facilitates switch and analog inputs.\n\n- **Power Layer:** Manages power input and output controls.\n\n- **Kelly Layer:** Tailored for Kelly KLS-S controllers with a variety of outputs and a UART.\n\n- **Battery Backup Layer:** Ensures stable power supply and LiPo charging.\n\n- **IMU Layer:** Integrates a WIT Motion IMU with GPS and IMU access ports.\n\n- **Test Layer:** Offers extensive testing capabilities.\n\n**Project Significance:**\n\nThe PyBikeBrain is a prime example of Lavigne Labs’ commitment to innovation and practical design. It demonstrates our ability to create complex, multifunctional tools that not only meet specific needs but also offer an emotional connection through sleek design and functionality. Learn more about the PyBikeBrain and its development in our detailed Hackaday article.",
+  "excerpt": "",
+  "date": "2020-02-09",
+  "featured": "pyEC-Stack-1.jpg",
+  "images": [
+    "pyEC-Stack-1.jpg",
+    "pyEC-circle.jpg",
+    "pyEC-v1.2.jpg",
+    "Power-Layer-v1.2.jpg",
+    "Kelly-Layer-v1.2.jpg",
+    "Serial-Layer-v1.2.jpg",
+    "Battery-Backup-v1.2.jpg",
+    "IMU-v1.2.jpg",
+    "Test-v1.2.jpg"
+  ]
+}

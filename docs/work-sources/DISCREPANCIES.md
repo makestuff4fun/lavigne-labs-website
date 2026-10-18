@@ -14,3 +14,13 @@ The 8 inferred blurbs in `web/content/projects.ts` were left untouched. Where th
 - **digital-badge** — Archive: ESP32-S3 + 2.4" 8080 LCD badge for Maker Faire Shenzhen (2024-11-16), with a Flappy Bird style game. The blurb says "conference badge … real production path". Maker Faire is not a conference, and a production path is not mentioned.
 - **badge-pcb-layout** — Consistent (layout walkthrough). The blurb's "DFM" emphasis is not verified.
 - **8080-lcd** — Consistent (ST7789P3 2.4" TFT, Arduino GFX). The blurb says "from scratch — bus timing, drivers"; the archive uses the Arduino GFX library.
+
+## WordPress database vs. Wayback (2026-10-18)
+
+The original WordPress text outranks the Wayback text and is now used in `projectDetails.ts`. For 5 of the 12 projects the two are identical; the rest differ only in punctuation, image captions that Wayback dropped, and links. Material differences:
+
+- **custom-dog-leashes** — WP adds a 2024 note: "*Edit* 2024 Current best solution is direct printing to material." (the heat-press method is no longer the best solution). Missing from the Wayback copy.
+- **digital-badge**, **badge-pcb-layout**, **8080-lcd** — WP has the figure captions (schematic/layout labels); the Wayback text omitted them. The 8080-lcd Arduino GFX layers are an ordered list in WP.
+- **micropython-system**, **camera-arm** — closing paragraph differs slightly in wording.
+
+Blurbs: the 8 originally inferred blurbs, plus the digital-badge, badge-pcb-layout, 8080-lcd and pcb-artwork blurbs that this file marked as unverified or contradicted, were rewritten from the WP text in `web/content/projects.ts`. The earlier contradictions (motorized stage and driver board for the microscope, "pocketable" sokoban, "conference badge", etc.) are resolved in favour of WP.

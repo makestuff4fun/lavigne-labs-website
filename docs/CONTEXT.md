@@ -76,7 +76,7 @@ and is no longer the plan.
 
 1. **Contact form** → wire the live Contact page to a form service (Formspree /
    Web3Forms / `mailto:`); static hosting can't run the Resend API route.
-2. **Review portfolio descriptions** — 8 items have *inferred* blurbs flagged for
+2. **Review portfolio descriptions** — the 12 /work blurbs now come from the original WordPress text (docs/work-sources/wp/); the older, unrelated list of 8 items flagged as *inferred* for
    Brian to verify (Smart Fire Alarm, Teleprompter, Special Action Camera, Custom
    Motorcycle Parts, Dog Backpack, Oculus Earphones, Passport Case, Under Cabinet
    Lighting).

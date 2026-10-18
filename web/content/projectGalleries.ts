@@ -8,6 +8,7 @@ export const projectGalleries: Record<string, GalleryImage[]> = {
     { src: "/work/microscope-slider/03.jpg", alt: "Microscope extended on a pale metal slide rail over the work mat, seen beside an oscilloscope and bench power supplies.", width: 738, height: 1600 },
     { src: "/work/microscope-slider/04.jpg", alt: "Low-angle view of a ring-lit microscope head on a rail mounted under the bench shelf, with cables and solder spools below.", width: 1080, height: 1080 },
     { src: "/work/microscope-slider/05.jpg", alt: "Wide view from the bench level of the microscope with its ring light on the sliding rail, above spools of solder and a blue mat.", width: 1600, height: 900 },
+    { src: "/work/microscope-slider/06.jpg", alt: "Close view of a blue digital microscope camera hanging from a white sliding rail arm over a blue work mat with glasses, tweezers and cables.", width: 1024, height: 1024 },
   ],
   "micropython-system": [
     { src: "/work/micropython-system/01.jpg", alt: "A stack of small green circuit boards with white connector sockets, a microSD card and red knurled feet, photographed on a table.", width: 1595, height: 1600 },
@@ -64,6 +65,7 @@ export const projectGalleries: Record<string, GalleryImage[]> = {
     { src: "/work/pcb-artwork/03.jpg", alt: "Purple pixel art on white showing a dotted circle and fragments of a character, with FTLOTG below.", width: 1285, height: 883 },
     { src: "/work/pcb-artwork/04.jpg", alt: "Close-up of a cream-coloured copper pixel-art ghost on a dark green board, with FTLOTG below.", width: 528, height: 628 },
     { src: "/work/pcb-artwork/05.jpg", alt: "Close-up of a cream-coloured copper pixel-art space invader on a purple board, with FTLOTG below.", width: 634, height: 522 },
+    { src: "/work/pcb-artwork/06.jpg", alt: "Close-up of a green circuit board with copper and soldermask pixel art of a running figure in a green cap, with FTLOTG below.", width: 517, height: 695 },
   ],
   "digital-badge": [
     { src: "/work/digital-badge/01.jpg", alt: "Dark circuit board with many small components and a glowing blue ghost-shaped light, lit on an orange base over a blue mat.", width: 738, height: 1600 },

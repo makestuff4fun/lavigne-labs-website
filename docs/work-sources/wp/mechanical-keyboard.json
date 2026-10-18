@@ -1,0 +1,31 @@
+{
+  "slug": "mechanical-keyboard",
+  "wpTitle": "MECHANICAL KEYBOARD",
+  "wpPostId": 1311,
+  "text": "### Open Source Keyboard Project: A Study in Manufacturing Optimization\n\n**Exploring Open Source Hardware:**\n\nAt Lavigne Labs, our foray into the open source hardware realm, led by Brian Barrett, focused on manufacturing the K-type keyboard, originally designed by Input Club. This project was a deep dive into the intricacies of manufacturing and design efficiency.\n\n**Manufacturing and Design Insights:**\n\n- **Project Scope:** The goal was to reproduce an open source hardware design, assessing the feasibility and uncovering manufacturing efficiencies.\n\n- **Valuable Learning Experience:** Recreating the K-type keyboard provided firsthand insights into the production process and the potential for design simplifications.\n\n**Revelations in Production Efficiency:**\n\n- **Cost-Effective Alternatives:** The project revealed several opportunities to reduce the Bill of Materials (BOM) cost significantly. For instance, optimizing CNC design, minimizing vacuum tooling, and selecting cost-effective component alternatives like USB ports.\n\n- **Design Efficiency:** Identified that the acrylic layer's design could be more efficient, suggesting the use of securing pins instead of machined acrylic pins.\n\n**Implications for Future Projects:**\n\nThis exploration into open source hardware manufacturing underscored a key lesson: the value of consulting with Lavigne Labs for design validation and adaptation. Our experience with this project illustrates how even seasoned designers can benefit from our expertise, particularly in optimizing designs for the Chinese manufacturing environment. Lavigne Labs stands ready to assist in enhancing existing designs, ensuring they are not only aesthetically pleasing but also optimized for cost-effective production.",
+  "excerpt": "",
+  "date": "2018-06-11",
+  "featured": "keyboard2-1024.jpg",
+  "images": [
+    "keyboard2-1024.jpg",
+    "IMG_20180613_113915-scaled.jpg",
+    "keyboard3-1024.jpg",
+    "B-type-lit-up2.jpg",
+    "IMG_20180523_193931.jpg",
+    "IMG_20180610_180048.jpg",
+    "IMG_20180610_180158.jpg",
+    "IMG_20180611_120705.jpg",
+    "IMG_20180611_151226.jpg",
+    "IMG_20180611_151246.jpg",
+    "IMG_20180611_151300.jpg",
+    "IMG_20180613_113853.jpg",
+    "IMG_20180613_113915.jpg",
+    "IMG_20180613_115056.jpg",
+    "IMG_20180616_135251.jpg",
+    "IMG_20180617_200425_1.jpg",
+    "IMG_20180617_200454.jpg",
+    "IMG_20180617_224001.jpg",
+    "IMG_20180619_112250.jpg",
+    "IMG_20180619_112317.jpg"
+  ]
+}
