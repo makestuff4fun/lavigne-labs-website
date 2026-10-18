@@ -1,0 +1,16 @@
+do: |
+  THE JOB: Add a short section to docs/CONTENT.md titled "## Editorial strategy: the recipe, not the ingredients" (put it near the Articles section). Quote Brian's words verbatim as a blockquote, then 4-6 bullets of the working rules: give the method generously and specifically (real steps, Chinese search terms, timelines); name no shops or suppliers (JLC only where Brian named it); let the hard parts show without bragging (on the ground in China, Chinese, visiting in person, payment and accounts, years of trusted relationships); the close turns that into the CTA ("you can do this yourself, and here's how, or we can do it faster and better"), warm not salesy; the point is honest advertising.
+  THE WHY: Brian's editorial strategy for every article (2026-10-18), verbatim: "The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute. Most readers aren't in china, don't speak chinese and can't do these things. It seems like giving away the secrets but it's really clever "honest advertising". I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationships with trusted suppliers." So: be genuinely generous and specific (real steps, real Chinese search terms, real timelines; it must read as honest, not a teaser), name no shops or suppliers, let the hard parts show naturally without bragging (being on the ground in China, speaking Chinese, visiting in person, payment and accounts, and above all years of trusted supplier relationships that cannot be bought), and let the close turn that into the CTA: you can do this yourself, and here is how; or we can do it faster and better because we already have the relationships. Warm and confident, never salesy.
+  GUARDRAILS: Edit only docs/CONTENT.md; keep the rest of it intact. No other file.
+  DONE MEANS: the section exists with Brian's quote and the rules.
+done_when: |
+  python3 - <<'PY'
+  t=open('docs/CONTENT.md',encoding='utf8').read()
+  assert '## Editorial strategy: the recipe, not the ingredients' in t
+  s=t.split('## Editorial strategy: the recipe, not the ingredients')[1].split('\n## ')[0]
+  assert 'We are giving a recipe not the ingredients' in s
+  assert 'honest advertising' in s and 'relationships' in s.lower() and 'JLC' in s
+  assert s.count('\n- ')>=4
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
