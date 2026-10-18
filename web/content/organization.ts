@@ -1,4 +1,4 @@
-import { services, site } from "./site";
+import { services, site, founderStory } from "./site";
 
 export function buildOrganizationJsonLd() {
   return {
@@ -19,7 +19,7 @@ export function buildOrganizationJsonLd() {
     founder: {
       "@type": "Person",
       name: site.founder,
-      jobTitle: "Hardware and manufacturing engineer",
+      description: founderStory.paragraphs[0],
     },
     areaServed: [
       { "@type": "City", name: "Shenzhen" },

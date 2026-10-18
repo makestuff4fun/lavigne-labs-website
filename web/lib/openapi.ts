@@ -169,7 +169,7 @@ const responses: Record<string, Schema> = {
   articles: body({ articles: arr(ref("ArticleListItem")) }),
   services: body({
     services: arr(ref("Service")),
-    engagement: obj({ intro: str, models: arr(ref("EngagementModel")) }),
+    howWeWorkTogether: obj({ intro: str, models: arr(ref("EngagementModel")) }),
     process: arr(ref("ProcessStep")),
   }),
   faq: body({ faqs: arr(ref("Faq")) }),

@@ -150,8 +150,8 @@ export default async function ProjectPage({
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">
           <p className="text-lg font-semibold">Building hardware?</p>
           <p className="mt-2 text-slate">
-            I&apos;m a hardware engineer in Shenzhen — open to full-time roles and
-            focused projects.
+            We&apos;re a Shenzhen hardware product-development team, ready to help you
+            build it.
           </p>
           <Button href={mailtoHref} className="mt-5">
             Get in touch <ArrowIcon />

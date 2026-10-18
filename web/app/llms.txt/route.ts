@@ -1,4 +1,4 @@
-import { site, pageUrl } from "@/content/site";
+import { site, pageUrl, philosophy } from "@/content/site";
 import { allSeries } from "@/content/series";
 import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { projects } from "@/content/projects";
@@ -10,7 +10,7 @@ export const dynamic = "force-static"; // for `output: export`
 const abs = pageUrl;
 
 const pages = [
-  { title: "Home", path: "/", note: "Services and how I work" },
+  { title: "Home", path: "/", note: "Services and how we work together" },
   { title: "Work", path: "/work", note: "Selected projects" },
   { title: "FAQ", path: "/faq", note: "Common questions" },
   { title: "Contact", path: "/contact", note: "Get in touch" },
@@ -24,7 +24,7 @@ export function GET() {
     "",
     `> ${site.description}`,
     "",
-    `${site.founder} helps US and Canadian hardware teams manufacture in China: electronics and PCB design, prototyping, and production, from Shenzhen.`,
+    `Founded by ${site.founder}, who has 13+ years in China, ran an LED factory for Black & Decker for six years and worked with two EV startups. ${philosophy.line} Best fit: funded startups and teams with a completed Kickstarter.`,
     "",
     `Contact: ${site.email}`,
     "",

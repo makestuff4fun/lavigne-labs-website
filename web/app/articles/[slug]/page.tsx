@@ -256,8 +256,8 @@ export default async function ArticlePage({
           <p className="text-lg font-semibold">Building hardware?</p>
           <p className="mt-2 text-slate">
             {penName
-              ? "Lavigne Labs helps hardware teams manufacture in China — get in touch."
-              : "I\u2019m a hardware engineer in Shenzhen — open to full-time roles and focused projects."}
+              ? "Lavigne Labs is a Shenzhen hardware product-development team — get in touch."
+              : "We\u2019re a Shenzhen hardware product-development team, ready to help you build it."}
           </p>
           <Button href={mailtoHref} className="mt-5">
             Get in touch <ArrowIcon />

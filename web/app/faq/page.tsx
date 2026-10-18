@@ -7,7 +7,7 @@ import { faqs } from "@/content/faq";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Honest answers about working with Brian — full-time vs. project work, design plus manufacturing, building hardware in Shenzhen, MOQs, quality, and cost.",
+    "Honest answers about working with our team: how we work together, design plus manufacturing, building hardware in Shenzhen, MOQs, quality, and cost.",
 };
 
 const jsonLd = {

@@ -1,7 +1,10 @@
 # Lavigne Labs
 
-Marketing + portfolio site for **Lavigne Labs** — helping US & Canadian hardware
-teams manufacture in China without the costly mistakes.
+Marketing + portfolio site for **Lavigne Labs** — a Shenzhen hardware
+product-development team, ready to help you. Voice is "we / our team"; wording
+lives in `web/content/site.ts` and is reused by the JSON-LD, `llms.txt`,
+`llms-full.txt`, the `/api/v1` JSON, RSS and `feed.json`. See `docs/CONTENT.md`
+for the voice rules.
 
 Built with **Next.js 16 (App Router) + TypeScript + Tailwind CSS v4**. It also
 hosts two faithful browser ports of Brian's hardware side-projects:

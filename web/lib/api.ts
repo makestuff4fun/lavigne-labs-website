@@ -1,4 +1,4 @@
-import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
+import { site, pageUrl, services, engagement, philosophy, bestFit, process as howWeWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
@@ -164,11 +164,13 @@ export const REGISTRY: Endpoint[] = [
   {
     path: "services.json",
     name: "services",
-    description: "Services offered, plus engagement models and the process for working together.",
+    description: "Services offered, plus how we work together (prototype sprints, development to production, production support) and our process.",
     build: () => ({
       services,
-      engagement: { intro: engagement.intro, models: engagement.models },
-      process: howIWork,
+      howWeWorkTogether: { intro: engagement.intro, models: engagement.models },
+      philosophy,
+      bestFit,
+      process: howWeWork,
     }),
   },
   {
@@ -199,7 +201,7 @@ export const REGISTRY: Endpoint[] = [
   {
     path: "contact.json",
     name: "contact",
-    description: "How to reach Lavigne Labs: email, WeChat, location and hours.",
+    description: "How to reach the Lavigne Labs team: email, WeChat, location and hours. Brian Barrett is the first contact.",
     build: () => ({
       contact: {
         name: site.founder,

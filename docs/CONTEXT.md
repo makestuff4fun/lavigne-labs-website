@@ -7,10 +7,13 @@ things change._
 
 The Lavigne Labs website (Next.js 16 / Tailwind v4) **plus** two faithful browser
 ports of Brian's hardware side-projects (Shiverwing, Freezing Fortress). The
-**business**: Brian Barrett helps **US & Canadian hardware teams manufacture in
-China without the costly mistakes** — taking prototypes/funded ideas to
-production, vetting factories, QC on the ground (13+ yrs in China; ran a
-Black & Decker LED factory; two EV startups).
+**business**: Lavigne Labs is a **Shenzhen hardware product-development team,
+ready to help you**. We take prototypes and funded ideas to production through
+prototype sprints, development to production, and production support. Lavigne
+Labs is the accountable lead; each project is matched to a vetted Shenzhen
+engineering team (partners are never named), 40+ engineers across the partner
+teams. Founded by Brian Barrett (13+ yrs in China; ran an LED factory for
+Black & Decker for six years; two EV startups), who is the first contact.
 
 - **Repo:** `git@github.com:makestuff4fun/lavigne-labs-website.git`
 - **Repo layout:** `web/` = the Next.js site (run npm there; all `app/…`,
@@ -62,13 +65,14 @@ and is no longer the plan.
 
 - **Target:** funded startups & SMEs, **post-prototype** (have a working
   prototype/funding, need to ship).
-- **Wedge:** a named senior engineer, **no handoffs** ("the person who lays out
-  your board is on your factory floor"), authentically lives in China 13+ yrs.
-- **Fee model (get this right):** commission isn't a dirty word — hidden markups
-  and split loyalties are. Two open models: **Open-BOM + flat 10% management
-  fee** (default) or **finished product at an honest margin**. When hired to
-  design/represent a client he declines supplier finder's fees. Do **not** frame
-  as naive "no commissions."
+- **Wedge:** a team led by an accountable founder who lives in China (13+ yrs),
+  with vetted engineering teams matched per project. Voice is "we / our team"
+  (see docs/CONTENT.md voice rules); the site is not a job-seeking page.
+- **Philosophy:** "We move fast. Speed costs money; we spend it where it saves
+  weeks." Prototyping is the hook; lowest unit cost at volume is a welcome
+  production goal. Best fit: funded startups and teams with a completed Kickstarter.
+- **How we work together:** prototype sprints, development to production,
+  production support (replaces the old fee-model framing).
 - **Proof:** real stories, **no fabricated numbers**.
 - **Visuals:** clean/technical; showcase products as proof of *his* contribution.
 

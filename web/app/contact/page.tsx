@@ -5,7 +5,7 @@ import { site, mailtoHref } from "@/content/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Brian Barrett — hardware engineer in Shenzhen, open to full-time roles and projects. Reach out by email or WeChat.",
+    "Get in touch with the Lavigne Labs team, a Shenzhen hardware product-development team led by Brian Barrett. Reach out by email or WeChat.",
 };
 
 export default function ContactPage() {

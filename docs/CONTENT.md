@@ -14,6 +14,19 @@ the page instantly.
 
 ---
 
+## Voice and positioning rules (all copy, structured data and AI files)
+
+Lavigne Labs is a Shenzhen hardware product-development team. Lavigne Labs is the face and the accountable lead; each project is matched to a vetted Shenzhen engineering team (design-led or production-integrated), with 40+ engineers across the partner teams. Brian Barrett is the first contact and puts his reputation on the results. Keep this statement exact and never overclaim.
+
+- **We / our team voice.** Write "we" and "our team". Brian appears as the founder ("Founded by Brian Barrett": 13+ years in China, ran an LED factory for Black & Decker for six years, two EV startups) and as first contact, never as a job candidate. Mention no other employer.
+- **Partners are never named.** Partner teams, factories and shops are not named anywhere, including JSON-LD, llms.txt and the API.
+- **Philosophy line:** "We move fast. Speed costs money; we spend it where it saves weeks." Prototyping is the hook. Lowest unit cost at volume is a welcome production goal; never be rude about penny-pinching in development, just say what we do.
+- **Who we work best with:** funded startups and teams with a completed Kickstarter (say it warmly).
+- **Engagement models** are called "How we work together": prototype sprints, development to production, production support. Nav label: "How we work".
+- **No fabricated numbers** and no capacity claims beyond the 40+ engineers (no "hundreds of engineers", no guaranteed turnaround).
+- **Banned phrases** (the build check scans JSON/TXT/XML output for them): "full-time", "full time role", "hire me", "hire Brian", "open to a…", "looking for the right team", "join your team", "fractional", "I'm looking", "what I'm after". Also avoid "I'm a hardware engineer… open to roles" in any form.
+- **Single source:** wording lives in `content/site.ts`; llms.txt, llms-full.txt, `/api/v1/*`, JSON-LD, RSS and `feed.json` read from it. Change it there, not in each surface.
+
 ## Home page & global copy — `content/site.ts`
 
 Several named exports drive the home page, header, and footer:
@@ -24,10 +37,11 @@ Several named exports drive the home page, header, and footer:
 | `nav` | Top navigation links |
 | `footerLinks` | Footer link groups |
 | `audience` | The "who this is for" line |
-| `engagement` | The "How I work" section (fee models + the loyalty statement) |
+| `engagement` | The "How we work together" section (prototype sprints, development to production, production support + the on-the-ground statement) |
+| `philosophy`, `bestFit`, `founderStory` | The speed/cost philosophy, "Who we work best with", and the "Founded by Brian Barrett" section |
 | `credibility` | The stat strip in the hero (e.g. "13+ yrs") |
 | `services` | The three service cards |
-| `problems` | The "costly mistakes → how I fix it" rows |
+| `problems` | The "costly mistakes → how we fix it" rows |
 | `process` | The numbered "how it works" steps |
 
 Example — change your contact details:
