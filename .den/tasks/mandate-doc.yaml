@@ -1,0 +1,17 @@
+do: |
+  THE JOB: In docs/CONTENT.md, directly after the "Editorial strategy: the recipe, not the ingredients" section, add "## Editorial mandate: correct, enhance, add" quoting Brian verbatim as a blockquote ("of course, correct spelling, correct me, enhance, add knowledge you know that I missed.") with these rules as bullets: correct spelling and grammar silently; correct Brian when he is wrong (facts, physics, terms) and say so in the review note; enhance (structure, stronger hook, clearer examples); add solid, well-established knowledge he missed, always recipe not ingredients (no shop names); every draft ships with a short review note at the top of the file (an HTML comment block starting `<!-- REVIEW NOTE`, with Corrected / Added / Unsure parts), stripped before publishing, so Brian approves in one read.
+  THE WHY: Brian's standing EDITORIAL MANDATE (2026-10-18), verbatim: "of course, correct spelling, correct me, enhance, add knowledge you know that I missed." Together with his editorial strategy ("The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute... clever 'honest advertising'. I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationship with trusted suppliers."), see docs/CONTENT.md.
+  GUARDRAILS: Edit only docs/CONTENT.md; keep everything else intact.
+  DONE MEANS: the section exists with the quote and the rules.
+done_when: |
+  python3 - <<'PY'
+  t=open('docs/CONTENT.md',encoding='utf8').read()
+  h='## Editorial mandate: correct, enhance, add'
+  assert h in t
+  assert t.index('## Editorial strategy: the recipe, not the ingredients')<t.index(h)
+  s=t.split(h)[1].split('\n## ')[0]
+  assert 'correct spelling, correct me, enhance, add knowledge you know that I missed' in s
+  assert 'REVIEW NOTE' in s and 'Unsure' in s and s.count('\n- ')>=4
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
