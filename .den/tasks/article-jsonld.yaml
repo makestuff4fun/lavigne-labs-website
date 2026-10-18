@@ -1,0 +1,33 @@
+do: |
+  THE JOB: Add schema.org Article JSON-LD to every article page (web/app/articles/[slug]/page.tsx),
+  as a <script type="application/ld+json"> in the same style the home page (web/app/page.tsx) and
+  faq page already use. Fields: @context https://schema.org, @type Article, headline (title),
+  description (excerpt), datePublished (frontmatter date, ISO), dateModified (same), articleSection
+  (tag), url and mainEntityOfPage (absolute, via site.url), inLanguage "en", author and publisher
+  as Person/Organization "Lavigne Labs"/Brian Barrett taken from content/site.ts (do not invent
+  facts). Must be correct for every article, including future ones: derive from lib/articles.ts,
+  never hardcode slugs. Escape "<" in the JSON output (replace with <).
+  THE WHY: Brian wants the site easy for AI agents and search engines to read; only home and FAQ
+  have structured data today.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Do not change
+  article visuals or content. Read Next 16 docs in web/node_modules/next/dist/docs/ if unsure.
+  DONE MEANS: after `cd web && npm run export`, each web/out/articles/*/index.html contains a
+  parseable Article JSON-LD with headline, datePublished, description, url matching the page.
+done_when: |
+  cd web && npm run export >/tmp/jsonld-export.log 2>&1 && python3 - <<'PY'
+  import glob,json,re,os
+  pages=glob.glob('out/articles/*/index.html')
+  slugs=[os.path.basename(f)[:-3] for f in glob.glob('content/articles/*.md')]
+  assert pages and len(pages)==len(slugs),(len(pages),len(slugs))
+  for p in pages:
+      h=open(p,encoding='utf8').read()
+      blocks=re.findall(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>',h,re.S)
+      arts=[json.loads(b) for b in blocks]
+      arts=[a for a in arts if isinstance(a,dict) and a.get('@type')=='Article']
+      assert arts,p
+      a=arts[0]
+      assert a['headline'] and a['description'] and re.match(r'\d{4}-\d\d-\d\d',a['datePublished']),p
+      assert os.path.basename(os.path.dirname(p)) in a['url'],p
+  PY
+protected: [".den/**"]
+runaway: {minutes: 25}
