@@ -1,0 +1,51 @@
+do: |
+  THE JOB: With trailingSlash:true, the host 301-redirects /articles/slug to /articles/slug/.
+  Make every URL the site EMITS use the final form (trailing slash for page routes) so agents never
+  follow a redirect. Files with an extension (.md, .json, .xml, .txt, .html) stay as they are; the
+  bare site root can stay "https://lavignelabs.com" or become ".../" (pick one, use it everywhere).
+  Fix at the source of each URL, using one shared helper (e.g. a `pageUrl(path)` in lib or content/site.ts)
+  instead of ad hoc concatenation: app/sitemap.ts, app/feed.json/route.ts, app/rss.xml/route.ts,
+  app/llms.txt/route.ts, lib/api.ts (all url fields, incl. articles' "url"), the Article and
+  organization JSON-LD urls / mainEntityOfPage, and metadata canonical/openGraph URLs if present.
+  Look for every use of site.url and every place a route is turned into an absolute URL
+  (`grep -rn "site.url" web/app web/lib web/content`). Do not append a slash to tool URLs that are
+  .html files (see toolHref in content/tools.ts), to the .md alternates, or to .json endpoints.
+  THE WHY: managing agent (2026-10-18): feed.json, rss.xml, sitemap and llms.txt link articles
+  without the trailing slash, and the host redirects. Agents should get the final URL directly.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Keep all
+  existing output otherwise unchanged (same fields, same endpoints). Later API tasks will add
+  endpoints through the REGISTRY in lib/api.ts, so keep the helper easy to reuse.
+  DONE MEANS: in the export, every absolute lavignelabs.com URL emitted in sitemap.xml,
+  feed.json, rss.xml, llms.txt, api/v1/*.json and the article/home JSON-LD either has a file
+  extension or ends in "/", and each resolves to a real path in out/.
+done_when: |
+  cd web && npm run export >/tmp/slash-export.log 2>&1 && python3 - <<'PY'
+  import re,glob,os,json
+  from urllib.parse import urlparse
+  files=['out/sitemap.xml','out/feed.json','out/rss.xml','out/llms.txt']+glob.glob('out/api/v1/**/*.json',recursive=True)
+  for p in glob.glob('out/articles/*/index.html')+['out/index.html']:
+      h=open(p,encoding='utf8').read()
+      for b in re.findall(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>',h,re.S):
+          open('/tmp/_ld.txt','a').write(b+'\n')
+  files.append('/tmp/_ld.txt')
+  bad=[];n=0
+  for f in files:
+      t=open(f,encoding='utf8').read().replace('\\/','/')
+      for u in set(re.findall(r'https://lavignelabs\.com[^\s"<>\)\]\\,]*',t)):
+          path=urlparse(u).path
+          if path in ('','/'): continue
+          n+=1
+          last=path.rstrip('/').split('/')[-1]
+          if '.' in last:
+              if path.endswith('/'): bad.append((f,u,'slash on file'))
+              elif not os.path.exists('out'+path): bad.append((f,u,'missing file'))
+          else:
+              if not path.endswith('/'): bad.append((f,u,'no trailing slash'))
+              elif not os.path.exists('out'+path+'index.html'): bad.append((f,u,'missing page'))
+  os.remove('/tmp/_ld.txt')
+  assert n>20,n
+  assert not bad,bad[:10]
+  PY
+protected: [".den/**"]
+needs: [deploy-no-secret]
+runaway: {minutes: 30}
