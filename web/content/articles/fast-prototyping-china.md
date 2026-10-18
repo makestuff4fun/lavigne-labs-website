@@ -1,20 +1,12 @@
 ---
 title: "Fast Prototyping in China: Stop Asking Factories"
-date: "2026-10-18"
+date: "2026-10-13"
 tag: "Sourcing"
 excerpt: "Many teams prototype with the wrong supplier, then wonder why the replies dry up by revision three. Here's how fast prototyping in China actually works, and who to ask."
 related: ["camera-arm", "microscope-slider"]
 series: "field-notes"
 seriesOrder: 3
 ---
-
-<!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently (including "specialize" to "specialize" to match "anodizing"). Facts, physics and terms: I found nothing in your draft that was wrong. I checked the Chinese search terms, the CNC and anodizing timings (your figures, unchanged), and the JLC PCB and assembly line. Closing reduced to a plain CTA; pitch lines removed per Brian.
-Added: (1) A sharper hook at the top: the quiet shop is a mismatch, not bad luck. (2) Ask each shop for DFM feedback before cutting. (3) Tolerance stack-up when parts come from different shops: tell each shop which features mate, and keep a few critical dimensions generous. (4) Anodizing adds thickness on the surface, so holes and mating faces need allowance or masking. (5) Order a spare of every part so one scrapped part does not reset the schedule. (6) Send drawings plus the 3D file plus a one-page spec, with material and finish marked explicitly. (7) Process choice: CNC vs 3D print vs sheet metal, in plain terms and without numbers. (8) A new subhead, "Before you cut", to hold items 2 to 7. No draft-angle advice anywhere. Strike any of these you would not do.
-Unsure: Nothing in the body. I gave no thickness figure for anodizing because it varies by type and shop; tell me if you want your own rule of thumb in.
--->
-
-<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
 The prototype that goes quiet is rarely bad luck. Almost every hardware team that comes to us has the same story about their prototype. The first version came back quickly and looked decent. The second took a little longer. By the third or fourth, messages sat unanswered for days, and then they stopped getting answered at all. The product wasn't finished, and the supplier had quietly gone cold.
 
@@ -118,7 +110,6 @@ None of this means factories are the enemy. They're exactly the right partner fo
 
 So go back to the factory at design freeze. Once the design has stopped changing and you know what you're building, a factory can do what it's good at: repeatable, efficient, high-volume manufacturing. Now the big order is real, and your leverage is real. You arrive with a proven design and a clear picture of what it takes to make it, and that's a much stronger position than a half-finished drawing and a promise.
 
-<!-- Cross-links could go here once published: small-shops article, Brian's Law article. -->
 
 This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to.
 

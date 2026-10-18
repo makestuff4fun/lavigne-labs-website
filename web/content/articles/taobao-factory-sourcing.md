@@ -1,6 +1,6 @@
 ---
 title: "Taobao for Factory Sourcing?"
-date: "2026-10-18"
+date: "2026-10-15"
 tag: "Sourcing"
 author: "淘宝王"
 excerpt: "Taobao looks like a shopping site for phone cases and sneakers. It is also one of the best places to find real factories, including specialised ones. What matters is the supplier, not where you found them."
@@ -8,13 +8,6 @@ related: ["8080-lcd"]
 series: "field-notes"
 seriesOrder: 5
 ---
-
-<!-- REVIEW NOTE
-Corrected: Spelling and grammar tidied silently. Fact fix: you wrote custom heatsinks are "extruded or machined to your drawing". A truly custom extrusion needs its own die, which means a tooling fee and a bigger order, so a Taobao shop usually cuts and machines from existing profiles. The bullet now says that. Nothing else of yours was wrong. Closing reduced to a plain CTA; pitch lines removed per Brian.
-Added: (1) a stronger opening hook; (2) a "Paying" section: Alipay for foreigners, linking an overseas card or using a trusted China-based payer; (3) 集运 forwarders for shops that ship only inside China, and what to tell them; (4) asking for a 发票 invoice, and individual shop versus registered company; (5) returns and disputes on the platform, including not confirming receipt before you inspect; (6) a measure-and-photograph checklist for the sample on arrival. Strike any you disagree with.
-Unsure: Alipay and Taobao sign-up rules for foreign users change often (phone number, ID checks, which cards work), so the body gives the shape, not the steps. I did not state any fees, limits or timings. Invoice types differ by shop, so I only say to ask.
--->
-<!-- DRAFT: the owner must read before this moves to web/content/articles/ -->
 
 Most people think Taobao is where you buy a phone case. I use it to buy laser-cut and bent parts, custom cables and custom LCDs, straight from the people who make them. Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.
 

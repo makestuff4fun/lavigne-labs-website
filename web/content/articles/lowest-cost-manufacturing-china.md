@@ -1,20 +1,12 @@
 ---
 title: "Lowest-cost manufacturing in China: Brian's Law"
-date: "2026-10-18"
+date: "2026-10-14"
 tag: "Sourcing"
 excerpt: "The factory with the polished English-speaking sales team is rarely the cheapest place your part can be made. Here's why, and how to find the people who actually make it."
 related: ["mechanical-keyboard", "8080-lcd"]
 series: "field-notes"
 seriesOrder: 4
 ---
-
-<!-- REVIEW NOTE
-Corrected: Spelling and grammar tidied silently. Two term fixes: (1) the business-licence scope (经营范围) is a clue, not proof. Some traders list 生产 and many real factories also list 销售, so I reworded step 2 to say read it, then check it against the machines and the answers. (2) "Domestic channels" for payment was loose. What matters is a company bank account (对公账户) in the exact name on the contract, so I said that. Closing reduced to a plain CTA; pitch lines removed per Brian.
-Added: (a) a short opening scenario as the hook; (b) trading company vs factory, with what to look for on the licence and the shop page; (c) pay only to a company account matching the contract and invoice name, never a personal account; (d) the VAT invoice (增值税发票 / fapiao): ask whether the quote includes one, and compare like with like; (e) asking what the factory outsources, folded into the questions in step 5; (f) sample-vs-production consistency (keep the approved sample, check production against it); (g) a 1688 cross-check of the English quote, plus a person on the ground to confirm; (h) matching lines in the checklist. Nothing about draft angles or designing for the tool. Strike any of it you disagree with.
-Unsure: I left out the VAT rate and how export tax refunds work, because they change and I would not state them without checking. Please confirm you are happy with "a factory that will not issue an invoice is a flag" for your usual jobs.
--->
-
-<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
 Picture two quotes for the same part. One comes back in an hour, in perfect English, with a tidy PDF. The other comes back a day later, in short Chinese messages, and is noticeably lower. The second is usually the one closer to the machines. When a client asks me how to get the lowest price out of China, I start with a rule I've come to rely on. I call it Brian's Law:
 

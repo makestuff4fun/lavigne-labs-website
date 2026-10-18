@@ -1,19 +1,12 @@
 ---
 title: "One WeChat history for a dual-boot Windows and Linux PC"
-date: "2026-10-18"
+date: "2026-10-17"
 tag: "China tips"
 excerpt: "WeChat desktop doesn't sync history between computers, so a dual-boot PC ends up with two histories that drift apart. Here is how I pointed both operating systems at one folder, and what went wrong on the way."
 related: []
 series: "field-notes"
 seriesOrder: 7
 ---
-<!-- REVIEW NOTE
-Corrected: spelling and grammar fixed silently. Facts: nothing of yours was wrong. The registry values (HiberbootEnabled, RealTimeIsUniversal), the 8-hour clock cause, xwechat_files and the winget package names all match what I know. I made two small wording fixes: "Settings > Storage" is now described as the storage setting, since WeChat renames menus between versions, and "Windows 11 26H2" is kept as you wrote it. Closing reduced to a plain CTA; pitch lines removed per Brian.
-Added: (1) a back-up-first step before pointing both systems at one folder, moved up from the caveats; (2) "never run both OS sessions at once" spelled out: shut Windows down fully, no hibernate, no sleeping with WeChat open; (3) NTFS mount options on Linux (mount by UUID, uid/gid/umask, windows_names, nofail) and what to do if the partition mounts read-only; (4) a "After a WeChat update" checklist; (5) a stronger opening hook. Your steps, numbers and caveats are intact. Strike any addition you dislike.
-Unsure: the exact Windows menu wording in current 4.x builds; which NTFS driver (ntfs3 or ntfs-3g) Ubuntu 24.04 picks by default on your machine, so the options are given for both; whether the phone-VPN explanation is Android-wide or specific to your phone (kept as your experience).
--->
-
-<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
 Your supplier sent the drawing at 9 a.m. on Windows. At 9 p.m. you are in Linux and it isn't there. If you work in China, WeChat is where the work happens: quotes, photos of parts, voice messages from the factory. I run a dual-boot PC, Windows 11 and Ubuntu 24.04, and I wanted the same WeChat history in both.
 

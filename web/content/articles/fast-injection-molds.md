@@ -1,20 +1,12 @@
 ---
 title: "Fast Injection Molds in China: Tooling in 10 Days"
-date: "2026-10-18"
+date: "2026-10-16"
 tag: "Sourcing"
 excerpt: "The standard story says a mold takes 30 days plus revisions. There is another way: 10-day injection molds, cheaper than regular tooling. Here is how they work, what the catch is, and when to use them."
 related: ["hex-puck-lights"]
 series: "field-notes"
 seriesOrder: 6
 ---
-
-<!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little". (5) An earlier revision of this note told readers to add draft; that was wrong against your practice and is removed everywhere. The piece no longer tells anyone to add draft. Closing reduced to a plain CTA; pitch lines removed per Brian. Borderline line kept as Brian's voice: "known mostly to those of us who have spent years on the ground hunting for it" in the cluster section.
-Added: Your draft story, told in first person (first China mold, all the draft added, designed to avoid a slide, Canadian consultant did the layout, shop rotated the part 90 degrees, added a slide, redid the draft, nicer part, the irony), with your rule as a pull quote, scoped to housings, toys and consumer electronics (automotive likely the exception) and your "Unless you're an expert" line. You supplied this. Practical advice: give the shop a clean model plus requirements and let their engineers choose draft, parting line and slides. Why fast molds wear (aluminium or soft P20 versus hardened H13/S136; pre-hardened steel; wear starts at gate and parting line). Gate and ejector-pin marks, stated up front. Surface finish standards (SPI, MT, VDI 3400) and that texture adds time and cost. First samples (T0/T1) and what to check. Material and shrinkage affecting fit. DFM feedback on the 3D file before steel is cut. Strike any you disagree with.
-Unsure: No exact SPI grade or shrinkage numbers given on purpose; they vary by material and texture. Whether your fast molds are aluminium or P20 is not stated; I kept it generic. Your wording for steel-safe on pins is the one I most want you to eyeball.
--->
-
-<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
 Your first shots could be in your hands in 10 days, not 45. Ask almost any shop how long injection tooling takes and you will hear the same story. It is a story worth knowing, because it is mostly true for the way most shops work. It is just not the only way to do it.
 
