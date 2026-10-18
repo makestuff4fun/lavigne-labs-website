@@ -6,6 +6,7 @@ import { site, pageUrl } from "@/content/site";
 import { Container, Eyebrow, ArrowIcon, Button } from "@/components/ui";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
+import { getArticlesForProject, formatDate } from "@/lib/articles";
 import { projectGalleries } from "@/content/projectGalleries";
 
 export const dynamicParams = false;
@@ -47,6 +48,8 @@ export default async function ProjectPage({
   const detail = projectDetails[slug];
   const description = detail?.description?.trim() ?? "";
   const html = description ? (marked.parse(description) as string) : "";
+
+  const writtenUp = getArticlesForProject(slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -118,6 +121,30 @@ export default async function ProjectPage({
         )}
         {detail && !detail.verified && (
           <p className="mt-6 text-sm text-slate">Description recovered from the original site</p>
+        )}
+
+        {writtenUp.length > 0 && (
+          <section className="mt-12" aria-label="Written up in">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-slate">
+              Written up in
+            </h2>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+              {writtenUp.map((a) => (
+                <li key={a.slug}>
+                  <Link
+                    href={`/articles/${a.slug}/`}
+                    className="group block h-full rounded-xl border border-line bg-white p-5 transition hover:border-accent/40"
+                  >
+                    <span className="font-semibold tracking-tight group-hover:text-accent">
+                      {a.title}
+                    </span>
+                    <span className="mt-1 block text-xs text-slate">{formatDate(a.date)}</span>
+                    <span className="mt-2 block text-sm leading-relaxed text-slate">{a.excerpt}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">

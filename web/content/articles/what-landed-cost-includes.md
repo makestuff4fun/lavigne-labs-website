@@ -3,6 +3,7 @@ title: "What 'landed cost' actually includes"
 date: "2026-06-09"
 tag: "Costing"
 excerpt: "The factory quote is the number everyone fixates on — and it's often barely half of what a unit really costs to land on your dock. Here are the line items teams forget."
+related: ["mechanical-keyboard", "hex-puck-lights"]
 ---
 
 When a founder tells me their unit cost is "$8," I always ask the same question: *eight dollars where?* Ex-works at the factory gate is a very different number than landed in a warehouse in Ohio, and the gap between them is where margins quietly disappear.

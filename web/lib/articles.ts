@@ -15,6 +15,8 @@ export type ArticleMeta = {
   readingTime: number;
   series?: string;
   seriesOrder?: number;
+  /** Slugs of portfolio projects (web/content/projects.ts) this article draws on. */
+  related?: string[];
 };
 
 export type Article = ArticleMeta & { html: string };
@@ -63,6 +65,9 @@ export function getArticle(slug: string): Article {
           ...(typeof data.seriesOrder === "number" ? { seriesOrder: data.seriesOrder } : {}),
         }
       : {}),
+    ...(Array.isArray(data.related) && data.related.length
+      ? { related: data.related.filter((s): s is string => typeof s === "string") }
+      : {}),
     readingTime: readingTime(content),
     html: marked.parse(content) as string,
   };
@@ -97,4 +102,9 @@ export function getSeriesArticles(series: string): ArticleMeta[] {
       (a, b) =>
         (a.seriesOrder ?? 1e9) - (b.seriesOrder ?? 1e9) || (a.date < b.date ? -1 : 1),
     );
+}
+
+/** Published articles whose `related` includes the given project slug. */
+export function getArticlesForProject(projectSlug: string): ArticleMeta[] {
+  return getAllArticles().filter((a) => a.related?.includes(projectSlug));
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site, pageUrl } from "@/content/site";
+import { projects } from "@/content/projects";
 import { getSeries } from "@/content/series";
 import { Container, ArrowIcon, Button } from "@/components/ui";
 import {
@@ -51,6 +52,10 @@ export default async function ArticlePage({
   const article = getArticle(slug);
   const penName = !!article.author && article.author !== site.founder;
   const more = getAllArticles().filter((a) => a.slug !== slug).slice(0, 2);
+
+  const relatedProjects = (article.related ?? [])
+    .map((r) => projects.find((p) => p.slug === r))
+    .filter((p): p is (typeof projects)[number] => !!p);
 
   const series = article.series ? getSeries(article.series) : undefined;
   const members = series ? getSeriesArticles(series.slug) : [];
@@ -142,6 +147,29 @@ export default async function ArticlePage({
               </Link>
             )}
           </nav>
+        )}
+
+        {relatedProjects.length > 0 && (
+          <section className="mt-12" aria-label="Related projects">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-slate">
+              Related projects
+            </h2>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+              {relatedProjects.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    href={`/work/${p.slug}/`}
+                    className="group block h-full rounded-xl border border-line bg-white p-5 transition hover:border-accent/40"
+                  >
+                    <span className="font-semibold tracking-tight group-hover:text-accent">
+                      {p.title}
+                    </span>
+                    <span className="mt-2 block text-sm leading-relaxed text-slate">{p.blurb}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         <div className="mt-12 rounded-2xl border border-line bg-mist p-7 text-center">

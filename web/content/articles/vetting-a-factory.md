@@ -3,6 +3,7 @@ title: "How to vet a factory before you wire a deposit"
 date: "2026-05-28"
 tag: "Sourcing"
 excerpt: "A supplier's quote tells you almost nothing about whether they can actually build your product. Here's what I check — in person — before a cent moves."
+related: ["custom-dog-leashes"]
 series: "field-notes"
 seriesOrder: 1
 ---
