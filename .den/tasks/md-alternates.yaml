@@ -1,0 +1,36 @@
+do: |
+  THE JOB: Serve each article's raw Markdown source as a static file at /articles/<slug>.md in the
+  export, and advertise it. Two parts. (1) At build time, copy (or emit via a force-static route
+  handler, whichever works in the Next 16 static export; read web/node_modules/next/dist/docs/)
+  content/articles/<slug>.md to out/articles/<slug>.md. Prefer emitting the original file text
+  unchanged, frontmatter included. Because trailingSlash is true, /articles/<slug>.md must not
+  collide with the /articles/<slug>/ page directory. Derive slugs from lib/articles.ts; hardcode
+  none. (2) In web/app/articles/[slug]/page.tsx metadata, add alternates.types
+  {"text/markdown": "/articles/<slug>.md"} so the page head carries
+  <link rel="alternate" type="text/markdown" href="...">. Also add a "Markdown" link line for each
+  article to /llms.txt (the existing route web/app/llms.txt/route.ts): append
+  " ([markdown](absolute .md url))" to each article bullet.
+  THE WHY: Brian wants the site easy for AI agents to read; the Markdown source is the cleanest
+  thing an agent can fetch, and it already exists.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Do not break
+  the JSON-LD, feeds or llms.txt that already exist. Do not change next.config.ts beyond necessity.
+  DONE MEANS: after `cd web && npm run export`, out/articles/<slug>.md exists for every article
+  with its exact source text, each article page head has the text/markdown alternate link, and
+  out/llms.txt links the .md URLs.
+done_when: |
+  cd web && npm run export >/tmp/md-export.log 2>&1 && python3 - <<'PY'
+  import glob,os,re
+  srcs=glob.glob('content/articles/*.md')
+  assert srcs
+  llms=open('out/llms.txt',encoding='utf8').read()
+  for f in srcs:
+      s=os.path.basename(f)[:-3]
+      out=open('out/articles/%s.md'%s,encoding='utf8').read()
+      src=open(f,encoding='utf8').read()
+      assert out.strip()==src.strip(),s
+      h=open('out/articles/%s/index.html'%s,encoding='utf8').read()
+      assert re.search(r'<link[^>]*rel="alternate"[^>]*type="text/markdown"[^>]*/articles/%s\.md'%s,h) or re.search(r'<link[^>]*type="text/markdown"[^>]*/articles/%s\.md[^>]*rel="alternate"'%s,h),s
+      assert '/articles/%s.md'%s in llms,s
+  PY
+protected: [".den/**"]
+runaway: {minutes: 25}
