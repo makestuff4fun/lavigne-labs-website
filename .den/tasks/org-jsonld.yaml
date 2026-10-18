@@ -1,0 +1,40 @@
+do: |
+  THE JOB: Enrich the existing ProfessionalService JSON-LD in web/app/page.tsx (it already has name,
+  description, url, email, founder, areaServed "Worldwide", knowsAbout). Add, using ONLY facts
+  already in the repo (web/content/site.ts, web/content/services or the `services` export in
+  site.ts): "@id" = site.url + "/#organization"; address {"@type":"PostalAddress",
+  addressLocality:"Shenzhen", addressCountry:"CN"} (city only, no street); areaServed as an array
+  that includes Shenzhen and China as Place/Country entries, keeping the US and Canada audience
+  (use "United States" and "Canada" as Country entries; the site positions Brian as helping US/
+  Canadian hardware teams); contactPoint [{"@type":"ContactPoint", contactType:"sales", email,
+  availableLanguage:"English"}]; founder gets "@type":"Person" with jobTitle only if the site copy
+  states one; hasOfferCatalog listing each service in the `services` export (name = title,
+  description = summary) as Offer/Service items, derived from the data, never hardcoded;
+  logo/image only if an existing absolute-able image asset is clearly the logo. Do NOT invent
+  sameAs links, phone numbers, ratings, prices or addresses. Extract the object so it is
+  built from content, and escape "<" as < in the serialized JSON.
+  THE WHY: so an agent asked "who can vet a factory in China?" can cite Lavigne Labs with services,
+  area served and contact. Brian said no fabricated proof, so only repo facts go in.
+  GUARDRAILS: Do not deploy or touch deploy scripts/credentials. No new dependencies. Do not
+  alter the FAQ JSON-LD, article JSON-LD, feeds, llms.txt. Visible page content must not change.
+  DONE MEANS: after `cd web && npm run export`, out/index.html holds a parseable ProfessionalService
+  with address Shenzhen, contactPoint email, areaServed including China, and an offer catalog with
+  one entry per service in site.ts.
+done_when: |
+  cd web && npm run export >/tmp/org-export.log 2>&1 && python3 - <<'PY'
+  import json,re
+  h=open('out/index.html',encoding='utf8').read()
+  blocks=[json.loads(b) for b in re.findall(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>',h,re.S)]
+  ps=[b for b in blocks if isinstance(b,dict) and b.get('@type')=='ProfessionalService']
+  assert ps
+  p=ps[0]
+  assert p['address']['addressLocality']=='Shenzhen'
+  assert p['contactPoint'][0]['email']=='hello@lavignelabs.com'
+  assert 'China' in json.dumps(p['areaServed'])
+  n=len(re.findall(r'^\s*id:\s*"',open('content/site.ts',encoding='utf8').read().split('export const services')[1].split('] as const')[0] if 'export const services' in open('content/site.ts').read() else '',re.M))
+  cat=p['hasOfferCatalog']['itemListElement']
+  assert len(cat)>=1 and all(c.get('name') for c in cat)
+  if n: assert len(cat)==n,(len(cat),n)
+  PY
+protected: [".den/**"]
+runaway: {minutes: 25}
