@@ -203,3 +203,6 @@ export const contactMail = {
 };
 
 export const mailtoHref = `mailto:${site.email}?subject=${encodeURIComponent(contactMail.subject)}&body=${encodeURIComponent(contactMail.body)}`;
+
+/** Base URL of the inquiry endpoint; every form URL is built from this. */
+export const formsEndpoint = "https://forms.hanquest.com";

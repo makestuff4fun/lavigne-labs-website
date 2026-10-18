@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
-import { InquiryFormPlaceholder } from "@/components/InquiryFormPlaceholder";
+import { InquiryForm } from "@/components/InquiryForm";
 import { site, mailtoHref } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export default function ContactPage() {
             </Button>
           </div>
 
-          <InquiryFormPlaceholder />
+          <InquiryForm />
 
           <dl className="mt-12 space-y-6">
             <ContactItem label="Email">

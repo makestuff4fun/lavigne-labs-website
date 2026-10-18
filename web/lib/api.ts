@@ -209,6 +209,7 @@ export const REGISTRY: Endpoint[] = [
         wechat: site.wechat,
         location: site.hours,
         contactPage: pageUrl("/contact"),
+        inquiryNote: "Inquiries can also be sent via the form on /contact.",
       },
     }),
   },

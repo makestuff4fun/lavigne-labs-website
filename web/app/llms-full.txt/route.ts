@@ -16,7 +16,7 @@ export function GET() {
     "",
     `Founded by ${site.founder}: ${site.name} is a Shenzhen hardware product-development team (electronics and PCB design, prototyping, and production).`,
     "",
-    `Contact: ${site.email}`,
+    `Contact: ${site.email} (inquiries can also be sent via the form on /contact)`,
     `Website: ${pageUrl()}`,
     `JSON API: ${pageUrl("/api/v1/index.json")} (OpenAPI 3.1: ${pageUrl("/openapi.json")})`,
     "",

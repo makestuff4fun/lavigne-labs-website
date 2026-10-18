@@ -26,7 +26,7 @@ export function GET() {
     "",
     `Founded by ${site.founder}, who has 13+ years in China, ran an LED factory for Black & Decker for six years and worked with two EV startups. ${philosophy.line} Best fit: funded startups and teams with a completed Kickstarter.`,
     "",
-    `Contact: ${site.email}`,
+    `Contact: ${site.email} (inquiries can also be sent via the form on /contact)`,
     "",
     `Full site as one Markdown document: [llms-full.txt](${abs("/llms-full.txt")})`,
     "",
