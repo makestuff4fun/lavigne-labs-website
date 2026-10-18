@@ -61,21 +61,30 @@ Search in Chinese, and search by process, not by product. A few terms to start w
 - **型材** (xíngcái): profiles, meaning extrusions
 - **板材** (bǎncái): sheet or plate material
 
-Add the material or a dimension and see what comes up. Combine terms too: laser cutting plus bending is often sold together. If you don't read Chinese, a translation tool is enough to get started, but check any technical term with a native speaker before you order.
+Add the material or a dimension and see what comes up. Combine terms too: laser cutting plus bending is often sold together.
+
+**From search to shortlist.** Run each term with your material, then open the shops, not just the listings. Sort out the traders from the workshops: a workshop shows machines, offcuts, a bench, real parts with burrs and tooling marks; a trader shows glossy renders and a long list of unrelated products. Open a good handful of shops, keep the few that look like they make the thing themselves, and drop the rest. Check how long the shop has been open and what the reviews actually say about repeat orders. Then do the same search in 1688 and compare what the same process costs there. If you don't read Chinese, a translation tool is enough to get started, but check any technical term with a native speaker before you order.
 
 ## Read the listing like a quote
 
-Many process listings are priced per piece, with options for material, thickness or length. Treat that as a starting point, not a final quote. Look for photos of real work rather than stock images, and for shops that show their machines, not only finished parts. Reviews help, but read them with the buyer in mind.
+Many process listings are priced per piece, with options for material, thickness or length. Treat that as a starting point, not a final quote. Look for photos of real work rather than stock images, and for shops that show their machines, not only finished parts. Check what the price includes: is the cutting file work free, is bending priced separately, is there a setup charge on small quantities, is the material grade stated or only "stainless". Vague options usually mean vague answers later. Reviews help, but read them with the buyer in mind: a review for a phone case tells you nothing about tolerance.
 
 ## Get behind the shop
 
-The shop is the front door. Taobao buyers talk to sellers through **旺旺** (Aliwangwang), the built-in chat. Message the shop, send your drawing, and ask direct questions: do you make this yourselves, what tolerance can you hold, can you quote a small batch. A friendly answer from the person at the machines is how you find out there is a real factory behind the listing, and that it will quote you a proper price.
+The shop is the front door. Taobao buyers talk to sellers through **旺旺** (Aliwangwang), the built-in chat. Message the shop, send your drawing, and ask direct questions. A first message that works is short and concrete, in Chinese: what you want made, the material, the quantity, a drawing as PDF plus the native file, and one question per line:
 
-Judge them the way you would judge any supplier. Ask to see the process, ask for photos or video of your kind of work, and don't accept "no problem" as the answer to every requirement. When it matters, go and see them. The good ones are glad to be visited.
+- Do you make this yourselves, or is it passed on to another workshop?
+- What tolerance can you hold on this feature?
+- Can you quote a small batch, and what changes at a larger one?
+- How long to make, and how will it be packed?
+
+A friendly, specific answer from the person at the machines is how you find out there is a real factory behind the listing, and that it will quote you a proper price. Slow, vague or copy-pasted replies tell you something too. When the chat gets complicated, a phone call clears up in minutes what takes a day of typing.
+
+Judge them the way you would judge any supplier. Ask for photos or video of your kind of work, and don't accept "no problem" as the answer to every requirement. When it matters, go and see them. The good ones are glad to be visited.
 
 ## Order samples cheaply
 
-If shops sell by the piece, a sample costs very little compared with a trip or a minimum order elsewhere. Order a few, measure them, test the fit, and compare. Run the same drawing through two or three shops and you learn quickly who holds tolerances and who doesn't.
+If shops sell by the piece, a sample costs very little compared with a trip or a minimum order elsewhere. Order a few, measure them, test the fit, and compare. Run the same drawing through two or three shops and you learn quickly who holds tolerances and who doesn't. Say plainly in the order note that it is a sample and what you will check. Measure on arrival, photograph the parts, and send your feedback back through the chat: how a shop reacts to "this hole is off" tells you more than the part does. Then place a second, slightly larger order with the one that handled it well. That is how a relationship starts.
 
 ## The limits
 
@@ -93,8 +102,10 @@ None of that changes the main point. It means the work is in finding the right s
 
 For prototypes, small runs and custom parts like cut and bent sheet, heatsinks, cables and displays, absolutely. For larger programs, use Taobao to discover the right kind of workshop, then build a proper supplier relationship with them.
 
-If you'd like to try this but don't read Chinese, or don't have an account that works, that is legwork Lavigne Labs can do for you: searching in Chinese, talking to the shops, and ordering samples. Get in touch at [/contact/](/contact/).
+You can do all of this yourself, and now you know how: search by process in Chinese, shortlist the workshops, ask the right questions in 旺旺, read the listing like a quote, and order samples before anything else. Be honest about the friction, though. It means working in Chinese, getting an account and payment that work, sometimes picking up the phone, and sometimes standing in the shop. The part you can't shortcut is trust. Mine took years to build, one good order at a time, and it is why a shop will fix a problem before I even notice it.
 
-The king of Taobao has now given away his best-kept trick. Use it well, and go find yourself a good deal.
+If you'd rather skip the learning curve, we can do it faster and better, because we are on the ground in China, we speak Chinese, and the relationships are already built. Tell us what you need made and we will go to the shops we already trust. Get in touch at [/contact/](/contact/).
+
+Either way, the king of Taobao has now given away his best-kept trick. Use it well, and go find yourself a good deal.
 
 — 淘宝王
