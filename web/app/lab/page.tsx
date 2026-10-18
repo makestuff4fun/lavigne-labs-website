@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/articles";
 export const metadata: Metadata = {
   title: "Lab Notes",
   description:
-    "Behind-the-scenes from the Lavigne Labs bench — side projects, experiments, and the maker habit that keeps my manufacturing instincts sharp.",
+    "Behind-the-scenes from the Lavigne Labs bench — side projects, experiments, and the maker habit that keeps our manufacturing instincts sharp.",
 };
 
 export default function LabPage() {
@@ -17,11 +17,11 @@ export default function LabPage() {
         <Container>
           <Eyebrow>Lab Notes</Eyebrow>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-            What I tinker with when nobody's paying me.
+            What we tinker with when nobody's paying us.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
-            The side projects and experiments behind the work. Half of what I
-            know about making things well, I learned messing around on the bench
+            The side projects and experiments behind the work. Half of what we
+            know about making things well, we learned messing around on the bench
             with no deadline and no client.
           </p>
         </Container>

@@ -34,7 +34,7 @@ export default function FaqPage() {
             The questions you&apos;re right to ask.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
-            How I like to work, what I bring, and straight answers about building
+            How we work together, who we work best with, and straight answers about building
             hardware in Shenzhen — no spin.
           </p>
         </Container>
@@ -47,8 +47,8 @@ export default function FaqPage() {
           <div className="mt-12 rounded-2xl border border-line bg-white p-8 text-center shadow-card">
             <p className="text-lg font-semibold">Still have a question?</p>
             <p className="mt-2 text-slate">
-              Ask me directly — I&apos;ll give you a straight answer, whether or
-              not we end up working together.
+              Ask our team directly. We&apos;ll give you a straight answer, whether
+              or not we end up working together.
             </p>
             <Button href={mailtoHref} className="mt-5">
               Ask a question <ArrowIcon />

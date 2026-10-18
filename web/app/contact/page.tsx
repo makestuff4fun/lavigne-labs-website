@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
+import { InquiryFormPlaceholder } from "@/components/InquiryFormPlaceholder";
 import { site, mailtoHref } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -19,19 +20,22 @@ export default function ContactPage() {
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-slate">
             Whether you have a question, need a second opinion on a quote, or
-            you&apos;re ready to take a prototype to production — send me a note
-            and I&apos;ll get back to you within one business day.
+            you&apos;re ready to take a prototype to production, send our team
+            a note and we&apos;ll get back to you within one business day.
+            Brian Barrett is your first contact.
           </p>
           <p className="mt-4 leading-relaxed text-slate">
             The button below opens your mail app with a short outline ready to
-            fill in. It helps to tell me what you&apos;re building, what stage
+            fill in. It helps to tell us what you&apos;re building, what stage
             it&apos;s at, how many units you need, and your timeline.
           </p>
           <div className="mt-8">
             <Button href={mailtoHref}>
-              Email me about your project <ArrowIcon />
+              Email us about your project <ArrowIcon />
             </Button>
           </div>
+
+          <InquiryFormPlaceholder />
 
           <dl className="mt-12 space-y-6">
             <ContactItem label="Email">
@@ -44,8 +48,8 @@ export default function ContactPage() {
           </dl>
 
           <p className="mt-10 max-w-sm text-sm text-slate">
-            Prefer to talk directly? Reach out on WeChat or by email anytime —
-            whatever&apos;s easiest for you.
+            Prefer to talk directly? Reach out on WeChat or by email anytime.
+            Working on something like this? Get in touch.
           </p>
         </div>
       </Container>

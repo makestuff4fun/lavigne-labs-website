@@ -47,4 +47,6 @@ Never pay 100% up front. A typical structure is a deposit to start tooling/mater
 
 ---
 
-None of this requires you to fly to China yourself — it requires *someone you trust* to be on the floor asking these questions in the local language. That's most of what I do.
+None of this requires you to fly to China yourself — it requires *someone you trust* to be on the floor asking these questions in the local language. 
+
+Working on something like this? [Get in touch](/contact/).

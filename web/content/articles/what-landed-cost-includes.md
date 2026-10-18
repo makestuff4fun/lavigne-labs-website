@@ -54,3 +54,5 @@ That's **51% on top of the quote** — and none of it is exotic. It's the normal
 If you set your retail price off the $8 number, you've already lost. Model landed cost *before* you commit to tooling, so you know your real margin and your break-even volume while you can still change the design, the materials, or the supplier.
 
 The teams that get burned aren't the ones who paid too much for the product. They're the ones who never counted everything else.
+
+Working on something like this? [Get in touch](/contact/).

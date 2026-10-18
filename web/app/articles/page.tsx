@@ -23,7 +23,7 @@ export default function ArticlesPage() {
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
             Hard-won notes on sourcing, costing, and quality from 13+ years
-            making products in China — the things I wish every team knew before
+            making products in China — the things we wish every team knew before
             they wired their first deposit.
           </p>
         </Container>

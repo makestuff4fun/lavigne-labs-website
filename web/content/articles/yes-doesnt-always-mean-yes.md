@@ -45,3 +45,5 @@ Before a production run, get one unit made and approved that becomes *the* refer
 A lot of drift happens in the gap between your timezone going to sleep and the factory's day starting. Decisions get made on the floor without you. Having someone on the ground who can walk over, look at the actual part, and have the conversation in the local language closes that gap before it becomes a remake.
 
 That's the real job: not catching problems after they ship, but being close enough that they never ship at all.
+
+Working on something like this? [Get in touch](/contact/).
