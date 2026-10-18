@@ -151,7 +151,7 @@ npm run export   # builds out/ and lavigne-*.zip
 
 - **`npm run export` fails on the API route** — the script moves `app/api` aside
   during the static build and restores it (even on failure). If it ever leaves an
-  `_api_tmp/` folder behind, just `mv _api_tmp app/api`.
+  `_api_contact_tmp/` folder behind, just `mv _api_contact_tmp app/api/contact`.
 - **Games show blank assets after deploy** — the game bundle uses root-absolute
   paths (`/_next`, `/games`); it must be extracted at a **domain/subdomain root**,
   not inside a nested folder. See docs/DEPLOYMENT.md.

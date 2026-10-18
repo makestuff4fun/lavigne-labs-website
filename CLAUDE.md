@@ -74,9 +74,11 @@ device SFX (WT588F recordings) are wired. Full status table: **docs/CONTEXT.md**
 
 - **Two build modes.** Normal `next build` = Node-server app. `STATIC_EXPORT=1`
   (via `npm run export`) = fully static `./out` for cPanel/FTP. See `next.config.ts`.
-- **`npm run export` moves `app/api` aside** during the static build (no API in a
-  static export) and restores it. If it dies mid-run leaving `_api_tmp/`, run
-  `mv _api_tmp app/api`.
+- **`npm run export` moves `app/api/contact` aside** during the static build (the
+  Resend route can't be exported) and restores it. If it dies mid-run leaving
+  `_api_contact_tmp/`, run `mv _api_contact_tmp app/api/contact`.
+- **Static JSON API** at `/api/v1/` is built from content by `lib/api.ts`; add an
+  endpoint with one entry in its `REGISTRY` (served by `app/api/v1/[...endpoint]`).
 - **Game bundles use root-absolute paths** (`/_next`, `/games`) — must be served
   from a domain/subdomain **root**, not a nested folder, or assets 404.
 - **Static host has no API** → the contact form needs a form service or `mailto:`

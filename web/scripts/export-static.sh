@@ -12,11 +12,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# The contact API route can't be statically exported; move it aside during the
-# export and always restore it (even on failure).
-restore() { [ -d _api_tmp ] && mv _api_tmp app/api 2>/dev/null || true; }
+# The contact API route (Resend) can't be statically exported; move just it
+# aside during the export and always restore it (even on failure). The static
+# JSON API under app/api/v1 stays in place and is exported.
+restore() { [ -d _api_contact_tmp ] && mv _api_contact_tmp app/api/contact 2>/dev/null || true; }
 trap restore EXIT
-[ -d app/api ] && mv app/api _api_tmp
+[ -d app/api/contact ] && mv app/api/contact _api_contact_tmp
 
 STATIC_EXPORT=1 npx next build
 trap - EXIT; restore
