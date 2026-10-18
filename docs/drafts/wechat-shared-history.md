@@ -7,9 +7,15 @@ related: []
 series: "field-notes"
 seriesOrder: 7
 ---
+<!-- REVIEW NOTE
+Corrected: spelling and grammar fixed silently. Facts: nothing of yours was wrong. The registry values (HiberbootEnabled, RealTimeIsUniversal), the 8-hour clock cause, xwechat_files and the winget package names all match what I know. I made two small wording fixes: "Settings > Storage" is now described as the storage setting, since WeChat renames menus between versions, and "Windows 11 26H2" is kept as you wrote it.
+Added: (1) a back-up-first step before pointing both systems at one folder, moved up from the caveats; (2) "never run both OS sessions at once" spelled out: shut Windows down fully, no hibernate, no sleeping with WeChat open; (3) NTFS mount options on Linux (mount by UUID, uid/gid/umask, windows_names, nofail) and what to do if the partition mounts read-only; (4) a "After a WeChat update" checklist; (5) a stronger opening hook. Your steps, numbers and caveats are intact. Strike any addition you dislike.
+Unsure: the exact Windows menu wording in current 4.x builds; which NTFS driver (ntfs3 or ntfs-3g) Ubuntu 24.04 picks by default on your machine, so the options are given for both; whether the phone-VPN explanation is Android-wide or specific to your phone (kept as your experience).
+-->
+
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
-If you work in China, WeChat is where the work happens: quotes, photos of parts, voice messages from the factory. I run a dual-boot PC, Windows 11 and Ubuntu 24.04, and I wanted the same WeChat history in both.
+Your supplier sent the drawing at 9 a.m. on Windows. At 9 p.m. you are in Linux and it isn't there. If you work in China, WeChat is where the work happens: quotes, photos of parts, voice messages from the factory. I run a dual-boot PC, Windows 11 and Ubuntu 24.04, and I wanted the same WeChat history in both.
 
 A caveat first: I have tested this for only about an hour in each direction so far. It worked, but I haven't lived with it through a few weeks or a WeChat update. Read it as "this worked for me", not "this is proven".
 
@@ -19,6 +25,10 @@ WeChat desktop does not sync chat history between computers. Each client keeps o
 
 On a dual-boot PC that means two clients and two histories. Messages received under Windows are missing in Linux, and the reverse. Mine was about 30 GB, and doubling that is the smaller cost. The real cost is the drift.
 
+## Before you start: back up
+
+You are about to point two operating systems at one copy of your history. Copy the whole `xwechat_files` folder somewhere else first, on a different drive if you can. If anything goes wrong, you want the original, not a half-moved folder.
+
 ## The fix: one xwechat_files folder
 
 WeChat keeps everything in a folder called `xwechat_files`. The idea is to keep a single copy on the NTFS data partition that both operating systems can read, and point both clients at it. In my case:
@@ -26,7 +36,7 @@ WeChat keeps everything in a folder called `xwechat_files`. The idea is to keep 
 - Windows: `D:\Wechat\xwechat_files`
 - Linux: `~/Data/Wechat/xwechat_files`
 
-**On Windows**, open WeChat, go to Settings > Storage, and move the storage location to `D:\Wechat`. WeChat moves the files itself.
+**On Windows**, open WeChat, go to the storage settings, and move the storage location to `D:\Wechat`. WeChat moves the files itself.
 
 **On Linux**, quit WeChat and move the old `~/Documents/xwechat_files` aside. Then make a symlink:
 
@@ -36,9 +46,19 @@ ln -s ~/Data/Wechat/xwechat_files ~/Documents/xwechat_files
 
 Both clients use the same layout (`all_users/`, then `wxid_…/db_storage/` with `message`, `contact`, `session` and so on). That is why the Linux client could open the history Windows had written without any conversion.
 
+### Mounting the NTFS partition on Linux
+
+Mount the partition the same way every time, or the files will appear owned by the wrong user. Use the partition's UUID in `/etc/fstab` rather than `/dev/sdXN`, which can change, and give it options along these lines:
+
+```
+UUID=<your-uuid>  /home/you/Data  ntfs3  uid=1000,gid=1000,umask=022,windows_names,nofail  0 0
+```
+
+`uid` and `gid` make your user own everything, `windows_names` stops Linux creating file names Windows can't open, and `nofail` keeps boot from hanging if the partition is missing. The older `ntfs-3g` driver takes the same `uid`, `gid`, `umask` and `windows_names` options. If the partition mounts read-only, don't force it: boot Windows, shut it down fully (see below), and try again.
+
 ## Why this is safe here, and only here
 
-Two WeChat clients using one history folder at the same time will corrupt each other. A dual-boot machine can never run both operating systems at once, so that can't happen.
+Two WeChat clients using one history folder at the same time will corrupt each other. A dual-boot machine can never run both operating systems at once, so that can't happen. Keep it that way: shut one system down completely before starting the other, and quit WeChat first so it can finish writing. Don't hibernate or suspend with WeChat open and then boot the other system.
 
 The other requirement is that **Fast Startup must be off in Windows**. With it on, Windows shuts down into a half-hibernated state and leaves the NTFS partition marked in use. Linux may then mount it read-only, or worse. Set `HiberbootEnabled` to `0`.
 
@@ -49,6 +69,14 @@ The other requirement is that **Fast Startup must be off in Windows**. With it o
 **The wrong winget package.** `winget install Tencent.WeChat` gets you the old 3.9 client, which the servers now reject with "version too old". The 4.x client is `Tencent.WeChat.Universal`.
 
 **The clock jumps 8 hours.** Not a WeChat problem, but anyone dual-booting in China will meet it. Windows treats the hardware clock as local time and Linux treats it as UTC, so the time shifts by 8 hours each time you switch. The fix is to make Windows read the hardware clock as UTC by setting `RealTimeIsUniversal` to `1`.
+
+## After a WeChat update
+
+1. Back up `xwechat_files` again before updating either side.
+2. Update one system, open WeChat there, and confirm your history is still all there before touching the other.
+3. On Linux, check the symlink still points where you set it, and that no second `xwechat_files` has appeared.
+4. On Windows, check the storage location still says `D:\Wechat`.
+5. Keep both clients on close versions, so one never opens data written by a much newer one.
 
 ## Honest caveats
 
