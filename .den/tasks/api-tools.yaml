@@ -1,0 +1,56 @@
+do: |
+  THE JOB: Add machine-readable specs for the site's tools. Create web/content/toolSpecs.ts: one spec
+  per slug in web/content/tools.ts (7 tools: 6 fastener pages in web/public/tools/fasteners/*.html,
+  and the PCB suite web/public/tools/pcb/pcb-calculator.html, which holds ten calculators; give pcb
+  a `calculators` array, one spec each). READ each HTML file's JavaScript and tables to extract the
+  real behaviour; do not guess. A spec has: id (= slug), title, kind, url (via pageUrl()), summary,
+  inputs [{name, label, unit, type, min, max, options, default}], outputs [{name, label, unit}],
+  formula (plain text or LaTeX-free math as the page computes it, with constants and source
+  standard if the page cites one), assumptions/limits (e.g. safety factors, material grades), and
+  one or two worked `examples` [{inputs, outputs}] whose outputs you computed by running the page's
+  own formula (e.g. with node on the extracted function), not by hand. For the two fastener
+  reference sheets (data tables, not calculators), put the table data in `data` instead of
+  inputs/outputs. Then register in web/lib/api.ts REGISTRY: tools.json (listing id, title, kind,
+  summary, jsonUrl, pageUrl) and tools/<id>.json per tool (full spec), the latter unlisted like
+  per-article files.
+  THE WHY: Brian (2026-10-18): "tools.json plus tools/<id>.json: each calculator's inputs (units,
+  ranges), outputs and formula, so an agent can compute without the page." Phase 1 is static only;
+  an agent reads the spec and computes itself.
+  GUARDRAILS: Do not deploy. Do not edit the calculator HTML. Do not invent ranges or formulas not
+  in the pages; if a value cannot be determined, omit it and say so in a `notes` field. Keep
+  existing endpoints unchanged. Add a one-line mention in docs/CONTENT.md of where specs live.
+  DONE MEANS: after `cd web && npm run export`, out/api/v1/tools.json lists all seven slugs from
+  content/tools.ts, each out/api/v1/tools/<slug>.json parses with inputs+outputs+formula (or data
+  for reference sheets) and all worked-example numbers are finite; index.json lists tools.json.
+done_when: |
+  cd web && npm run export >/tmp/api-tools-export.log 2>&1 && python3 - <<'PY'
+  import json,re,math
+  src=open('content/tools.ts',encoding='utf8').read()
+  slugs=re.findall(r'slug:\s*"([^"]+)"',src)
+  assert len(slugs)==7,slugs
+  lst=json.load(open('out/api/v1/tools.json',encoding='utf8'))
+  ids=[t['id'] for t in lst['tools']]
+  assert sorted(ids)==sorted(slugs),(ids,slugs)
+  def finite(o):
+      if isinstance(o,float): assert math.isfinite(o)
+      elif isinstance(o,dict): [finite(v) for v in o.values()]
+      elif isinstance(o,list): [finite(v) for v in o]
+  for s in slugs:
+      t=json.load(open(f'out/api/v1/tools/{s}.json',encoding='utf8'))
+      assert t.get('title') and t.get('summary'),s
+      finite(t)
+      if s=='pcb':
+          cs=t['calculators']; assert len(cs)>=10,len(cs)
+          for c in cs:
+              assert c['inputs'] and c['outputs'] and c['formula'],c.get('id')
+      elif s.startswith('fastener-sheet'):
+          assert t.get('data'),s
+      else:
+          assert t['inputs'] and t['outputs'] and t['formula'],s
+          assert t['examples'],s
+          for i in t['inputs']: assert i.get('name') and i.get('unit') is not None,(s,i)
+  idx=json.load(open('out/api/v1/index.json',encoding='utf8'))
+  assert any(e['path'].endswith('/tools.json') for e in idx['endpoints'])
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
