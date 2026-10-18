@@ -1,0 +1,48 @@
+do: |
+  THE JOB: Add two build-time outputs. (1) /api/v1/search-index.json: add one entry to REGISTRY in
+  web/lib/api.ts. It lists one record per searchable page: every article (full Markdown-stripped
+  plain text in `text`, plus slug, title, url, type "article", tag, excerpt), every FAQ entry
+  (type "faq", question as title, answer as text), every service (type "service"), and every
+  portfolio project (type "project"). Each record has a stable `id`, `type`, `title`, `url` (use the
+  pageUrl() helper from content/site.ts so URLs carry the trailing slash), and `text`.
+  Include the page-level records for home/work/contact only if cheap. (2) /llms-full.txt: a Next
+  route like app/llms.txt (copy its approach, force-static) that emits the whole site as one
+  Markdown document: site summary, then every article in full, every FAQ, services, engagement
+  models. Link llms-full.txt from llms.txt.
+  THE WHY: Brian (2026-10-18): "make the site fully AI searchable, json backend etc." The index
+  lets an agent or the coming search page search client-side; llms-full.txt lets an agent ingest
+  everything in one fetch. Generated from content so it cannot drift.
+  GUARDRAILS: Do not deploy. Do not add a server or runtime route. Do not change existing
+  endpoints' shapes. Read web/node_modules/next/dist/docs/ before writing route code (Next 16).
+  DONE MEANS: after `cd web && npm run export`, out/api/v1/search-index.json parses and contains a
+  record for every article slug, every FAQ, every service and project; out/api/v1/index.json
+  lists it; out/llms-full.txt contains every article title and body text and is linked from
+  out/llms.txt.
+done_when: |
+  cd web && npm run export >/tmp/api-search-export.log 2>&1 && python3 - <<'PY'
+  import json,glob,os,re
+  s=json.load(open('out/api/v1/search-index.json',encoding='utf8'))
+  recs=s.get('records') or s.get('index')
+  assert recs and len(recs)>5
+  for r in recs:
+      for k in ('id','type','title','url','text'): assert r.get(k),(k,r)
+  slugs=[os.path.basename(p)[:-3] for p in glob.glob('content/articles/*.md')]
+  assert slugs
+  for sl in slugs:
+      hit=[r for r in recs if r['type']=='article' and sl in r['url']]
+      assert hit,sl
+      assert len(hit[0]['text'])>500,sl
+      assert hit[0]['url'].endswith('/'),hit[0]['url']
+  types={r['type'] for r in recs}
+  assert {'article','faq','service','project'}<=types,types
+  idx=json.load(open('out/api/v1/index.json',encoding='utf8'))
+  assert any('search-index.json' in e['path'] for e in idx['endpoints'])
+  full=open('out/llms-full.txt',encoding='utf8').read()
+  for sl in slugs:
+      raw=open(f'content/articles/{sl}.md',encoding='utf8').read()
+      title=re.search(r'(?m)^title:\s*["\']?(.+?)["\']?\s*$',raw).group(1)
+      assert title in full,title
+  assert 'llms-full.txt' in open('out/llms.txt',encoding='utf8').read()
+  PY
+protected: [".den/**"]
+runaway: {minutes: 20}
