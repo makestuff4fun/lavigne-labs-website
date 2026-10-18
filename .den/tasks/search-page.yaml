@@ -1,0 +1,31 @@
+do: |
+  THE JOB: Add a site search page at /search (web/app/search/page.tsx plus a small client component
+  in web/components/). It fetches /api/v1/search-index.json once in the browser, searches it
+  client-side (case-insensitive, all query words must match title or text; rank title hits first),
+  and lists results with type label, title linking to the record's url, and a short snippet around
+  the match. Support ?q= in the URL (read on load, update on submit) so results are linkable.
+  Add "Search" to the header nav in content/site.ts and "/search" to app/sitemap.ts. Add
+  metadata (title, description). Style with the existing Container/Eyebrow components and Tailwind
+  classes used by app/faq/page.tsx. No new dependencies. Also add a plain <noscript> note pointing
+  to /api/v1/search-index.json and /llms-full.txt.
+  THE WHY: Brian (2026-10-18): "Add a site search page that uses search-index.json." The site is a
+  static export, so search must run in the browser against the generated index.
+  GUARDRAILS: Do not deploy. No server route, no external search service. Do not change the
+  search-index shape. Read web/node_modules/next/dist/docs/ for Next 16 client component and
+  useSearchParams rules (static export needs a Suspense boundary). Keep existing pages working.
+  DONE MEANS: after `cd web && npm run export`, out/search/index.html exists, contains the search
+  form, fetches /api/v1/search-index.json, the header nav links to /search, and the sitemap lists
+  it.
+done_when: |
+  cd web && npm run export >/tmp/search-page-export.log 2>&1 && python3 - <<'PY'
+  h=open('out/search/index.html',encoding='utf8').read()
+  assert '<input' in h and 'search' in h.lower()
+  # the client bundle must reference the index
+  import glob
+  js=''.join(open(p,encoding='utf8',errors='ignore').read() for p in glob.glob('out/_next/static/**/*.js',recursive=True))
+  assert 'search-index.json' in js,'client does not fetch the index'
+  assert 'href="/search' in open('out/index.html',encoding='utf8').read(),'nav link missing'
+  assert '/search' in open('out/sitemap.xml',encoding='utf8').read(),'not in sitemap'
+  PY
+protected: [".den/**"]
+runaway: {minutes: 20}
