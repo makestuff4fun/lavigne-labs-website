@@ -4,6 +4,7 @@ import path from "node:path";
 import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
+import { toolSpecs } from "@/content/toolSpecs";
 import { getAllArticles, getArticle, getArticleSlugs } from "@/lib/articles";
 
 export const API_BASE = "/api/v1";
@@ -154,6 +155,31 @@ export const REGISTRY: Endpoint[] = [
       },
     }),
   },
+  {
+    path: "tools.json",
+    name: "tools",
+    description: "Machine-readable specs for the site's calculators and reference sheets: listing with links to tools/<id>.json (inputs with units and ranges, outputs, formula, worked examples).",
+    build: () => ({
+      tools: toolSpecs.map((t) => ({
+        id: t.id,
+        title: t.title,
+        kind: t.kind,
+        summary: t.summary,
+        jsonUrl: url(`tools/${t.id}.json`),
+        pageUrl: t.url,
+      })),
+    }),
+  },
+  // Per-tool specs: served at tools/<id>.json, not listed individually.
+  ...toolSpecs.map(
+    (spec): Endpoint => ({
+      path: `tools/${spec.id}.json`,
+      name: `tool:${spec.id}`,
+      description: `Spec for tool ${spec.id}`,
+      listed: false,
+      build: () => ({ ...spec, jsonUrl: url(`tools/${spec.id}.json`) }),
+    }),
+  ),
   // Per-article files: served at articles/<slug>.json, not listed individually.
   ...getArticleSlugs().map(
     (slug): Endpoint => ({

@@ -114,6 +114,8 @@ Lists the tool/calculator pages (the interactive UI is in
 Adding a *new* calculator needs a component too — see `components/tools/` and
 `app/tools/[slug]/page.tsx` (a code change). Editing titles/blurbs is data-only.
 
+Machine-readable specs for every tool (inputs, outputs, formula, worked examples; served at `/api/v1/tools.json` and `/api/v1/tools/<id>.json`) live in `content/toolSpecs.ts`, which is generated from the calculator pages by `node scripts/gen-tool-specs.cjs` — re-run it after changing a page or adding a tool.
+
 ## FAQ — `content/faq.ts`
 
 ```ts
