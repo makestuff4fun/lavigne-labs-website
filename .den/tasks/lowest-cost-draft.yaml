@@ -1,0 +1,41 @@
+do: |
+  THE JOB: Write a DRAFT article saved at docs/drafts/lowest-cost-manufacturing-china.md (NOT in
+  web/content/articles/, so it cannot ship). Read all three existing articles in web/content/articles/ first
+  (vetting-a-factory.md, what-landed-cost-includes.md, yes-doesnt-always-mean-yes.md) and match their voice (first
+  person, Brian, practical, plain headings, no hype) and gray-matter frontmatter: title, date "2026-10-18",
+  tag "Sourcing", excerpt. Put an HTML comment right after the frontmatter:
+  <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->. Length 1,000-1,800 words.
+  Name and state "Brian's Law" exactly as: "If the factory can deal with you in English, you can find a lower price."
+  Explain why: an English-speaking sales team and trading-company layers are overhead and a sign of middlemen; the
+  real maker is often a smaller factory one or two tiers down. Cover, in sensible sections: (1) big factories
+  outsourcing to smaller subcontract factories, and how to tell it is happening; (2) small factories with few clients
+  and heavy dependence on them: the upside (price, attention, flexibility) and the risk (financial fragility, a client
+  loss can sink them, capacity squeezed when the big client calls); (3) how to find and vet them (1688, industrial
+  clusters, visiting in person, a Chinese-speaking agent or engineer, which is what Lavigne Labs does); (4) when NOT to
+  chase the lowest price; (5) a short checklist. Close with a soft call to action pointing to the contact page
+  (/contact/) of Lavigne Labs.
+  THE WHY: Brian (2026-10-18), verbatim: "write an article on lowest cost manufacturing in china. Explain how big
+  factories might outsource to smaller factories. smaller factories might have only a few clients and heavily
+  dependant on them. Brian's Law, if the factory can deal with you in English, you can find a lower price." Wording he
+  has not seen must not go out unread, so this is a draft for him to read, same as the WeChat draft.
+  GUARDRAILS: No invented statistics, percentages, prices, or named factories or people; hedge anything you cannot
+  source ("in my experience", "often", "can"). Brian's Law is a rule of thumb, say so honestly (exceptions exist).
+  Do not add it to web/content/articles/ or any route, feed, sitemap or llms.txt. Touch nothing else. Do not deploy.
+  DONE MEANS: docs/drafts/lowest-cost-manufacturing-china.md exists with valid frontmatter, the exact Law sentence,
+  all five topics, the draft comment, and nothing was added under web/.
+done_when: |
+  python3 - <<'PY'
+  import os
+  t=open('docs/drafts/lowest-cost-manufacturing-china.md',encoding='utf8').read()
+  assert t.startswith('---\n')
+  fm=t.split('---')[1]
+  for k in ('title:','date:','tag:','excerpt:'): assert k in fm,k
+  assert 'tag: "Sourcing"' in fm
+  assert "If the factory can deal with you in English, you can find a lower price." in t
+  assert 'DRAFT' in t and '1688' in t and '/contact' in t
+  body=t.split('---',2)[2]
+  assert 1000<=len(body.split())<=1800,len(body.split())
+  assert not os.path.exists('web/content/articles/lowest-cost-manufacturing-china.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
