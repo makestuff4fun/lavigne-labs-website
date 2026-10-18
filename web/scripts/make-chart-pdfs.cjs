@@ -33,7 +33,7 @@ const server = http.createServer((req, res) => {
   if (p.endsWith(".html") && u.searchParams.has("size")) {
     const z = u.searchParams.get("zoom") || "1";
     const css = `<style>@page{size:${u.searchParams.get("size")};margin:11mm}` +
-      `@media print{.chart-sheet{zoom:${z}}.chart-cols.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-cols.c4{grid-template-columns:repeat(4,minmax(0,1fr))}.chart-sheet{padding:0}.chart-head h1{font-size:2rem}}</style><title>${u.searchParams.get("title")}</title>`;
+      `@media print{.chart-sheet{zoom:${z}}.chart-cols.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-cols.c4{grid-template-columns:repeat(4,minmax(0,1fr))}.chart-sheet{padding:0}.chart-table td:first-child,.chart-table th:first-child{white-space:nowrap}.chart-head h1{font-size:2rem}}</style><title>${u.searchParams.get("title")}</title>`;
     body = Buffer.from(body.toString("utf8").replace(/<title>.*?<\/title>/, "").replace("</head>", css + "</head>"));
   }
   res.writeHead(200, { "content-type": type }).end(body);
