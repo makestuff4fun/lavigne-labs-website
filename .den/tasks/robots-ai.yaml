@@ -1,0 +1,36 @@
+do: |
+  THE JOB: Edit web/app/robots.ts so robots.txt explicitly allows the named AI crawlers, keeps the
+  general "*" allow rule, and keeps the sitemap line. Named user agents (each with allow "/"):
+  GPTBot, OAI-SearchBot, ClaudeBot, Claude-SearchBot, PerplexityBot, Google-Extended, CCBot,
+  Applebot-Extended. Use the Next 16 MetadataRoute.Robots rules array form (check
+  web/node_modules/next/dist/docs/ for how multiple userAgent rules render; userAgent may accept
+  an array). Keep `dynamic = "force-static"`. Also add one comment-free, valid output: the generated
+  out/robots.txt must still contain `Sitemap: https://lavignelabs.com/sitemap.xml`.
+  THE WHY: Brian (2026-10-18) decided: allow and explicitly name the AI crawlers, keep the sitemap
+  linked. Naming them documents intent; allow-all already let them in.
+  GUARDRAILS: Do not deploy. Do not disallow anything. Touch only robots.ts (and docs if a doc
+  describes robots). Do not touch the API files or other routes.
+  DONE MEANS: after `cd web && npm run export`, out/robots.txt has an Allow: / rule for each of
+  the eight named crawlers, the wildcard rule, and the sitemap line, with no Disallow.
+done_when: |
+  cd web && npm run export >/tmp/robots-export.log 2>&1 && python3 - <<'PY'
+  import re
+  t=open('out/robots.txt',encoding='utf8').read()
+  assert 'Sitemap: https://lavignelabs.com/sitemap.xml' in t
+  assert not re.search(r'(?im)^disallow:\s*\S',t),'has disallow'
+  groups=re.split(r'\n\s*\n',t.strip())
+  allowed=set()
+  star=False
+  for g in groups:
+      uas=re.findall(r'(?im)^user-agent:\s*(\S+)',g)
+      if re.search(r'(?im)^allow:\s*/\s*$',g):
+          for u in uas:
+              allowed.add(u)
+              if u=='*': star=True
+  need=['GPTBot','OAI-SearchBot','ClaudeBot','Claude-SearchBot','PerplexityBot','Google-Extended','CCBot','Applebot-Extended']
+  missing=[n for n in need if n not in allowed]
+  assert not missing,missing
+  assert star
+  PY
+protected: [".den/**"]
+runaway: {minutes: 15}
