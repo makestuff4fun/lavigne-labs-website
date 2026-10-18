@@ -5,6 +5,15 @@ tag: "Working in China"
 excerpt: "Most manufacturing disasters I've seen weren't technical — they were communication failures. After 13 years here, this is how I keep 'yes' from becoming a $40,000 surprise."
 series: "field-notes"
 seriesOrder: 2
+faq:
+  - q: "What does \"yes\" mean in a factory conversation?"
+    a: "In a lot of factory conversations, \"yes\" doesn't mean \"I agree and I will do that.\" It can mean \"I understand the words you said,\" or \"I don't want to lose face by saying no,\" or \"we'll figure it out later.\""
+  - q: "How do I avoid misunderstandings with a factory?"
+    a: "The fix is to stop asking yes/no questions. You're replacing a comfortable \"yes\" with evidence."
+  - q: "How should I specify requirements to a factory?"
+    a: "Adjectives don't survive translation. If a requirement can't be inspected, it isn't a requirement — it's a wish."
+  - q: "What is a golden sample?"
+    a: "Before a production run, get one unit made and approved that becomes the reference."
 ---
 
 The hardest part of manufacturing in China usually isn't the manufacturing. It's making sure that what you *think* you agreed to is what the factory *thinks* you agreed to. Those two things drift apart more easily than you'd believe, and by the time the gap shows up, it's sitting in a shipping container.

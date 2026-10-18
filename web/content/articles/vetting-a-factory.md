@@ -6,6 +6,15 @@ excerpt: "A supplier's quote tells you almost nothing about whether they can act
 related: ["custom-dog-leashes"]
 series: "field-notes"
 seriesOrder: 1
+faq:
+  - q: "How do I check that a factory really makes the product itself?"
+    a: "Ask to see the production line that makes your kind of product. If they can't show you the machines doing the actual process your part needs, treat the quote as a reseller's markup, not a factory's cost."
+  - q: "How should I pay a factory?"
+    a: "Never pay 100% up front. A typical structure is a deposit to start tooling/materials and the balance against inspection before shipment — so your last payment is leverage to fix problems."
+  - q: "What should I look for when walking a factory floor?"
+    a: "Is the place organized or chaotic? Is there any incoming-inspection or QC station, or do parts go straight from delivery to assembly? Are workers using fixtures and gauges, or eyeballing it?"
+  - q: "How do I test whether a factory can hold my tolerances?"
+    a: "Bring a drawing with your real tolerances and watch the room. The good ones push back on the hard dimensions and tell you what it'll cost to hold them."
 ---
 
 The single most expensive mistake I see hardware teams make is wiring a deposit to a factory they've only met over email. The quote looks great, the photos look great, and three months later the parts don't fit, the finish is wrong, and the "factory" turns out to be a trading company that subcontracted your job to someone you've never heard of.

@@ -8,6 +8,17 @@ series: "field-notes"
 seriesOrder: 4
 hero: "/work/article-machine-shop.jpg"
 heroAlt: "A small machine shop in China with a manual lathe and milling equipment on a crowded floor."
+faq:
+  - q: "Why does a factory that speaks English cost more?"
+    a: "That is a sales team, and a sales team is overhead. Somebody pays for it, and it's the buyer, built into the price."
+  - q: "How do I tell a factory from a trading company?"
+    a: "Ask for the 营业执照 (business licence) and read the registered business scope: 生产 (production) points to a maker, 贸易 or 销售 (trade, sales) to a trading company. Treat it as a clue, not proof, since some traders list production and many real factories also list sales."
+  - q: "Do big factories outsource work?"
+    a: "Even when you've found a real factory with real machines, your order may not be made there. Larger factories often subcontract work to smaller shops."
+  - q: "Where should I look for the lowest-cost makers?"
+    a: "Go to the cluster. Most product types concentrate in a few towns, with moulds, plating, packaging and materials within a short drive."
+  - q: "When should I not chase the lowest price?"
+    a: "The cheapest quote is not always the lowest cost. The volumes are small. Savings per unit may not justify the extra travel, vetting, and management time. Your timeline is tight. Finding and qualifying a new shop takes time."
 ---
 
 Picture two quotes for the same part. One comes back in an hour, in perfect English, with a tidy PDF. The other comes back a day later, in short Chinese messages, and is noticeably lower. The second is usually the one closer to the machines. When a client asks me how to get the lowest price out of China, I start with a rule I've come to rely on. I call it Brian's Law:

@@ -8,6 +8,32 @@ series: "field-notes"
 seriesOrder: 9
 hero: "/work/article-hex-pucks.jpg"
 heroAlt: "Six hexagonal LED puck lights glowing in different colours, each a small molded plastic housing."
+faq:
+  - q: "How long should a cantilever snap-fit beam be?"
+    a: "Our rule of thumb is a length of about 5 to 10 times the root thickness. Much shorter, and the beam is stiff."
+  - q: "Why do cantilever snap fits break at the root, and what radius helps?"
+    a: "The root is the most common failure point. A sharp inside corner there concentrates stress and the beam snaps off at the wall. Give the root a radius of about half the beam thickness."
+  - q: "Can I use glass-filled resin for a snap fit?"
+    a: "Glass-filled grades tolerate far less, often only 1 to 2%, because the fibres make the material stiff and brittle."
+  - q: "How can a snap-fit hook be molded without a slide or lifter?"
+    a: "The classic trick: cut a window (a pass-through) in the wall or base beneath the hook. A steel core comes up through that window and shapes the underside of the hook, then pulls straight out. No slide."
+  - q: "What retention angle should a snap-fit hook have?"
+    a: "Retention angle: about 90 degrees for a permanent snap that will not come apart, and about 30 to 45 degrees for one that releases when pulled or pushed."
+howto:
+  name: "How to design a cantilever snap fit"
+  steps:
+    - name: "Beam length versus thickness"
+      text: "Our rule of thumb is a length of about 5 to 10 times the root thickness."
+    - name: "Taper the beam"
+      text: "Make the beam thinner towards the tip, to about half the root thickness."
+    - name: "Hook depth, and what the material allows"
+      text: "Each plastic has an allowable strain, which is the stretch it tolerates at the root without damage."
+    - name: "The root radius"
+      text: "Give the root a radius of about half the beam thickness."
+    - name: "Angles, width and force"
+      text: "Insertion angle (lead-in): about 25 to 35 degrees from the direction of travel for easy assembly."
+    - name: "Hook direction and moldability"
+      text: "Face the hook along the pull direction. A hook that points the way the mold opens, or toward the parting line, can often be formed by the two halves of the mold alone."
 ---
 
 Cantilever snap fits are one of our favourite features to design. A bit of plastic bends out of the way, clicks home, and two parts are held together with no screw, no glue and no extra line item on the bill of materials. Done well, it feels wonderful in the hand. Done badly, it snaps off on the second assembly.

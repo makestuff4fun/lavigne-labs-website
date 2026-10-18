@@ -4,6 +4,15 @@ date: "2026-06-09"
 tag: "Costing"
 excerpt: "The factory quote is the number everyone fixates on — and it's often barely half of what a unit really costs to land on your dock. Here are the line items teams forget."
 related: ["mechanical-keyboard", "hex-puck-lights"]
+faq:
+  - q: "Is the factory quote the real unit cost?"
+    a: "Ex-works at the factory gate is a very different number than landed in a warehouse in Ohio, and the gap between them is where margins quietly disappear."
+  - q: "What gets added on top of a factory quote?"
+    a: "Sea is cheap per unit but slow; air is fast and can cost more than the product. Your HTS classification sets the rate, and for China-origin goods into the US there may be additional tariffs on top. A third-party inspection per run is cheap insurance; bake it in."
+  - q: "How much can landed cost exceed the factory price?"
+    a: "Say the factory quote is $8.00 FOB. That's 51% on top of the quote — and none of it is exotic."
+  - q: "When should I model landed cost?"
+    a: "Model landed cost before you commit to tooling, so you know your real margin and your break-even volume while you can still change the design, the materials, or the supplier."
 ---
 
 When a founder tells me their unit cost is "$8," I always ask the same question: *eight dollars where?* Ex-works at the factory gate is a very different number than landed in a warehouse in Ohio, and the gap between them is where margins quietly disappear.

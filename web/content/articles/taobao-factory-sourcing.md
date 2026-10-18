@@ -9,6 +9,17 @@ series: "field-notes"
 seriesOrder: 5
 hero: "/work/article-parcels.jpg"
 heroAlt: "Cardboard parcels and foam-wrapped parts stacked on a workshop table and floor, with a Chinese-labelled box beside them."
+faq:
+  - q: "Is Taobao a serious place to find suppliers?"
+    a: "So when people ask whether Taobao is a serious place to find suppliers, I don't hedge. It is."
+  - q: "What can you source on Taobao?"
+    a: "I use it to buy laser-cut and bent parts, custom cables and custom LCDs, straight from the people who make them."
+  - q: "How do I search for suppliers on Taobao?"
+    a: "Search in Chinese, and search by process, not by product."
+  - q: "How should I order samples from small shops?"
+    a: "If shops sell by the piece, a sample costs very little compared with a trip or a minimum order elsewhere. Order a few, measure them, test the fit, and compare."
+  - q: "How do foreign buyers pay on Taobao?"
+    a: "Taobao pays through Alipay. If that does not work for you, a trusted payer in China can place and pay for the order. Either way, pay through the platform, not by sending money to a stranger."
 ---
 
 Most people think Taobao is where you buy a phone case. I use it to buy laser-cut and bent parts, custom cables and custom LCDs, straight from the people who make them. Around here they call me 淘宝王, the king of Taobao. It started as an inside joke, and it stuck, because it is more or less true: I can find almost anything on Taobao, and I can usually get a good deal on it. Today the king is sharing one of his best-kept tricks.

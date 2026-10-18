@@ -71,6 +71,16 @@ function searchRecords(): SearchRecord[] {
       ...(a.author ? { author: a.author } : {}),
       text: stripMarkdown(articleBody(a.slug)),
     })),
+    ...getAllArticles().flatMap((a) =>
+      (a.faq ?? []).map((f, i) => ({
+        id: `article-faq:${a.slug}:${i + 1}`,
+        type: "faq",
+        title: f.q,
+        url: pageUrl(`/articles/${a.slug}#quick-answers`),
+        article: a.slug,
+        text: f.a,
+      })),
+    ),
     ...faqs.map((f, i) => ({
       id: `faq:${i + 1}`,
       type: "faq",

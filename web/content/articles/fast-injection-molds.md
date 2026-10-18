@@ -8,6 +8,17 @@ series: "field-notes"
 seriesOrder: 6
 hero: "/work/article-hex-pucks.jpg"
 heroAlt: "Six hexagonal LED puck lights glowing in red, orange, yellow, green, blue and purple on a black background."
+faq:
+  - q: "How fast can an injection mold be made in China?"
+    a: "Your first shots could be in your hands in 10 days, not 45. If you know what you are doing, you can get 5,000 parts in 14 days."
+  - q: "How much does a fast injection mold cost?"
+    a: "A small fast mold costs about $2-3k. A regular small mold costs about $5-10k."
+  - q: "What is the catch with a 10-day mold?"
+    a: "The downside is simple, and it follows directly from the speed. You get one shot. The usual revision loop does not exist here, because there is no time for it."
+  - q: "What do I need to give the toolmaker for a fast mold?"
+    a: "Send the toolmaker every part your housing has to fit around, not just drawings of them. The exact screws, inserts and fasteners you plan to use."
+  - q: "How long does a fast mold last?"
+    a: "A fast mold is not built for ever. Somewhere around 20,000 pieces you may start to see more flash than you did at the beginning"
 ---
 
 Your first shots could be in your hands in 10 days, not 45. Ask almost any shop how long injection tooling takes and you will hear the same story. It is a story worth knowing, because it is mostly true for the way most shops work. It is just not the only way to do it.

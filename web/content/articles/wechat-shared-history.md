@@ -8,6 +8,32 @@ series: "field-notes"
 seriesOrder: 7
 hero: "/work/article-laptop.jpg"
 heroAlt: "A glossy gold and blue laptop on a pale background, standing in for the PC that runs both Windows and Linux."
+faq:
+  - q: "Does WeChat desktop sync chat history between computers?"
+    a: "WeChat desktop does not sync chat history between computers. Each client keeps only what arrives while it is running, plus whatever a phone-to-PC migration sends it."
+  - q: "How can a dual-boot PC share one WeChat history?"
+    a: "WeChat keeps everything in a folder called xwechat_files. The idea is to keep a single copy on the NTFS data partition that both operating systems can read, and point both clients at it."
+  - q: "Is it safe for Windows and Linux to share one WeChat history folder?"
+    a: "Two WeChat clients using one history folder at the same time will corrupt each other. A dual-boot machine can never run both operating systems at once, so that can't happen."
+  - q: "What must be turned off in Windows for a shared NTFS partition?"
+    a: "The other requirement is that Fast Startup must be off in Windows. With it on, Windows shuts down into a half-hibernated state and leaves the NTFS partition marked in use."
+  - q: "What should I check after a WeChat update?"
+    a: "Back up xwechat_files again before updating either side. After every Linux WeChat update, check that no second xwechat_files has appeared."
+howto:
+  name: "How to share one WeChat history between Windows and Linux on a dual-boot PC"
+  steps:
+    - name: "Before you start: back up"
+      text: "Copy the whole xwechat_files folder somewhere else first, on a different drive if you can."
+    - name: "The fix: one xwechat_files folder"
+      text: "On Windows, open WeChat, go to the storage settings, and move the storage location to D:\\Wechat. WeChat moves the files itself."
+    - name: "Make a symlink on Linux"
+      text: "On Linux, quit WeChat and move the old ~/Documents/xwechat_files aside. Then make a symlink:"
+    - name: "Mounting the NTFS partition on Linux"
+      text: "Mount the partition the same way every time, or the files will appear owned by the wrong user."
+    - name: "Turn off Fast Startup in Windows"
+      text: "Set HiberbootEnabled to 0."
+    - name: "After a WeChat update"
+      text: "Update one system, open WeChat there, and confirm your history is still all there before touching the other."
 ---
 
 Your supplier sent the drawing at 9 a.m. on Windows. At 9 p.m. you are in Linux and it isn't there. If you work in China, WeChat is where the work happens: quotes, photos of parts, voice messages from the factory. I run a dual-boot PC, Windows 11 and Ubuntu 24.04, and I wanted the same WeChat history in both.

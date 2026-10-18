@@ -8,6 +8,17 @@ series: "field-notes"
 seriesOrder: 3
 hero: "/work/camera-arm.jpg"
 heroAlt: "A prototype camera arm built from machined and laser-cut parts, seen from above on a workshop floor."
+faq:
+  - q: "Why do prototype suppliers stop replying after a few revisions?"
+    a: "A mass-production factory has a limited number of engineers and a limited number of CNC programmers. Every one of them is already committed to paying production work. Factories lose money on custom prototypes, even if you paid for them."
+  - q: "Who should make my prototypes in China?"
+    a: "Find shops that specialize in prototypes. They exist across China, and prototype work is the whole business."
+  - q: "How quickly can I get a working prototype in China?"
+    a: "One shop does the CNC machining, often in 24 to 48 hours. The parts go straight to the anodizing shop, which can turn them around in about 4 hours. Add it up and you can be holding a working prototype in days, not weeks."
+  - q: "What should a prototype quote request include?"
+    a: "A prototype shop quotes from what you send, so a vague request gets a slow, padded answer or none at all. A 3D file in a standard exchange format, plus a 2D drawing, plus a one-page spec that says what the part is, what it mates with and what matters."
+  - q: "When should I go back to a factory?"
+    a: "So go back to the factory at design freeze. Once the design has stopped changing and you know what you're building, a factory can do what it's good at: repeatable, efficient, high-volume manufacturing."
 ---
 
 The prototype that goes quiet is rarely bad luck. Almost every hardware team that comes to us has the same story about their prototype. The first version came back quickly and looked decent. The second took a little longer. By the third or fourth, messages sat unanswered for days, and then they stopped getting answered at all. The product wasn't finished, and the supplier had quietly gone cold.

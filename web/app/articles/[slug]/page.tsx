@@ -95,16 +95,54 @@ export default async function ArticlePage({
       ...(article.author && article.author !== site.founder ? {} : { url: site.url }),
     },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
+    ...(series
+      ? {
+          isPartOf: {
+            "@type": "CreativeWorkSeries",
+            name: series.title,
+            url: pageUrl(`/articles/series/${series.slug}`),
+          },
+        }
+      : {}),
+  };
+  const faqLd = article.faq?.length && {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: article.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+  const howtoLd = article.howto && {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: article.howto.name,
+    url,
+    ...(article.hero ? { image: pageUrl(article.hero) } : {}),
+    step: article.howto.steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      url: `${url}`,
+    })),
   };
 
   return (
     <article className="py-14 sm:py-20">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
+      {[jsonLd, faqLd, howtoLd].map(
+        (ld, i) =>
+          ld && (
+            <script
+              key={i}
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(ld).replace(/</g, "\\u003c"),
+              }}
+            />
+          ),
+      )}
       <Container className="max-w-3xl">
         <Link
           href="/articles"
@@ -155,6 +193,22 @@ export default async function ArticlePage({
           className="article-body prose prose-slate mt-8 max-w-none prose-headings:tracking-tight prose-h2:text-2xl prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-blockquote:border-accent prose-blockquote:text-ink prose-th:text-left"
           dangerouslySetInnerHTML={{ __html: article.html }}
         />
+
+        {article.faq && article.faq.length > 0 && (
+          <section id="quick-answers" className="mt-12" aria-labelledby="quick-answers-h">
+            <h2 id="quick-answers-h" className="text-2xl font-bold tracking-tight">
+              Quick answers
+            </h2>
+            <dl className="mt-4 space-y-5">
+              {article.faq.map((f) => (
+                <div key={f.q}>
+                  <dt className="font-semibold">{f.q}</dt>
+                  <dd className="mt-1 leading-relaxed text-slate">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
 
         {series && (prev || next) && (
           <nav aria-label={`${series.title} navigation`} className="mt-12 grid gap-4 sm:grid-cols-2">

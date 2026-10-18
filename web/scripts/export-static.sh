@@ -28,6 +28,24 @@ for f in content/articles/*.md; do
   python3 -c 'import re,sys; sys.stdout.write(re.sub(r"<!--\s*REVIEW NOTE[\s\S]*?-->\s*", "", open(sys.argv[1], encoding="utf8").read()))' "$f" > "out/articles/$(basename "$f")"
 done
 
+# Every JSON-LD block in the export must parse as JSON.
+python3 - <<'PY'
+import re, json, glob, sys
+bad = 0
+n = 0
+for f in glob.glob("out/**/*.html", recursive=True):
+    for m in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', open(f, encoding="utf8").read(), re.S):
+        n += 1
+        try:
+            json.loads(m)
+        except ValueError as e:
+            bad += 1
+            print(f"INVALID JSON-LD in {f}: {e}")
+if bad:
+    sys.exit(1)
+print(f"JSON-LD: {n} blocks parse OK")
+PY
+
 # --- assemble the games-only distribution ---
 rm -rf dist-games
 mkdir -p dist-games

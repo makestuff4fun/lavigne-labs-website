@@ -20,7 +20,13 @@ export type ArticleMeta = {
   /** Hero image path (under /images/articles/ or /work/) and its alt text. */
   hero?: string;
   heroAlt?: string;
+  /** "Quick answers": questions the article answers, in the article's own words. */
+  faq?: FaqItem[];
+  /** Step list for HowTo structured data (names/text come from the article). */
+  howto?: { name: string; steps: { name: string; text: string }[] };
 };
+
+export type FaqItem = { q: string; a: string };
 
 export type Article = ArticleMeta & { html: string };
 
@@ -33,6 +39,46 @@ export function stripReviewNotes(md: string): string {
 export function getArticleBody(slug: string): string {
   const raw = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), "utf8");
   return stripReviewNotes(matter(raw).content).trim();
+}
+
+/** Plain text of markdown for comparisons: no emphasis/code/link syntax, collapsed whitespace. */
+function plain(md: string): string {
+  return md
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/(\*\*|__|\*|`)/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+/** Throws unless every sentence of `text` appears verbatim in the article body (keeps FAQ/HowTo faithful). */
+function assertInBody(slug: string, body: string, text: string, what: string) {
+  for (const s of text.split(/(?<=[.?!:])\s+/)) {
+    const frag = s.trim().replace(/[.:]$/, "");
+    if (frag && !body.includes(frag)) throw new Error(`${slug}: ${what} not found in article text: "${frag}"`);
+  }
+}
+
+function parseFaq(slug: string, data: Record<string, unknown>, body: string): FaqItem[] | undefined {
+  if (!Array.isArray(data.faq) || !data.faq.length) return undefined;
+  const items = data.faq.map((f: { q?: unknown; a?: unknown }) => {
+    if (typeof f?.q !== "string" || typeof f?.a !== "string") throw new Error(`${slug}: bad faq entry`);
+    assertInBody(slug, body, f.a, "FAQ answer");
+    return { q: f.q.trim(), a: f.a.trim() };
+  });
+  return items;
+}
+
+function parseHowto(slug: string, data: Record<string, unknown>, body: string): Article["howto"] {
+  const h = data.howto as { name?: unknown; steps?: { name?: unknown; text?: unknown }[] } | undefined;
+  if (!h || typeof h.name !== "string" || !Array.isArray(h.steps) || !h.steps.length) return undefined;
+  return {
+    name: h.name,
+    steps: h.steps.map((s) => {
+      if (typeof s?.name !== "string" || typeof s?.text !== "string") throw new Error(`${slug}: bad howto step`);
+      assertInBody(slug, body, s.text, "HowTo step");
+      return { name: s.name, text: s.text };
+    }),
+  };
 }
 
 /** Pixel size of a JPEG under web/public (undefined if unreadable): lets <img> carry width/height. */
@@ -120,6 +166,12 @@ export function getArticle(slug: string): Article {
           heroAlt: typeof data.heroAlt === "string" ? data.heroAlt.trim() : data.title ?? slug,
         }
       : {}),
+    ...(() => {
+      const body = plain(content);
+      const faq = parseFaq(slug, data, body);
+      const howto = parseHowto(slug, data, body);
+      return { ...(faq ? { faq } : {}), ...(howto ? { howto } : {}) };
+    })(),
     readingTime: readingTime(content),
     html: renderMarkdown(content),
   };

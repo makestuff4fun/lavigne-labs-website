@@ -59,6 +59,8 @@ export function GET() {
       "",
       articleBody(a.slug),
       "",
+      ...(a.faq?.length ? ["#### Quick answers", "", ...a.faq.flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""])] : []),
+      ...(a.howto ? [`#### HowTo: ${a.howto.name}`, "", ...a.howto.steps.map((s, i) => `${i + 1}. ${s.name}: ${s.text}`), ""] : []),
     ]),
   ];
   return new Response(lines.join("\n"), {
