@@ -63,3 +63,7 @@ This was on an ASUS ROG Flow Z13 running Windows 11 26H2 and Ubuntu 24.04.
 - Windows then opened instantly, with the messages from the Ubuntu session already there.
 
 That is the whole evidence so far: about an hour in each direction. I'll find out over the next few weeks, and through at least one WeChat update, whether it holds up.
+
+## If you'd rather not do this alone
+
+WeChat is where China work happens, and we live in it every day. You can absolutely do all of this yourself, and the steps above are the whole recipe. But a shared history folder is the easy part. The hard part is being on the ground in China, speaking the language, and having years of trusted supplier relationships that were built in person and can't be bought. If you'd rather hand the China side to people who already have those relationships, we can do it faster and better. [Get in touch](/contact/) and tell us what you're trying to get done.
