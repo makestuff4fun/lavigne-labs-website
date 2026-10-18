@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/play",
     "/play/shiverwing",
     "/play/freezing-fortress",
+    "/api/v1/index.json",
+    "/openapi.json",
   ];
   const articleRoutes = getArticleSlugs().map((slug) => `/articles/${slug}`);
   const toolRoutes = tools.map(toolHref);

@@ -15,6 +15,7 @@ export function GET() {
     "",
     `Contact: ${site.email}`,
     `Website: ${pageUrl()}`,
+    `JSON API: ${pageUrl("/api/v1/index.json")} (OpenAPI 3.1: ${pageUrl("/openapi.json")})`,
     "",
     "## Services",
     "",

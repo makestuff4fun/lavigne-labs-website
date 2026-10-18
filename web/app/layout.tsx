@@ -51,6 +51,7 @@ export const metadata: Metadata = {
     types: {
       "application/rss+xml": `${site.url}/rss.xml`,
       "application/feed+json": `${site.url}/feed.json`,
+      "application/json": `${site.url}/api/v1/index.json`,
     },
   },
 };
@@ -65,6 +66,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="service-desc" type="application/vnd.oai.openapi+json" href="/openapi.json" />
+      </head>
       <body className="min-h-full flex flex-col bg-white text-ink">
         <Header />
         <main className="flex-1">{children}</main>

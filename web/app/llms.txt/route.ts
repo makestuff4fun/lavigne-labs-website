@@ -27,6 +27,8 @@ export function GET() {
     "",
     `Full site as one Markdown document: [llms-full.txt](${abs("/llms-full.txt")})`,
     "",
+    `JSON API: [index.json](${abs("/api/v1/index.json")}) lists every endpoint; OpenAPI 3.1 description: [openapi.json](${abs("/openapi.json")})`,
+    "",
     "## Articles",
     "",
     ...getAllArticles().map(
