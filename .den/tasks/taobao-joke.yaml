@@ -1,0 +1,42 @@
+do: |
+  THE JOB: Revise docs/drafts/taobao-factory-sourcing.md (stays a DRAFT in docs/drafts/) so 淘宝王 reads as a playful
+  nickname, not a hidden identity. Lean into it in the opening and once more near the close: the voice is the self-styled
+  "king of Taobao" who can find anything and get a good deal (use the words "king of Taobao"). Keep the byline
+  `author: "淘宝王"` and the final sign-off line "— 淘宝王" exactly. Remove the secrecy framing: drop "This is a real secret"
+  / "Don't tell anyone you heard it from me" style lines where they imply hiding who wrote it, and replace with a playful
+  equivalent that fits the nickname (e.g. a wink that the king has shared his best-kept trick). Because the identity is
+  no longer hidden, you may attribute the rule of thumb to Brian again: restore "Brian's Law" with its exact sentence
+  "If the factory can deal with you in English, you can find a lower price." (as in docs/drafts/lowest-cost-manufacturing-china.md).
+  Keep everything else: first person from experience, the plain-fact claims (roughly $1M spent on Taobao, the highest
+  customer tier, many-year relationships, visiting in person), custom LCDs as the headline, small shops happy to have
+  your business, the Chinese search terms (激光切割, 折弯, 散热器定制, 线束加工, 连接器, 旺旺), the limits section, the soft
+  /contact/ pointer. 900-1,600 words.
+  THE WHY: Brian (2026-10-18): "The 淘宝王 is really an inside joke. I'm the king of taobao around here. I can find
+  anything and get a good deal." So 淘宝王 is a nickname, not a pseudonym to protect; no need to hide that it's him.
+  GUARDRAILS: STILL no shop names, supplier names, person names (other than Brian in Brian's Law), tier names, or invented
+  prices/statistics. Do NOT move the draft into web/content/articles/; do not publish or deploy. Do not undo the
+  per-article author support in web/ (it stays; the site code needs no change here). Don't touch other drafts.
+  DONE MEANS: the draft reads as the king-of-Taobao nickname piece with no secrecy framing, still signed 淘宝王.
+done_when: |
+  python3 - <<'PY'
+  import re
+  t=open('docs/drafts/taobao-factory-sourcing.md',encoding='utf8').read()
+  fm,body=t.split('---',2)[1],t.split('---',2)[2]
+  assert 'title: "Taobao for Factory Sourcing?"' in fm and 'author: "淘宝王"' in fm and 'tag: "Sourcing"' in fm
+  assert 'DRAFT' in body
+  n=len(re.findall(r"\S+",re.sub(r'<!--.*?-->','',body,flags=re.S)))
+  assert 900<=n<=1600,n
+  assert 'king of taobao' in body.lower(),'nickname framing'
+  assert body.lower().count('king of taobao')>=2
+  assert "Brian's Law" in body and "If the factory can deal with you in English, you can find a lower price." in body
+  assert 'real secret' not in body.lower() and 'heard it from me' not in body.lower()
+  for term in ['激光切割','折弯','散热器定制','线束加工','连接器','旺旺']: assert term in body,term
+  assert 'LCD' in body and '$1M' in body and 'highest customer tier' in body
+  assert body.rstrip().endswith('— 淘宝王')
+  assert '/contact/' in body
+  import os
+  assert not os.path.exists('web/content/articles/taobao-factory-sourcing.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
+needs: [prototyping-draft]
