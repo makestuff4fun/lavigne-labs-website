@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://web.archive.org/web/20231208064150id_/https://lavignelabs.com/portfolio/whiteboard-plotter/",
+  "sourceDate": "20231208064150",
+  "text": "### Whiteboard Plotter: Combining Art and Engineering\n\n**From Concept to Creation:**\n\nAt Lavigne Labs, our passion for innovative projects led us to create a Whiteboard Plotter, inspired by draw bots and a class by Mark Rober. This project was initially conceptualized as an artistic endeavor but quickly evolved into a sophisticated office feature.\n\n**Building the Prototype:**\n\n- **Early Design:** The initial proof of concept was built on plywood with round bar rails, laying the groundwork for a more refined version.\n\n- **Desire for Perfection:** Unsettled with the initial model's limitations, we were driven to develop a robust and efficient plotter for our office.\n\n**Enhanced Construction:**\n\n- **Sturdy Mounting:** We mounted the plywood base to a concrete wall, ensuring stability and precision in the plotter's movements.\n\n- **Linear Rail Integration:** Custom machined aluminum bars were used to mount linear rails on the wood, providing a reliable foundation for the plotting mechanism.\n\n**Technical Refinements:**\n\n- **Software and Control:** Utilizing a 3D printer control board and open-source software, we enhanced the plotter's capabilities, including a text-to-G-code feature for converting basic HTML to whiteboard-friendly formats.\n\n- **Leveling and Accuracy:** Custom spacers and concrete anchors were employed to perfectly level the linear rails, ensuring smooth and precise plotting.\n\n**Final Outcome:**\n\nThe result is a smooth, accurate, and relatively quiet Whiteboard Plotter, complete with a sleek glass board. This fun project not only serves as a conversation piece but also exemplifies Lavigne Labs' dedication to exploring and mastering new technologies, be it for work or play. Our love for what we do is evident in every project, blending creativity with technical prowess.",
+  "images": [
+    "https://web.archive.org/web/20231208064150id_/https://lavignelabs.com/wp-content/uploads/2023/11/plotter2-1024.jpg",
+    "https://web.archive.org/web/20231208064150id_/https://lavignelabs.com/wp-content/uploads/2023/11/plotter3-1024.jpg",
+    "https://web.archive.org/web/20231208064150id_/https://lavignelabs.com/wp-content/uploads/2023/11/plotter4-1024.jpg",
+    "https://web.archive.org/web/20231208064150id_/https://lavignelabs.com/wp-content/uploads/2023/11/plotter5-1024.jpg"
+  ],
+  "title": "WHITEBOARD PLOTTER – Lavigne Labs"
+}
