@@ -1,0 +1,30 @@
+do: |
+  THE JOB: Revise docs/drafts/lowest-cost-manufacturing-china.md under Brian's editorial mandate. (1) Correct spelling and grammar silently. (2) Correct anything Brian got wrong (facts, physics, terms) and say so in the review note. (3) Enhance: structure, a stronger hook, clearer examples, same voice. (4) Add the knowledge he missed, where solid and well established. For this piece, consider and (where solid) add: trading company vs factory and how to tell from the business licence's scope; paying only to a company account that matches the name on the contract and invoice; the VAT invoice (增值税发票 / fapiao) and what it means for price; asking what the factory outsources; sample-vs-production consistency; and the 1688 / on-the-ground cross-check idea where it fits. Keep Brian's Law exact sentence and the "Closing thought" CTA shape.
+  THE REVIEW NOTE: put it first in the file, right after the frontmatter, as one HTML comment block that starts with `<!-- REVIEW NOTE` and ends with `-->` (it is stripped before publishing), with three labelled parts: "Corrected:" (spelling/grammar in one line, then each factual/physics/term correction of Brian's, said plainly), "Added:" (each piece of knowledge you added), "Unsure:" (anything you could not confirm, or "nothing"). Short, plain, so Brian can approve in one read.
+  THE WHY: Brian's standing EDITORIAL MANDATE (2026-10-18), verbatim: "of course, correct spelling, correct me, enhance, add knowledge you know that I missed." Together with his editorial strategy ("The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute... clever 'honest advertising'. I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationship with trusted suppliers."), see docs/CONTENT.md. Brian wants to approve each article in one read, so the changes must be visible in the note.
+  GUARDRAILS: STANDING RULE (Brian 2026-10-18): his field experience beats textbook DFM advice. When an addition would contradict what he does, his practice wins; additions must be things he would agree with, and every addition is listed in the review note so he can strike it. Do NOT tell readers to over-engineer for the tool (in particular, do NOT advise adding draft angles to models). Stay a DRAFT in docs/drafts/ (no publish, no deploy, touch no other file). Keep frontmatter fields (including series/related fields if present), the DRAFT comment, every exact phrase the draft already carries (pull quotes, Brian's Law sentence, byline, sign-off, closing lines, the closing question) and the closing CTA shape (do it yourself, here is how; or we do it faster and better because of relationships and being on the ground; link /contact/). Name no company, shop or supplier (JLC only where it already appears and Brian named it). Add only knowledge that is solid and well established; anything you are not sure of goes in the review note under "Unsure", not in the body. Never invent numbers, prices or statistics; Brian's own numbers stay exactly as written. It must stay recipe, not ingredients.
+  DONE MEANS: the draft is better, correct, still recipe-not-ingredients, with an honest review note at the top.
+done_when: |
+  python3 - <<'PY'
+  import re
+  t=open('docs/drafts/lowest-cost-manufacturing-china.md',encoding='utf8').read()
+  fm=t.split('---',2)[1]; rest=t.split('---',2)[2]
+  m=re.match(r"\s*<!-- REVIEW NOTE(.*?)-->",rest,flags=re.S)
+  assert m,'review note must come first after frontmatter'
+  note=m.group(1)
+  for k in ('Corrected:','Added:','Unsure:'): assert k in note,k
+  assert len(re.findall(r"\S+",note))>=40,'note too thin'
+  body=rest[m.end():]
+  txt=re.sub(r'<!--.*?-->','',body,flags=re.S)
+  n=len(re.findall(r"\S+",txt)); assert 1000<=n<=2000,n
+  assert 'DRAFT' in body
+  bad=re.findall(r"Co\.,? ?Ltd|\bLtd\b|\bInc\.|\bLLC\b|Foxconn|Huawei|\bDJI\b|Xiaomi|Ningbo|Yuyao|Taizhou|Huangyan|Hangzhou|Wenzhou",txt)
+  assert not bad,bad
+  last=txt.split('\n## ')[-1].lower()
+  assert 'relationship' in last and 'yourself' in last and 'faster and better' in last and '/contact/' in last
+  assert "Brian's Law" in body and "If the factory can deal with you in English, you can find a lower price." in body
+  assert re.search(r"发票|fapiao|invoice",txt,re.I) and re.search(r"trading company",txt,re.I)
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
+needs: [r2-prototyping]
