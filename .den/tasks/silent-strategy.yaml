@@ -1,0 +1,25 @@
+do: |
+  THE JOB: Make the recipe-not-ingredients strategy SILENT in every draft and in the docs. (1) In docs/CONTENT.md, rewrite the "Editorial strategy" section: keep Brian's 2026-10-18 quote as the internal intention, and replace the working rule "Let the close turn that into the CTA ..." with: the strategy is never stated in the copy; articles just give the real recipe generously and let the reader conclude it themselves; the close is one plain understated line such as "Working on something like this? Get in touch." linking /contact/, with no pitch built on the article's content. Add Brian's 2026-10-18 correction verbatim: "Again know why I'm an expert and here is the recipe. Easy to show, hard to execute. That is our silent message and article intention. We don't say that part out loud." Also list the banned phrases. (2) In ALL SIX/SEVEN drafts in docs/drafts/ (wechat-shared-history, lowest-cost-manufacturing-china, taobao-factory-sourcing, fast-prototyping-china, fast-injection-molds, designing-moldable-parts, and cantilever-snap-fits if it exists), remove every line that says the quiet part out loud: "you can do this yourself, or we can do it faster and better", "we are on the ground / speak the language / have years of relationships, which is why we're better", "why you need an expert / us", "Those relationships are the part you can't copy", "Easy to show, hard to execute", headings like "Do it yourself, or let us do it with you", and any aside of the same kind in the body (including the review-note-driven additions). Replace each closing with a single plain CTA line, e.g. "Working on something like this? [Get in touch](/contact/)." The recipe content above the close stays untouched. Natural, factual, first-person experience in the body (for example Brian's own Taobao spending and shop history, or a step that says relationships take years) may stay if it is part of the telling and does not pitch; remove it if it reads as a pitch. KEEP Brian's own lines verbatim because they are his voice: "This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to."; the molds closing question; "Don't tell anyone you heard it from me."; the Taobao king/inside-joke lines; "Unless you're an expert, you're likely doing it wrong." (that last one is about draft angles, a field rule, not the meta message). If you keep a borderline line, say so in that draft's review note. Add one line to each draft's review note under Corrected: "Closing reduced to a plain CTA; pitch lines removed per Brian." Keep every review note's Corrected/Added/Unsure shape. (3) Do not reintroduce draft-angle advice.
+  THE WHY: Brian, 2026-10-18: "Again know why I'm an expert and here is the recipe. Easy to show, hard to execute. That is our silent message and article intention. We don't say that part out loud." Saying it destroys the effect; the reader should conclude it themselves from how specific the recipe is.
+  GUARDRAILS: Edit only docs/CONTENT.md and files in docs/drafts/. No publish, no deploy, no web/ changes. Do not shorten the recipe content; word counts may drop only by the removed pitch lines. Keep frontmatter, DRAFT comment, review note (first after frontmatter), internal links (/contact/, series cross-links), and the Further reading section of the snap-fits draft with its links. Name no company, shop or supplier.
+  DONE MEANS: no draft contains any banned phrase, each draft ends with one plain CTA linking /contact/, CONTENT.md describes the silent strategy.
+done_when: |
+  python3 - <<'PY'
+  import re,glob
+  fs=glob.glob('docs/drafts/*.md'); assert len(fs)>=6,fs
+  banned=["easy to show","hard to execute","do it yourself, or","why you need","better than you","we can do it faster","faster and better","do it with us","can't copy from an article"]
+  for f in fs:
+      t=open(f,encoding='utf8').read()
+      body=re.sub(r'<!--.*?-->','',t,flags=re.S).lower()
+      for b in banned: assert b not in body,(f,b)
+      last=body.strip().split('\n## ')[-1]
+      assert '/contact/' in body,(f,'no contact link')
+      tail=body.strip()[-700:]
+      assert '/contact/' in tail or 'further reading' in body,(f,'closing CTA missing')
+  c=open('docs/CONTENT.md',encoding='utf8').read()
+  assert 'silent' in c.lower() and 'We don\'t say that part out loud' in c
+  assert 'Let the close turn that into the CTA' not in c
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
+needs: [snap-fits-v2]
