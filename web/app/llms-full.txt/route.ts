@@ -1,5 +1,6 @@
 import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
+import { projects } from "@/content/projects";
 import { getAllArticles } from "@/lib/articles";
 import { articleBody } from "@/lib/api";
 
@@ -32,6 +33,9 @@ export function GET() {
     "## FAQ",
     "",
     ...faqs.flatMap((f) => [`### ${f.q}`, "", f.a, ""]),
+    "## Work",
+    "",
+    ...projects.flatMap((p) => [`### ${p.title}`, "", `URL: ${pageUrl(`/work/${p.slug}`)}`, "", p.blurb, ""]),
     "## Articles",
     "",
     ...getAllArticles().flatMap((a) => [

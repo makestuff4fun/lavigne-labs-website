@@ -4,6 +4,8 @@ import path from "node:path";
 import { site, pageUrl, services, engagement, process as howIWork } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
+import { projectDetails } from "@/content/projectDetails";
+import { projectGalleries } from "@/content/projectGalleries";
 import { toolSpecs } from "@/content/toolSpecs";
 import { getAllArticles, getArticle, getArticleSlugs } from "@/lib/articles";
 
@@ -90,9 +92,9 @@ function searchRecords(): SearchRecord[] {
       id: `project:${p.slug}`,
       type: "project",
       title: p.title,
-      url: pageUrl("/work"),
+      url: pageUrl(`/work/${p.slug}`),
       tags: p.tags,
-      text: p.blurb,
+      text: [p.blurb, stripMarkdown(projectDetails[p.slug]?.description ?? "")].filter(Boolean).join("\n\n"),
     })),
     { id: "page:home", type: "page", title: site.name, url: pageUrl("/"), text: site.description },
     { id: "page:work", type: "page", title: "Work", url: pageUrl("/work"), text: projects.map((p) => p.title).join(", ") },
@@ -132,7 +134,12 @@ export const REGISTRY: Endpoint[] = [
     name: "portfolio",
     description: "Selected projects with summaries, tags and images.",
     build: () => ({
-      projects: projects.map((p) => ({ ...p, url: pageUrl("/work"), imageUrl: pageUrl(p.image) })),
+      projects: projects.map((p) => ({
+        ...p,
+        url: pageUrl(`/work/${p.slug}`),
+        imageUrl: pageUrl(p.image),
+        galleryUrls: (projectGalleries[p.slug] ?? []).map((g) => pageUrl(g.src)),
+      })),
     }),
   },
   {

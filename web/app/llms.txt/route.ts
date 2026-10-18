@@ -1,5 +1,6 @@
 import { site, pageUrl } from "@/content/site";
 import { getAllArticles } from "@/lib/articles";
+import { projects } from "@/content/projects";
 import { tools, toolHref } from "@/content/tools";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -34,6 +35,10 @@ export function GET() {
     ...getAllArticles().map(
       (a) => `- [${a.title}](${abs(`/articles/${a.slug}`)}): ${a.excerpt} ([markdown](${abs(`/articles/${a.slug}.md`)}))`,
     ),
+    "",
+    "## Work",
+    "",
+    ...projects.map((p) => `- [${p.title}](${abs(`/work/${p.slug}`)}): ${p.blurb}`),
     "",
     "## Tools",
     "",

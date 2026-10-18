@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site, pageUrl } from "@/content/site";
 import { getArticleSlugs } from "@/lib/articles";
+import { projects } from "@/content/projects";
 import { tools, toolHref } from "@/content/tools";
 
 export const dynamic = "force-static"; // for `output: export`
@@ -22,9 +23,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/openapi.json",
   ];
   const articleRoutes = getArticleSlugs().map((slug) => `/articles/${slug}`);
+  const workRoutes = projects.map((p) => `/work/${p.slug}`);
   const toolRoutes = tools.map(toolHref);
 
-  return [...staticRoutes, ...articleRoutes, ...toolRoutes].map((path) => ({
+  return [...staticRoutes, ...workRoutes, ...articleRoutes, ...toolRoutes].map((path) => ({
     url: pageUrl(path),
     changeFrequency: "monthly",
     priority: path === "" ? 1 : 0.7,

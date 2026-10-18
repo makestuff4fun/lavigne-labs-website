@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Project } from "@/content/projects";
 
 export function ProjectCard({
@@ -10,6 +11,7 @@ export function ProjectCard({
 }) {
   return (
     <article className="group overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+      <Link href={`/work/${project.slug}/`} className="block" aria-label={project.title}>
       <div className="relative aspect-[4/3] overflow-hidden bg-mist">
         <Image
           src={project.image}
@@ -34,6 +36,7 @@ export function ProjectCard({
           ))}
         </div>
       </div>
+      </Link>
     </article>
   );
 }

@@ -48,8 +48,9 @@ const schemas: Record<string, Schema> = {
       featured: { type: "boolean" },
       url: uri,
       imageUrl: uri,
+      galleryUrls: { type: "array", items: uri },
     },
-    ["slug", "title", "blurb", "image", "tags", "url", "imageUrl"],
+    ["slug", "title", "blurb", "image", "tags", "url", "imageUrl", "galleryUrls"],
   ),
   SearchRecord: {
     type: "object",
