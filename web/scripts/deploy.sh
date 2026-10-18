@@ -28,6 +28,7 @@ for arg in "$@"; do
 done
 
 log() { printf '\n\033[1;34m==>\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33mwarning:\033[0m %s\n' "$*" >&2; }
 die() { printf '\n\033[1;31mdeploy failed:\033[0m %s\n' "$*" >&2; exit 1; }
 
 # --- credentials -------------------------------------------------------------
@@ -55,17 +56,27 @@ DEPLOY_VERIFY_URL="${DEPLOY_VERIFY_URL:-https://lavignelabs.com}"
 
 # --- build -------------------------------------------------------------------
 if [ "$SKIP_BUILD" = 1 ]; then
-  [ -d out ] && [ -f out/index.html ] || die "--skip-build but out/ has no index.html — run a real build first."
+  if [ ! -f out/index.html ]; then
+    if [ "$DRY_RUN" = 1 ]; then warn "--skip-build but out/ has no index.html (dry run, continuing)"
+    else die "--skip-build but out/ has no index.html — run a real build first."; fi
+  fi
   log "Skipping build, reusing existing out/"
 else
   log "Building static export"
   npm run export
 fi
 
-[ -f out/index.html ] || die "out/index.html missing after build — refusing to mirror an empty tree."
+[ -d out ] || die "out/ missing — nothing to mirror."
+if [ ! -f out/index.html ]; then
+  if [ "$DRY_RUN" = 1 ]; then warn "out/index.html missing (dry run, continuing)"
+  else die "out/index.html missing after build — refusing to mirror an empty tree."; fi
+fi
 # Guard against uploading a truncated build over a working site.
 file_count=$(find out -type f | wc -l)
-[ "$file_count" -ge 50 ] || die "out/ has only $file_count files — that looks like a broken build. Refusing to deploy."
+if [ "$file_count" -lt 50 ]; then
+  if [ "$DRY_RUN" = 1 ]; then warn "out/ has only $file_count files — looks like a broken build (dry run, continuing)"
+  else die "out/ has only $file_count files — that looks like a broken build. Refusing to deploy."; fi
+fi
 log "Built $file_count files ($(du -sh out | cut -f1))"
 
 # --- upload ------------------------------------------------------------------
@@ -87,22 +98,32 @@ else
   [ -n "$DEPLOY_PROTECT" ] && echo "    protected from deletion: $DEPLOY_PROTECT"
 fi
 
+# The lftp script holds the password, so it goes in a private temp file (never
+# argv, never echoed) that is removed on any exit.
+lftp_script=$(umask 077; mktemp)
+trap 'rm -f "$lftp_script"' EXIT
+{
+  cat <<LFTP
+set ftp:ssl-force true
+set ftp:ssl-protect-data true
+set ssl:verify-certificate ${DEPLOY_SSL_VERIFY:-true}
+set ftp:passive-mode true
+set net:max-retries 5
+set net:reconnect-interval-base 5
+set net:timeout 30
+set cmd:fail-exit true
+set cmd:verbose false
+set xfer:log false
+open -u '$DEPLOY_USER','$DEPLOY_PASS' '$DEPLOY_HOST'
+mirror $mirror_flags $exclude_args out/ '$DEPLOY_REMOTE_DIR'
+LFTP
+} > "$lftp_script"
+
 # The local HTTP proxy doesn't speak FTP; always go direct.
 env -u ftp_proxy -u FTP_PROXY -u http_proxy -u HTTP_PROXY -u https_proxy \
     -u HTTPS_PROXY -u all_proxy -u ALL_PROXY \
-lftp -c "
-  set ftp:ssl-force true;
-  set ftp:ssl-protect-data true;
-  set ssl:verify-certificate ${DEPLOY_SSL_VERIFY:-true};
-  set ftp:passive-mode true;
-  set net:max-retries 5;
-  set net:reconnect-interval-base 5;
-  set net:timeout 30;
-  set cmd:fail-exit true;
-  set xfer:log false;
-  open -u '$DEPLOY_USER','$DEPLOY_PASS' '$DEPLOY_HOST';
-  mirror $mirror_flags $exclude_args out/ '$DEPLOY_REMOTE_DIR';
-" || die "lftp transfer failed (see output above). The site may be partially updated — re-run to finish."
+lftp -f "$lftp_script" \
+  || die "lftp transfer failed (see output above). The site may be partially updated — re-run to finish."
 
 [ "$DRY_RUN" = 1 ] && { log "Dry run complete — nothing uploaded."; exit 0; }
 
