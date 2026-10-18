@@ -1,0 +1,31 @@
+do: |
+  THE JOB: Make the four shop charts (metric-tap-drills, inch-tap-drills, decimal-equivalents, cheat-sheet; pages at /tools/charts/<slug>/, PDFs at /tools/charts/<slug>-a4.pdf and -letter.pdf) first-class on every machine-readable surface the site already has. (1) /api/v1/tools (list + per-slug) include the four with their page URL, PDF URLs and description; add a dataset endpoint /api/v1/charts.json (and /api/v1/charts/<slug>.json) that serves the real table data from web/content/shopCharts.json (the "static JSON API" REGISTRY in web/lib/api.ts); update /openapi.json accordingly. (2) llms.txt and llms-full.txt list the charts (llms-full may include the tables as Markdown). (3) sitemap.xml has the four pages (PDFs optional but welcome); search-index.json has them; .md alternates if the site makes them for tool pages. (4) Per-page JSON-LD: Dataset (name, description, creator Lavigne Labs, license note, distribution = the A4 and Letter PDF as DataDownload with encodingFormat application/pdf and the JSON endpoint) and, where it fits, a HowTo for "How to pick a tap drill" on the metric and inch pages with real steps shown on the page (add a short visible "How to use" block if missing so markup matches content). Validate that each JSON-LD block parses.
+  THE WHY: Brian (2026-10-18): "make sure it's all ai readable and searchable. I'm betting more AI will find these than people."
+  GUARDRAILS: existing endpoints, robots.txt and the llms.txt format keep working. Do not change chart values. No deploy.
+  DONE MEANS: all four charts appear in every surface above; JSON-LD parses; the chart API serves the known values.
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/charts-seo.log 2>&1 || { tail -30 /tmp/charts-seo.log; exit 1; }
+  python3 - <<'PY'
+  import json,re,os
+  O='out/'
+  rd=lambda p: open(O+p,encoding='utf8').read()
+  slugs=['metric-tap-drills','inch-tap-drills','decimal-equivalents','cheat-sheet']
+  si=rd('search-index.json') if os.path.exists(O+'search-index.json') else rd('search/search-index.json')
+  for s in slugs:
+      for n,t in (('llms',rd('llms.txt')),('full',rd('llms-full.txt')),('sitemap',rd('sitemap.xml')),('search',si),('tools-api',rd('api/v1/tools.json') if os.path.exists(O+'api/v1/tools.json') else rd('api/v1/tools/index.json'))): assert s in t,(s,n)
+      h=rd(f'tools/charts/{s}/index.html')
+      blocks=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>',h,re.S)]
+      flat=[]
+      for b in blocks: flat+= b['@graph'] if '@graph' in b else [b]
+      ty={o.get('@type') for o in flat}; assert 'Dataset' in ty,(s,ty)
+      ds=[o for o in flat if o.get('@type')=='Dataset'][0]
+      assert any('pdf' in json.dumps(x) for x in ds.get('distribution',[])),(s,'distribution')
+      if s in ('metric-tap-drills','inch-tap-drills'): assert 'HowTo' in ty,(s,ty)
+  c=json.loads(rd('api/v1/charts.json')); txt=json.dumps(c)
+  assert '"M3"' in txt and '2.5' in txt and '#7' in txt and '#21' in txt
+  assert 'charts' in rd('openapi.json')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: [charts-pdf]
