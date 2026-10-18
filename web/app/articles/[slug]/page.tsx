@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { site } from "@/content/site";
 import { Container, ArrowIcon, Button } from "@/components/ui";
 import {
   getArticle,
@@ -38,8 +39,30 @@ export default async function ArticlePage({
   const article = getArticle(slug);
   const more = getAllArticles().filter((a) => a.slug !== slug).slice(0, 2);
 
+  const url = `${site.url}/articles/${slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.excerpt,
+    datePublished: article.date,
+    dateModified: article.date,
+    articleSection: article.tag,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: "en",
+    author: { "@type": "Person", name: site.founder, url: site.url },
+    publisher: { "@type": "Organization", name: site.name, url: site.url },
+  };
+
   return (
     <article className="py-14 sm:py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Container className="max-w-3xl">
         <Link
           href="/articles"
