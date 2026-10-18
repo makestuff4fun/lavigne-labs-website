@@ -1,0 +1,58 @@
+do: |
+  THE JOB: Write a DRAFT article at docs/drafts/fast-prototyping-china.md, in the voice, length and frontmatter of the
+  existing Sourcing articles (read all three in web/content/articles/ first: frontmatter is title, date "2026-10-18",
+  tag "Sourcing", excerpt; voice is Lavigne Labs "we"; NO author field, the default author applies). Add an HTML
+  comment under the frontmatter: <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->.
+  Title: "Fast Prototyping in China: Stop Asking Factories". 1,000 to 1,700 words. Structure, in this order:
+  (1) The trap: many people prototype with the wrong supplier. You meet a supplier on Alibaba whose business is mass
+  manufacturing; you show up wanting a prototype or iterative development. The first version is often relatively
+  painless, because they hope for a big order. Then, as revisions continue, responsiveness drops, and they may stop
+  answering. Wrong partner.
+  (2) The factory's view: limited engineers, limited CNC programmers; prototypes interfere with production. Pull quote,
+  exactly this sentence in a blockquote: "Factories lose money on custom prototypes, even if you paid for them."
+  (3) Why the prototype fee isn't leverage: don't think the fee you paid gives you leverage, it doesn't. The lure of a
+  big order is your only hook, so don't overplay it.
+  (4) The solution: find shops that specialise in prototypes; source the individual parts from different shops instead
+  of having one place coordinate for you; do the hand fitting and assembly yourself. Give the example timeline as a
+  bulleted list of at least 5 items: one shop does CNC in 24-48 hours; send it to the anodizing shop, about 4 hours;
+  order bearings and hardware; get the PCB from JLC, and do your own pick-and-place or use JLC's assembly; get the wiring
+  from a harness shop; hand fitting and assembly. This is fast prototyping, and it is how the best design firms get
+  unbelievable prototypes and iterate.
+  (5) Why it works: these suppliers make money on each order; they don't care if you do 50 revisions, show me the money.
+  (6) The cost of getting it wrong: the Alibaba supplier did 3 revisions, wrote you off as a dead end, and lost money
+  doing it; your product isn't finished AND you burned a possible mass-manufacturing partner.
+  (7) When to go back to the factory: at design freeze, for production.
+  (8) Close with these two sentences exactly, then a soft CTA to /contact/ ("Get in touch at [/contact/](/contact/)" style
+  as in the other articles): "This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to."
+  THE WHY: Brian's notes (2026-10-18) are the substance; keep his strong phrasings ("Wrong partner.", "show me the money",
+  "Don't overplay it."), in the plural "we" voice. Typical prototype-shop turnaround numbers (24-48 h CNC, ~4 h anodizing)
+  are his and may be stated as "often" or "can be"; he is the source.
+  GUARDRAILS: Draft only; do NOT put it in web/content/articles/, do not publish or deploy. Name JLC (Brian named it) and no
+  other company. No invented statistics, prices, factory names or anecdotes beyond Brian's. Do not touch the other drafts
+  or any site code. Don't link to the other drafts (unpublished); you may add a short HTML comment marking where
+  cross-links to the small-shops and Brian's-Law articles could go once published.
+  DONE MEANS: the draft exists and reads like the other Sourcing articles, with all eight beats above in order.
+done_when: |
+  python3 - <<'PY'
+  import re
+  t=open('docs/drafts/fast-prototyping-china.md',encoding='utf8').read()
+  assert t.startswith('---'),'frontmatter'
+  fm,body=t.split('---',2)[1],t.split('---',2)[2]
+  assert 'title: "Fast Prototyping in China: Stop Asking Factories"' in fm
+  assert re.search(r'^tag: "Sourcing"',fm,re.M) and 'excerpt:' in fm and 'date:' in fm
+  assert 'author' not in fm
+  assert 'Brian must read' in body
+  n=len(re.findall(r"\S+",re.sub(r'<!--.*?-->','',body,flags=re.S)))
+  assert 1000<=n<=1700,n
+  assert '"Factories lose money on custom prototypes, even if you paid for them."' in body or 'Factories lose money on custom prototypes, even if you paid for them.' in body
+  assert re.search(r'^>.*Factories lose money on custom prototypes, even if you paid for them\.',body,re.M),'pull quote must be a blockquote'
+  assert "This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to." in body
+  assert 'JLC' in body
+  items=[l for l in body.splitlines() if re.match(r'\s*[-*] ',l) and re.search(r'CNC|anodiz|bearing|PCB|JLC|wir|harness|assembl',l,re.I)]
+  assert len(items)>=5,items
+  assert '/contact/' in body
+  import os
+  assert not os.path.exists('web/content/articles/fast-prototyping-china.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
