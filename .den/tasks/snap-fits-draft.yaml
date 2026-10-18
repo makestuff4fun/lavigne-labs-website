@@ -1,0 +1,32 @@
+do: |
+  THE JOB: Write a new DRAFT article at docs/drafts/cantilever-snap-fits.md (NOT in web/content/articles/). Frontmatter like docs/drafts/fast-injection-molds.md: title (suggest "Cantilever Snap Fits: Ratios, Not Equations"), date "2026-10-18", tag "Sourcing", excerpt, series "field-notes" with the next free seriesOrder, a related: list only if a fitting /work project exists (copy the field format of the other drafts), no author field (Lavigne Labs voice, "we"; warm, "one of our favourite features to design"). Then ONE HTML comment starting `<!-- REVIEW NOTE` right after the frontmatter (labelled "Corrected:", "Added:", "Unsure:"; in Added, say which points came from the manuals and which are our practice; list every number you are unsure of under Unsure), then `<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->`. 1,100-1,900 words. Use ratios and approximations; avoid equations (at most one optional "for the curious" line, with a single "=" in the whole article). Sections: anatomy (beam, root, hook, insertion face, retention face); length-to-root-thickness about 5-10x, shorter is stiff and over-strained, longer is floppy; taper the beam to about half the thickness at the tip to spread strain and allow more deflection for the same stress (verify the factor against the manuals and state it as an approximation); hook depth (undercut) as a fraction of beam length and thickness, set by the material's allowable strain, with rounded typical allowable-strain ranges for ABS, PC, PC/ABS, PA (dry vs conditioned), POM and PP, why glass-filled resins tolerate far less, and "check your resin's datasheet"; root radius about half the thickness, the most common failure point; insertion angle (lead-in) about 25-35 degrees for easy assembly, retention angle about 90 degrees for permanent and about 30-45 degrees for releasable, width scales the force not the strain; assembly force vs retention, friction, and why a permanent snap needs a way to service it (a release slot or tool access); HOOK DIRECTION AND MOLDABILITY (Brian's emphasis, give it real space): orient the hook so the mold forms it without a slide or lifter, hooks facing the parting line or pull direction, the classic trick of forming the hook through a window (pass-through) in the wall or base beneath it so the hook comes straight out of the mold, ganging snaps so they all point the same way, and what forces a lifter (a hook facing inward on a closed wall); link /articles/designing-moldable-parts/ and /articles/fast-injection-molds/ (the first is a draft that will be published; link it anyway); a "Common mistakes" box (sharp roots, too-short beams, glass-filled resin, over-deep hooks, hooks that force a lifter); a one-glance "Rules of thumb" markdown table at the end (ratios only). Close with the recipe-not-ingredients CTA (you can do this yourself, this is how; or we do it faster and better because we are on the ground, speak the language, visit in person and have years of relationships with trusted shops; link /contact/). Optionally cite further reading by title only: BASF "Snap-Fit Design Manual" and Bayer/Covestro "Snap-Fit Joints for Plastics", no links.
+  REFERENCES (read-only, use `pdftotext`, do not copy anything into the repo): /tank/cloud/onedrive1/Books/Snap-Fit Design Manual.pdf (BASF) and /tank/cloud/onedrive1/Books/Plastic_Snap_fit_design.pdf (likely Bayer). COPYRIGHT: restate in our own words. No copied text, tables or figures; do not reproduce their strain tables; give rounded typical ranges per material family.
+  CONSISTENCY: same rule as the molds article. Never tell readers to add draft; draft and parting line are the mold shop's job ("Unless you're an expert, you're likely doing it wrong."). Brian's practice beats textbook advice.
+  THE WHY: Brian (2026-10-18), verbatim: "I want an article on cantilever snap fits. Use ratios, try and avoid equations, give approximations. Talk about direction of the hooks so they can easily be molded. These are some of my favorite features to design. The math is nice but ratios of thickness are often enough." Editorial mandate in docs/CONTENT.md applies (correct, enhance, add; additions listed in the note so he can strike them).
+  GUARDRAILS: Draft only; no publish, no deploy, touch no other file. Name no company, shop or supplier (the BASF/Bayer/Covestro further-reading titles are the only exception). Numbers are rounded rules of thumb, labelled as such; anything you cannot confirm goes under Unsure, not in the body. Do not commit the PDFs or any extract of them.
+  DONE MEANS: a warm, correct, ratio-based draft that passes the check, with an honest review note.
+done_when: |
+  python3 - <<'PY'
+  import re,os
+  t=open('docs/drafts/cantilever-snap-fits.md',encoding='utf8').read()
+  fm=t.split('---',2)[1]; rest=t.split('---',2)[2]
+  for k in ('title:','date:','tag:','excerpt:','series:'): assert k in fm,k
+  assert 'author:' not in fm
+  m=re.match(r"\s*<!-- REVIEW NOTE(.*?)-->",rest,flags=re.S); assert m,'review note first'
+  for k in ('Corrected:','Added:','Unsure:'): assert k in m.group(1),k
+  body=rest[m.end():]; assert 'DRAFT' in body
+  txt=re.sub(r'<!--.*?-->','',body,flags=re.S)
+  n=len(re.findall(r"\S+",txt)); assert 1100<=n<=1900,n
+  for p in (r"root radius",r"taper",r"insertion angle|lead-in",r"retention",r"parting|pull direction",r"window|pass-through"): assert re.search(p,txt,re.I),p
+  assert re.search(r"^\|.*\|\s*$",txt,flags=re.M),'table'
+  assert txt.count('=')<=1,txt.count('=')
+  assert 'designing-moldable-parts' in txt
+  assert not re.search(r"(add|include|model)\s+(the\s+)?(draft|draft angles?)\b",txt,re.I)
+  bad=re.findall(r"Co\.,? ?Ltd|\bLtd\b|\bInc\.|\bLLC\b|Foxconn|Huawei|\bDJI\b|Xiaomi|JLC|Ningbo|Yuyao|Taizhou|Huangyan|Hangzhou|Wenzhou",txt)
+  assert not bad,bad
+  last=txt.split('\n## ')[-1].lower()
+  assert 'relationship' in last and 'yourself' in last and 'faster and better' in last and '/contact/' in last
+  assert not os.path.exists('web/content/articles/cantilever-snap-fits.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 40}
