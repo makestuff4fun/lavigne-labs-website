@@ -8,10 +8,14 @@
 # /.well-known/ is NOT redirected, so the old host's Let's Encrypt http-01 renewals
 # (scripts/acme-*.sh) keep working and https://lavignelabs.com keeps a valid cert,
 # which a browser needs before it will even see the 301.
+# /google<hex>.html (Search Console verification of lavignelabs.com) is NOT redirected either.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteCond %{HTTP_HOST} ^(www\.)?lavignelabs\.com\.?$ [NC]
   RewriteCond %{REQUEST_URI} !^/\.well-known/
+  # Google Search Console's verification file for lavignelabs.com must keep serving
+  # (no redirect) until Change of Address to lavignelabs.net completes.
+  RewriteCond %{REQUEST_URI} !^/google[0-9a-f]+\.html$
   RewriteRule ^ https://lavignelabs.net%{REQUEST_URI} [R=301,L]
 </IfModule>
 

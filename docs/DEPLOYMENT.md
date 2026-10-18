@@ -54,6 +54,8 @@ plus a 301 of every path on `lavignelabs.com` and `www` to the same path on
 upload it as `.htaccess` to the old docroot over FTPS from tunnel-bear; to undo,
 upload `docs/htaccess.orig`. Let's Encrypt renewals under `/.well-known/` stay
 un-redirected so the old host's cert keeps renewing while the redirect lives.
+The Search Console verification file `/google<hex>.html` is exempt too (served, not
+redirected) until Google's Change of Address completes.
 
 ## Old host: lavignelabs.com over FTPS (`scripts/deploy.sh`)
 
