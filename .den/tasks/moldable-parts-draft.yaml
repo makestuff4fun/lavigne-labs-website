@@ -1,0 +1,30 @@
+do: |
+  THE JOB: Write a new DRAFT article at docs/drafts/designing-moldable-parts.md (NOT in web/content/articles/). Frontmatter like docs/drafts/fast-injection-molds.md: title (suggest "Designing Moldable Parts: A Checklist Before You Send the File"), date "2026-10-18", tag "Sourcing", excerpt, series "field-notes" with the next free seriesOrder, a related: list if a fitting /work project exists (copy the field format used by the other drafts), no author field (Lavigne Labs voice, "we"). Then the review note as ONE HTML comment starting `<!-- REVIEW NOTE` right after the frontmatter (labelled "Corrected:", "Added:", "Unsure:"), then `<!-- DRAFT: Brian must read before this moves to web/content/articles/ -->`. 1,100-1,900 words. A skimmable checklist article: short headed sections, one-paragraph explanations, a short "Common mistakes" box, typical values labelled "rule of thumb" and framed as typical for consumer housings in ABS/PC, not absolutes. Cover, Brian's points first: (1) uniform wall thickness, gradual transitions (about 3:1) where it must change, core out thick sections; (2) sinks form where walls, ribs and bosses meet (thick intersections) - show the fix; (3) keep features perpendicular to the pull, angled features need slides or lifters and cost more; link /articles/fast-injection-molds/; (4) walls about 1.5-2.5 mm typical; ribs no thinner than about 0.8 mm. CORRECT Brian here and say so in the note: rib thickness is normally set relative to the wall (about 50-60% of it for sink-prone materials), so a 0.8 mm minimum fits about 1.5 mm walls; rib height up to about 3x the wall, small base radius; (5) bosses: OD about 2x the screw, cored, tied to walls with ribs rather than solid lumps, general self-tapping-screw boss guidance; (6) corners: inside radius at least about 0.5x the wall, outside radius = inside + wall so thickness stays even, no sharp inside corners; (7) undercuts and snap-fits: design them to work in the pull direction where possible, or accept slides; (8) holes: leave material between holes and edges, through-holes beat blind holes; (9) text and logos raised on the part (cut into the steel) are cheaper to change than recessed; (10) gates, ejector pins and the parting line leave marks: tell the shop which faces are cosmetic; (11) material shrink and realistic tolerances: do not over-tolerance, specify critical dimensions only; (12) living hinges: PP; (13) finish: specify it (SPI, VDI or MT texture) early. Close with the recipe-not-ingredients CTA (you can do this yourself, this checklist is how; or we do it faster and better because we are on the ground, speak the language, visit in person and have years of relationships with trusted shops; link /contact/) and cross-link /articles/fast-prototyping-china/ if that slug matches the prototyping draft's file name.
+  CONSISTENCY WITH THE MOLDS ARTICLE (important): Brian's rule is that readers should NOT model draft themselves. In the draft say draft and parting line are the mold shop's job, using the exact words "Unless you're an expert, you're likely doing it wrong." and the exact rule "Adding draft makes your model hard to change and does not reduce mold cost or time." (scope: standard housings, toys, consumer electronics; automotive likely the exception). The only advice is: flag textured or cosmetic faces early, because the shop drafts those surfaces differently. Never tell the reader to add draft.
+  THE WHY: Brian (2026-10-18), verbatim: "Tips for designing moldable parts. Equal wall thickness, look for places where multiple surfaces meet, these are where you sinks. Try and make features perpendicular, angled features cost more. Ribs minimum 0.8mm and walls 1.5-2.5mm are normal (correct as needed) add standard best practices for injection moldable parts. You know all the tips. make an article on that." Here he wants standard best practice added under his editorial mandate (docs/CONTENT.md: correct, enhance, add; his field experience beats textbook DFM; every addition listed in the review note so he can strike it).
+  GUARDRAILS: Draft only; no publish, no deploy, touch no other file. Name no company, shop or supplier. No invented numbers beyond the standard rules of thumb above, each labelled as a rule of thumb. Anything unsure goes under "Unsure" in the note, not in the body.
+  DONE MEANS: a skimmable, correct, honest checklist draft in Brian's voice that passes the check, consistent with the molds article.
+done_when: |
+  python3 - <<'PY'
+  import re,os
+  t=open('docs/drafts/designing-moldable-parts.md',encoding='utf8').read()
+  fm=t.split('---',2)[1]; rest=t.split('---',2)[2]
+  for k in ('title:','date:','tag:','excerpt:','series:'): assert k in fm,k
+  assert 'author:' not in fm
+  m=re.match(r"\s*<!-- REVIEW NOTE(.*?)-->",rest,flags=re.S); assert m,'review note first'
+  for k in ('Corrected:','Added:','Unsure:'): assert k in m.group(1),k
+  body=rest[m.end():]; assert 'DRAFT' in body
+  txt=re.sub(r'<!--.*?-->','',body,flags=re.S)
+  n=len(re.findall(r"\S+",txt)); assert 1100<=n<=1900,n
+  assert re.search(r"uniform|equal",txt,re.I) and re.search(r"\bsink",txt,re.I) and re.search(r"\brib",txt,re.I) and re.search(r"\bboss",txt,re.I) and re.search(r"radius",txt,re.I)
+  assert "Unless you're an expert, you're likely doing it wrong." in txt
+  assert '/articles/fast-injection-molds' in txt
+  assert not re.search(r"(add|include|model)\s+(the\s+)?(draft|draft angles?)\b",txt,re.I),'must not tell reader to add draft'
+  bad=re.findall(r"Co\.,? ?Ltd|\bLtd\b|\bInc\.|\bLLC\b|Foxconn|Huawei|\bDJI\b|Xiaomi|JLC|Ningbo|Yuyao|Taizhou|Huangyan|Hangzhou|Wenzhou",txt)
+  assert not bad,bad
+  last=txt.split('\n## ')[-1].lower()
+  assert 'relationship' in last and 'yourself' in last and 'faster and better' in last and '/contact/' in last
+  assert not os.path.exists('web/content/articles/designing-moldable-parts.md')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
