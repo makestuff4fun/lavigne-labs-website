@@ -11,6 +11,7 @@ export type ArticleMeta = {
   date: string;
   excerpt: string;
   tag: string;
+  author?: string;
   readingTime: number;
 };
 
@@ -39,6 +40,9 @@ export function getArticle(slug: string): Article {
     date: data.date ?? "",
     excerpt: data.excerpt ?? "",
     tag: data.tag ?? "Manufacturing",
+    ...(typeof data.author === "string" && data.author.trim()
+      ? { author: data.author.trim() }
+      : {}),
     readingTime: readingTime(content),
     html: marked.parse(content) as string,
   };

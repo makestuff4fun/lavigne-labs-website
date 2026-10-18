@@ -22,6 +22,7 @@ export function GET() {
       `      <pubDate>${new Date(a.date).toUTCString()}</pubDate>`,
       `      <description>${esc(a.excerpt)}</description>`,
       `      <category>${esc(a.tag)}</category>`,
+      ...(a.author && a.author !== site.founder ? [`      <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">${esc(a.author)}</dc:creator>`] : []),
       "    </item>",
     ].join("\n");
   });

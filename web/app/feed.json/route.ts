@@ -21,6 +21,7 @@ export function GET() {
         summary: a.excerpt,
         content_html: getArticle(a.slug).html,
         date_published: new Date(a.date).toISOString(),
+        ...(a.author && a.author !== site.founder ? { authors: [{ name: a.author }] } : {}),
         tags: [a.tag],
       };
     }),

@@ -52,7 +52,11 @@ export default async function ArticlePage({
     url,
     mainEntityOfPage: url,
     inLanguage: "en",
-    author: { "@type": "Person", name: site.founder, url: site.url },
+    author: {
+      "@type": "Person",
+      name: article.author ?? site.founder,
+      ...(article.author && article.author !== site.founder ? {} : { url: site.url }),
+    },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
   };
 

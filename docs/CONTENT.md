@@ -97,6 +97,7 @@ Your article body here, in **Markdown**. Headings (`##`), lists, **bold**,
 > blockquotes, and tables all render.
 ```
 
+- **Optional `author: "Name"`** in the frontmatter sets a per-article byline (JSON-LD, `/feed.json`, `rss.xml`); omit it and the article is credited to the site founder.
 - **Add an article:** create a new `.md` file with the frontmatter above. It
   appears automatically on `/articles` (sorted by `date`). Reading time is
   computed from the word count.
