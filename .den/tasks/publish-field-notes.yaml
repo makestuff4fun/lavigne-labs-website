@@ -1,0 +1,31 @@
+do: |
+  THE JOB: Publish the seven approved drafts. For each file in docs/drafts/ (wechat-shared-history, lowest-cost-manufacturing-china, taobao-factory-sourcing, fast-prototyping-china, fast-injection-molds, designing-moldable-parts, cantilever-snap-fits): `git mv` it to web/content/articles/<same name>.md; strip the `<!-- REVIEW NOTE ... -->` block and the `<!-- DRAFT ... -->` comment; keep the rest of the text unchanged. Frontmatter: title, date, tag, excerpt, series "field-notes", unique seriesOrder, related, and author (Taobao keeps author "淘宝王"; others omit author). Dates staggered so the order reads well: fast-prototyping-china 2026-10-13, lowest-cost-manufacturing-china 2026-10-14, taobao-factory-sourcing 2026-10-15, fast-injection-molds 2026-10-16, wechat-shared-history 2026-10-17, designing-moldable-parts 2026-10-18, cantilever-snap-fits 2026-10-18; seriesOrder unique and continuing from the existing articles (check web/content/series.ts and the existing articles; fix collisions). Check every internal link in the seven (/articles/<slug>/, /work/<slug>/, /contact/) points at a real slug or page, and fix any that do not. Update web/content/series.ts or any hub list if it enumerates articles. Then leave docs/drafts/ empty (remove the dir contents; keep nothing but a .gitkeep is not needed).
+  THE WHY: Brian, 2026-10-18: "all approved. put them online." They were held as drafts until he read them; he has now approved all seven.
+  GUARDRAILS: Do not edit article wording beyond stripping comments and fixing broken links. No images yet (next task). No deploy. The articles must name no company/shop/supplier (JLC only where already present) and must not tell readers to add draft angles. Never commit a credential.
+  DONE MEANS: all seven pages build and appear on /articles, with no review-note text anywhere in web/out, and docs/drafts has no .md files.
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/pfn.log 2>&1 || { tail -30 /tmp/pfn.log; exit 1; }
+  cd .. && python3 - <<'PY'
+  import os,re,glob,json
+  slugs=["wechat-shared-history","lowest-cost-manufacturing-china","taobao-factory-sourcing","fast-prototyping-china","fast-injection-molds","designing-moldable-parts","cantilever-snap-fits"]
+  assert not glob.glob('docs/drafts/*.md'),'drafts remain'
+  orders=[]
+  for s in slugs:
+      src=open(f'web/content/articles/{s}.md',encoding='utf8').read()
+      assert 'REVIEW NOTE' not in src and '<!-- DRAFT' not in src,s
+      m=re.search(r'seriesOrder:\s*(\d+)',src); assert m,s; orders.append(int(m.group(1)))
+      h=open(f'web/out/articles/{s}/index.html',encoding='utf8').read()
+      assert 'REVIEW NOTE' not in h,s
+      assert 'Get in touch' in h or '/contact' in h,s
+  assert len(set(orders))==7,orders
+  allo=[int(m.group(1)) for f in glob.glob('web/content/articles/*.md') for m in [re.search(r'seriesOrder:\s*(\d+)',open(f,encoding='utf8').read())] if m]
+  assert len(allo)==len(set(allo)),'seriesOrder collision'
+  tao=open('web/content/articles/taobao-factory-sourcing.md',encoding='utf8').read()
+  assert 'author: "淘宝王"' in tao
+  idx=open('web/out/articles/index.html',encoding='utf8').read()
+  for s in slugs: assert f'/articles/{s}' in idx,s
+  PY
+protected: [".den/**"]
+runaway: {minutes: 40}
+needs: [silent-strategy]
