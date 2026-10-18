@@ -1,0 +1,41 @@
+do: |
+  THE JOB: Support an optional per-article `author` in frontmatter. Today every article's Person JSON-LD
+  (web/app/articles/[slug]/page.tsx, author: site.founder) and /feed.json (authors: [{name: site.founder}]) and rss.xml
+  use Brian. Add `author?: string` to ArticleMeta in web/lib/articles.ts (read it from gray-matter), and use it, falling
+  back to site.founder, in: the Article JSON-LD author name (omit the Brian profile `url` when author differs from the
+  founder), the per-item author in /feed.json (item-level `authors`) and rss.xml (<dc:creator> or <author>, whichever
+  the feed already uses) , the article page byline if one is shown, and the markdown alternate/llms-full output if they
+  print an author. Existing articles have no author, so their output must not change. Read
+  web/node_modules/next/dist/docs/ if you touch Next route code. Add one line to docs/CONTENT.md documenting the field.
+  THE WHY: Brian wants an upcoming article signed 淘宝王 (a pen name); its Person schema and feed entry must show that
+  name, not his. Draft is docs/drafts/taobao-factory-sourcing.md; do not move it into web/content/articles/.
+  GUARDRAILS: Do not add or publish any article. Do not deploy. Output for the 3 existing articles must be unchanged
+  (same author, same url). Keep lint errors no higher than the known game-component ones.
+  DONE MEANS: with a temporary article carrying `author: "淘宝王"` the built page, feed.json and rss.xml show 淘宝王 for
+  that article only, and the temporary file is removed.
+done_when: |
+  set -e
+  cd web
+  f=content/articles/zz-author-fixture.md
+  trap 'rm -f "$f"' EXIT
+  printf -- '---\ntitle: "Fixture"\ndate: "2026-10-18"\ntag: "Sourcing"\nauthor: "淘宝王"\nexcerpt: "fixture excerpt"\n---\n\nFixture body text.\n' > "$f"
+  npm run export >/tmp/article-author-export.log 2>&1
+  python3 - <<'PY'
+  import re,json
+  h=open('out/articles/zz-author-fixture/index.html',encoding='utf8').read()
+  ld=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json">(.*?)</script>',h,re.S)]
+  a=[x for x in ld if x.get('@type')=='Article'][0]
+  assert a['author']['name']=='淘宝王',a['author']
+  assert 'Brian' not in json.dumps(a['author'],ensure_ascii=False)
+  fj=json.load(open('out/feed.json',encoding='utf8'))
+  it=[i for i in fj['items'] if 'zz-author-fixture' in i['url']][0]
+  assert '淘宝王' in json.dumps(it,ensure_ascii=False)
+  other=[i for i in fj['items'] if 'zz-author-fixture' not in i['url']]
+  assert other and all('淘宝王' not in json.dumps(i,ensure_ascii=False) for i in other)
+  rss=open('out/rss.xml',encoding='utf8').read()
+  assert '淘宝王' in rss
+  h2=open('out/articles/vetting-a-factory/index.html',encoding='utf8').read()
+  assert '淘宝王' not in h2 and 'Brian' in h2
+  PY
+protected: [".den/**"]
+runaway: {minutes: 40}
