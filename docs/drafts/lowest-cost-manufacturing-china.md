@@ -9,7 +9,7 @@ seriesOrder: 4
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar tidied silently. Two term fixes: (1) the business-licence scope (经营范围) is a clue, not proof. Some traders list 生产 and many real factories also list 销售, so I reworded step 2 to say read it, then check it against the machines and the answers. (2) "Domestic channels" for payment was loose. What matters is a company bank account (对公账户) in the exact name on the contract, so I said that.
+Corrected: Spelling and grammar tidied silently. Two term fixes: (1) the business-licence scope (经营范围) is a clue, not proof. Some traders list 生产 and many real factories also list 销售, so I reworded step 2 to say read it, then check it against the machines and the answers. (2) "Domestic channels" for payment was loose. What matters is a company bank account (对公账户) in the exact name on the contract, so I said that. Closing reduced to a plain CTA; pitch lines removed per Brian.
 Added: (a) a short opening scenario as the hook; (b) trading company vs factory, with what to look for on the licence and the shop page; (c) pay only to a company account matching the contract and invoice name, never a personal account; (d) the VAT invoice (增值税发票 / fapiao): ask whether the quote includes one, and compare like with like; (e) asking what the factory outsources, folded into the questions in step 5; (f) sample-vs-production consistency (keep the approved sample, check production against it); (g) a 1688 cross-check of the English quote, plus a person on the ground to confirm; (h) matching lines in the checklist. Nothing about draft angles or designing for the tool. Strike any of it you disagree with.
 Unsure: I left out the VAT rate and how export tax refunds work, because they change and I would not state them without checking. Please confirm you are happy with "a factory that will not issue an invoice is a flag" for your usual jobs.
 -->
@@ -118,6 +118,4 @@ Also remember that unit price is only part of the story. See my piece on what la
 
 Brian's Law isn't a promise of a cheaper price. It's a prompt to keep digging when everything is too easy. Sometimes the easy path is right, but you should choose it knowingly, not because it's the only one you could see.
 
-You can do all of this yourself, and the steps above are how. Learn the Chinese search terms, plan the trips, read the licences, walk the floors, and expect to spend real time on it. Plenty of people have, and it works.
-
-Or we can do it for you, faster and better, because we are already on the ground in China and already have the relationships. I have spent years building trust with suppliers who know me, speak to me in Chinese and answer when I call. That is the part you can't search for. Either way, [get in touch](/contact/) and tell me what you're building. I'm happy to point you in the right direction even if you do it yourself.
+Working on something like this? [Get in touch](/contact/).

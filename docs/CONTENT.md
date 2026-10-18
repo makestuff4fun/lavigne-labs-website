@@ -108,13 +108,26 @@ Brian's editorial strategy for every article (2026-10-18), verbatim:
 
 > The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute. Most readers aren't in china, don't speak chinese and can't do these things. It seems like giving away the secrets but it's really clever "honest advertising". I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationships with trusted suppliers.
 
-Working rules:
+That quote is the internal intention. It is never stated in the copy. Brian's correction, same day, verbatim:
+
+> Again know why I'm an expert and here is the recipe. Easy to show, hard to execute. That is our silent message and article intention. We don't say that part out loud.
+
+Working rules (the strategy is silent):
 
 - **Give the method generously and specifically.** Real steps, real Chinese search terms, real timelines. It must read as honest help, never a teaser.
+- **Never state the strategy in the copy.** Articles just give the real recipe and let the reader conclude for themselves, from how specific it is, who must be behind it.
 - **Name no shops or suppliers.** The one exception is JLC, and only where Brian named it himself.
-- **Let the hard parts show, without bragging.** Being on the ground in China, speaking Chinese, visiting in person, payment and accounts, and above all years of trusted relationships (which can't be bought) should come through naturally in the telling.
-- **Let the close turn that into the CTA:** "you can do this yourself, and here's how, or we can do it faster and better because we already have the relationships." Warm and confident, not salesy.
-- **The point is honest advertising.** Everything we say is true and useful on its own; the reader decides whether to do it themselves or hand it to us.
+- **Natural first-person experience may stay** (Brian's own spending, shop history, a step that says relationships take years) when it is part of the telling. Cut it if it reads as a pitch.
+- **The close is one plain, understated line** such as "Working on something like this? [Get in touch](/contact/)." It links /contact/ and has no pitch built on the article's content.
+
+Banned phrases (and anything of the same kind) in article copy:
+
+- "easy to show, hard to execute"
+- "you can do this yourself, or we can do it faster and better" (and variants: "do it yourself, or", "do it with us", "we can do it faster")
+- "why you need an expert / us"; "better than you"
+- "we are on the ground / speak the language / have years of relationships, which is why we're better"
+- "those relationships are the part you can't copy" (and "can't copy from an article")
+- headings such as "Do it yourself, or let us do it with you"
 
 ## Editorial mandate: correct, enhance, add
 

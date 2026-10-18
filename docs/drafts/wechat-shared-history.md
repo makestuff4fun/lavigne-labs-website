@@ -8,7 +8,7 @@ series: "field-notes"
 seriesOrder: 7
 ---
 <!-- REVIEW NOTE
-Corrected: spelling and grammar fixed silently. Facts: nothing of yours was wrong. The registry values (HiberbootEnabled, RealTimeIsUniversal), the 8-hour clock cause, xwechat_files and the winget package names all match what I know. I made two small wording fixes: "Settings > Storage" is now described as the storage setting, since WeChat renames menus between versions, and "Windows 11 26H2" is kept as you wrote it.
+Corrected: spelling and grammar fixed silently. Facts: nothing of yours was wrong. The registry values (HiberbootEnabled, RealTimeIsUniversal), the 8-hour clock cause, xwechat_files and the winget package names all match what I know. I made two small wording fixes: "Settings > Storage" is now described as the storage setting, since WeChat renames menus between versions, and "Windows 11 26H2" is kept as you wrote it. Closing reduced to a plain CTA; pitch lines removed per Brian.
 Added: (1) a back-up-first step before pointing both systems at one folder, moved up from the caveats; (2) "never run both OS sessions at once" spelled out: shut Windows down fully, no hibernate, no sleeping with WeChat open; (3) NTFS mount options on Linux (mount by UUID, uid/gid/umask, windows_names, nofail) and what to do if the partition mounts read-only; (4) a "After a WeChat update" checklist; (5) a stronger opening hook. Your steps, numbers and caveats are intact. Strike any addition you dislike.
 Unsure: the exact Windows menu wording in current 4.x builds; which NTFS driver (ntfs3 or ntfs-3g) Ubuntu 24.04 picks by default on your machine, so the options are given for both; whether the phone-VPN explanation is Android-wide or specific to your phone (kept as your experience).
 -->
@@ -95,6 +95,4 @@ This was on an ASUS ROG Flow Z13 running Windows 11 26H2 and Ubuntu 24.04.
 
 That is the whole evidence so far: about an hour in each direction. I'll find out over the next few weeks, and through at least one WeChat update, whether it holds up.
 
-## If you'd rather not do this alone
-
-WeChat is where China work happens, and we live in it every day. You can absolutely do all of this yourself, and the steps above are the whole recipe. But a shared history folder is the easy part. The hard part is being on the ground in China, speaking the language, and having years of trusted supplier relationships that were built in person and can't be bought. If you'd rather hand the China side to people who already have those relationships, we can do it faster and better. [Get in touch](/contact/) and tell us what you're trying to get done.
+Working on something like this? [Get in touch](/contact/).

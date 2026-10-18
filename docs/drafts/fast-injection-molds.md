@@ -9,7 +9,7 @@ seriesOrder: 6
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little". (5) An earlier revision of this note told readers to add draft; that was wrong against your practice and is removed everywhere. The piece no longer tells anyone to add draft.
+Corrected: Spelling and grammar fixed silently. (1) Steel-safe: you wrote "holes small"; it is the other way round. A hole is formed by a steel pin, so a fat pin gives a big hole. The safe start is holes too big, bosses and ribs too small, walls too thin, then steel is trimmed to add plastic. Your "cut steel = more plastic" rule was right. (2) "A real steel mold": fast molds are often aluminium or soft steel, so I say that plainly. (3) "Nothing about the plastic part is a compromise" was too strong (texture, tolerance and life can differ); softened. (4) "Slides add no time at all" softened to "little". (5) An earlier revision of this note told readers to add draft; that was wrong against your practice and is removed everywhere. The piece no longer tells anyone to add draft. Closing reduced to a plain CTA; pitch lines removed per Brian. Borderline line kept as Brian's voice: "known mostly to those of us who have spent years on the ground hunting for it" in the cluster section.
 Added: Your draft story, told in first person (first China mold, all the draft added, designed to avoid a slide, Canadian consultant did the layout, shop rotated the part 90 degrees, added a slide, redid the draft, nicer part, the irony), with your rule as a pull quote, scoped to housings, toys and consumer electronics (automotive likely the exception) and your "Unless you're an expert" line. You supplied this. Practical advice: give the shop a clean model plus requirements and let their engineers choose draft, parting line and slides. Why fast molds wear (aluminium or soft P20 versus hardened H13/S136; pre-hardened steel; wear starts at gate and parting line). Gate and ejector-pin marks, stated up front. Surface finish standards (SPI, MT, VDI 3400) and that texture adds time and cost. First samples (T0/T1) and what to check. Material and shrinkage affecting fit. DFM feedback on the 3D file before steel is cut. Strike any you disagree with.
 Unsure: No exact SPI grade or shrinkage numbers given on purpose; they vary by material and texture. Whether your fast molds are aluminium or P20 is not stated; I kept it generic. Your wording for steel-safe on pins is the one I most want you to eyeball.
 -->
@@ -131,10 +131,6 @@ A small fast mold costs about $2-3k. A regular small mold costs about $5-10k. He
 
 You do the math.
 
-## Do it yourself, or do it with us
+Now you know about the secret supply chain too. Could this speed up your first production batch?
 
-You can do this yourself. The steps above are how: ask for a fast mold, not a regular one, send every mating part and every screw, fix the surface finish on day one, lock your requirements, and keep an eye on lifters and angled holes. Place the gate and pin marks, hand over a clean model, and ask for design feedback before steel is cut. Find the cluster, and you will have a real mold in about 10 days.
-
-Or we can do it faster and better. We are on the ground in China. We speak the language. We visit the shops in person. And we have years of relationships with trusted shops, which is the one thing that cannot be searched for. Those relationships are why a mold gets started this week instead of waiting in a queue.
-
-If you would like us to take a look at your part, [get in touch](/contact/). Now you know about the secret supply chain too. Could this speed up your first production batch?
+Working on something like this? [Get in touch](/contact/).

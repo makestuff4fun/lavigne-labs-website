@@ -9,7 +9,7 @@ seriesOrder: 8
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently. (1) Rib thickness: you gave "ribs minimum 0.8 mm" as a flat number. Rib thickness is normally set relative to the wall, about 50-60% of it for sink-prone materials, so a 0.8 mm rib fits about 1.5 mm walls and a 2.5 mm wall wants a thicker rib. I say that in the body. Your 0.8 mm and 1.5-2.5 mm figures are kept as the typical starting points. (2) Draft: kept consistent with the molds article. The piece never tells readers to add draft; the only advice is to flag textured and cosmetic faces early.
+Corrected: Spelling and grammar fixed silently. (1) Rib thickness: you gave "ribs minimum 0.8 mm" as a flat number. Rib thickness is normally set relative to the wall, about 50-60% of it for sink-prone materials, so a 0.8 mm rib fits about 1.5 mm walls and a 2.5 mm wall wants a thicker rib. I say that in the body. Your 0.8 mm and 1.5-2.5 mm figures are kept as the typical starting points. (2) Draft: kept consistent with the molds article. The piece never tells readers to add draft; the only advice is to flag textured and cosmetic faces early. Closing reduced to a plain CTA; pitch lines removed per Brian.
 Added: Standard best practice under your "you know all the tips" mandate: gradual wall transitions (about 3:1) and coring out thick sections; showing the sink fix at intersections; rib height up to about 3x the wall with a small base radius; boss guidance (OD about 2x the screw, cored, tied to walls with ribs); corner radii (inside at least about 0.5x wall, outside = inside + wall); undercut and snap-fit advice; hole spacing and through-holes versus blind; raised versus recessed text; gate, ejector and parting-line marks; shrink and tolerance advice; living hinges in PP; finish standards (SPI, VDI, MT) early; a Common mistakes box; the closing pitch. Your draft story is linked, not retold. All numbers are labelled rules of thumb for consumer housings in ABS/PC. Strike any you disagree with.
 Unsure: Boss OD of about 2x the screw is a general figure; self-tapping boss holes vary with material and screw type, so I gave no hole size. Whether raised text is cheaper in your shops' experience: this is the textbook reason (steel is cut away, and it is easier to add by cutting than to fill), please confirm it matches what you see. Which /work project fits best: I used hex-puck-lights because it is a molded housing; change it if another fits. I gave no shrink percentages on purpose, they vary by resin.
 -->
@@ -130,8 +130,6 @@ The only thing we ask of you is to flag textured and cosmetic faces early, becau
 - Not telling the shop which faces are cosmetic.
 - Choosing a finish after the mold is cut.
 
-## Do it yourself, or let us do it with you
+For the earlier steps, see [our prototyping article](/articles/fast-prototyping-china/).
 
-You can do all of this yourself. This checklist is the recipe, not just the ingredients, and a careful designer who follows it will send a file that a shop can mold. For the earlier steps, see [our prototyping article](/articles/fast-prototyping-china/).
-
-Or we can do it faster and better. We are on the ground, we speak the language, we visit in person, and we have years of relationships with trusted shops. They return our messages and tell us the truth about your file. [Get in touch](/contact/) and send us the model.
+Working on something like this? [Get in touch](/contact/).

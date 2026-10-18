@@ -9,7 +9,7 @@ seriesOrder: 3
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar fixed silently (including "specialize" to "specialize" to match "anodizing"). Facts, physics and terms: I found nothing in your draft that was wrong. I checked the Chinese search terms, the CNC and anodizing timings (your figures, unchanged), and the JLC PCB and assembly line.
+Corrected: Spelling and grammar fixed silently (including "specialize" to "specialize" to match "anodizing"). Facts, physics and terms: I found nothing in your draft that was wrong. I checked the Chinese search terms, the CNC and anodizing timings (your figures, unchanged), and the JLC PCB and assembly line. Closing reduced to a plain CTA; pitch lines removed per Brian.
 Added: (1) A sharper hook at the top: the quiet shop is a mismatch, not bad luck. (2) Ask each shop for DFM feedback before cutting. (3) Tolerance stack-up when parts come from different shops: tell each shop which features mate, and keep a few critical dimensions generous. (4) Anodizing adds thickness on the surface, so holes and mating faces need allowance or masking. (5) Order a spare of every part so one scrapped part does not reset the schedule. (6) Send drawings plus the 3D file plus a one-page spec, with material and finish marked explicitly. (7) Process choice: CNC vs 3D print vs sheet metal, in plain terms and without numbers. (8) A new subhead, "Before you cut", to hold items 2 to 7. No draft-angle advice anywhere. Strike any of these you would not do.
 Unsure: Nothing in the body. I gave no thickness figure for anodizing because it varies by type and shop; tell me if you want your own rule of thumb in.
 -->
@@ -118,12 +118,8 @@ None of this means factories are the enemy. They're exactly the right partner fo
 
 So go back to the factory at design freeze. Once the design has stopped changing and you know what you're building, a factory can do what it's good at: repeatable, efficient, high-volume manufacturing. Now the big order is real, and your leverage is real. You arrive with a proven design and a clear picture of what it takes to make it, and that's a much stronger position than a half-finished drawing and a promise.
 
-Until then, you have two honest options. You can do this yourself. Everything above is the method: search the right terms, send a clean request, split the parts, sequence them, and fit them by hand. It works, and plenty of teams do it without us.
-
-Or we can do it faster and better, because we're on the ground in China, we speak the language, we visit these shops in person, and we have years of relationships with trusted suppliers. Those relationships are the part you can't copy from an article. They're why a part gets slotted in tonight instead of next week.
-
 <!-- Cross-links could go here once published: small-shops article, Brian's Law article. -->
 
 This is the stuff no one explains to you. We've learned all the lessons the hard way, so you won't have to.
 
-Get in touch at [/contact/](/contact/) and we'll help you find the right shop for each part of your prototype.
+Working on something like this? [Get in touch](/contact/).

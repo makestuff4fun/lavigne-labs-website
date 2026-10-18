@@ -10,7 +10,7 @@ seriesOrder: 5
 ---
 
 <!-- REVIEW NOTE
-Corrected: Spelling and grammar tidied silently. Fact fix: you wrote custom heatsinks are "extruded or machined to your drawing". A truly custom extrusion needs its own die, which means a tooling fee and a bigger order, so a Taobao shop usually cuts and machines from existing profiles. The bullet now says that. Nothing else of yours was wrong.
+Corrected: Spelling and grammar tidied silently. Fact fix: you wrote custom heatsinks are "extruded or machined to your drawing". A truly custom extrusion needs its own die, which means a tooling fee and a bigger order, so a Taobao shop usually cuts and machines from existing profiles. The bullet now says that. Nothing else of yours was wrong. Closing reduced to a plain CTA; pitch lines removed per Brian.
 Added: (1) a stronger opening hook; (2) a "Paying" section: Alipay for foreigners, linking an overseas card or using a trusted China-based payer; (3) 集运 forwarders for shops that ship only inside China, and what to tell them; (4) asking for a 发票 invoice, and individual shop versus registered company; (5) returns and disputes on the platform, including not confirming receipt before you inspect; (6) a measure-and-photograph checklist for the sample on arrival. Strike any you disagree with.
 Unsure: Alipay and Taobao sign-up rules for foreign users change often (phone number, ID checks, which cards work), so the body gives the shape, not the steps. I did not state any fees, limits or timings. Invoice types differ by shop, so I only say to ask.
 -->
@@ -120,10 +120,10 @@ None of that changes the main point. It means the work is in finding the right s
 
 For prototypes, small runs and custom parts like cut and bent sheet, heatsinks, cables and displays, absolutely. For larger programs, use Taobao to discover the right kind of workshop, then build a proper supplier relationship with them.
 
-You can do all of this yourself, and now you know how: search by process in Chinese, shortlist the workshops, ask the right questions in 旺旺, read the listing like a quote, and order samples before anything else. Be honest about the friction, though. It means working in Chinese, getting an account and payment that work, sometimes picking up the phone, and sometimes standing in the shop. The part you can't shortcut is trust. Mine took years to build, one good order at a time, and it is why a shop will fix a problem before I even notice it.
+Be honest about the friction, though. It means working in Chinese, getting an account and payment that work, sometimes picking up the phone, and sometimes standing in the shop. Trust takes time too: mine took years to build, one good order at a time.
 
-If you'd rather skip the learning curve, we can do it faster and better, because we are on the ground in China, we speak Chinese, and the relationships are already built. Tell us what you need made and we will go to the shops we already trust. Get in touch at [/contact/](/contact/).
+The king of Taobao has now given away his best-kept trick. Use it well, and go find yourself a good deal.
 
-Either way, the king of Taobao has now given away his best-kept trick. Use it well, and go find yourself a good deal.
+Working on something like this? [Get in touch](/contact/).
 
 — 淘宝王
