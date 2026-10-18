@@ -21,6 +21,9 @@ trap restore EXIT
 STATIC_EXPORT=1 npx next build
 trap - EXIT; restore
 
+# Raw Markdown alternates: out/articles/<slug>.md (beside the <slug>/ page dir)
+for f in content/articles/*.md; do cp "$f" "out/articles/$(basename "$f")"; done
+
 # --- assemble the games-only distribution ---
 rm -rf dist-games
 mkdir -p dist-games

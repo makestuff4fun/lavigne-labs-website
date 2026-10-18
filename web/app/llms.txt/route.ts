@@ -28,7 +28,7 @@ export function GET() {
     "## Articles",
     "",
     ...getAllArticles().map(
-      (a) => `- [${a.title}](${abs(`/articles/${a.slug}`)}): ${a.excerpt}`,
+      (a) => `- [${a.title}](${abs(`/articles/${a.slug}`)}): ${a.excerpt} ([markdown](${abs(`/articles/${a.slug}.md`)}))`,
     ),
     "",
     "## Tools",
