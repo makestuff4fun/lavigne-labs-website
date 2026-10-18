@@ -1,0 +1,34 @@
+do: |
+  THE JOB: Build a "Field Notes from China" article series. (a) Content model: optional frontmatter `series: "field-notes"` and `seriesOrder: <number>` on articles, read by web/lib/articles.ts (add the fields to its type and loader); a small series definition (slug "field-notes", title "Field Notes from China", a 2-3 sentence intro paragraph in the Lavigne Labs "we" voice about hard-won, practical notes on making hardware in China) in web/content/. (b) A hub page at /articles/series/field-notes/ (static export; use whichever route shape works, e.g. app/articles/series/[slug]/page.tsx with generateStaticParams) showing the title, intro and the ordered list of PUBLISHED articles in the series (title, excerpt, date), linked to from the /articles page. (c) Each article page in a series shows a series box (series title linking to the hub, "Part N of M" optional) and previous/next links to its neighbours in order. (d) API and llms.txt: add a `series.json` endpoint to REGISTRY in web/lib/api.ts (series slug, title, intro, url, ordered articles), include the series hub and member articles in web/app/llms.txt (and llms-full.txt if it lists articles) and in the sitemap. (e) Put `series: "field-notes"` and a `seriesOrder` on the 3 existing Sourcing articles that fit (use judgment; at least 2) and on ALL 5 drafts in docs/drafts/ (fast-prototyping-china, lowest-cost-manufacturing-china, taobao-factory-sourcing, wechat-shared-history, fast-injection-molds) with a sensible reading order, touching only their frontmatter. (f) Make web/lib/articles.ts strip any HTML comment block starting `<!-- REVIEW NOTE` from article bodies before rendering/feeds/markdown alternates/search index/API, so review notes never reach readers; verify with a temporary article and remove it.
+  THE WHY: Brian approved the series idea (2026-10-18). Five new articles are coming, and a series gives readers and agents one place to find them and one reading order. Review notes at the top of drafts are for Brian only.
+  GUARDRAILS: Read the relevant guide in web/node_modules/next/dist/docs/ before writing Next code (AGENTS.md: this Next 16 differs from what you know); run npm from web/ (`npm install --maxsockets=4` if needed). The site is a static export (`npm run export`), so no server code. Do not deploy, do not touch cPanel/FTP/SSL. Do not publish drafts: files in docs/drafts/ stay there and must not appear in web/content/articles/. Keep every existing page, API endpoint, feed, llms.txt section and JSON-LD working. Do not delete app/api/contact (leave it; the export script already handles it).
+  DONE MEANS: after `npm run export` the hub page, series boxes, prev/next links, series.json and llms.txt entries exist and the drafts carry series frontmatter.
+done_when: |
+  python3 - <<'PY'
+  import subprocess,glob,re,os,json
+  r=subprocess.run('cd web && npm run export',shell=True,capture_output=True,text=True)
+  assert r.returncode==0,r.stdout[-1500:]+r.stderr[-1500:]
+  def fmv(p):
+      t=open(p,encoding='utf8').read(); return t.split('---',2)[1]
+  mem=[os.path.basename(p)[:-3] for p in glob.glob('web/content/articles/*.md') if re.search(r'^series:\s*"?field-notes"?',fmv(p),re.M)]
+  assert len(mem)>=2,mem
+  hub=open('web/out/articles/series/field-notes/index.html',encoding='utf8').read()
+  assert 'Field Notes from China' in hub
+  for s in mem: assert f'/articles/{s}' in hub,s
+  for s in mem:
+      h=open(f'web/out/articles/{s}/index.html',encoding='utf8').read()
+      assert '/articles/series/field-notes' in h,s
+      assert any(f'/articles/{o}' in h for o in mem if o!=s),'no prev/next on '+s
+      assert 'REVIEW NOTE' not in h
+  api=[p for p in glob.glob('web/out/api/v1/series*')]
+  assert api and 'field-notes' in open(api[0],encoding='utf8').read(),api
+  ll=open('web/out/llms.txt',encoding='utf8').read()
+  assert 'Field Notes from China' in ll and 'series/field-notes' in ll
+  for p in glob.glob('docs/drafts/*.md'):
+      assert re.search(r'^series:\s*"?field-notes"?',fmv(p),re.M),p
+      assert re.search(r'^seriesOrder:',fmv(p),re.M),p
+  assert 'REVIEW NOTE' in open('web/lib/articles.ts',encoding='utf8').read()
+  PY
+protected: [".den/**"]
+runaway: {minutes: 45}
+needs: [mandate-doc]
