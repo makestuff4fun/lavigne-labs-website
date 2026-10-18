@@ -122,7 +122,11 @@ LFTP
 # The local HTTP proxy doesn't speak FTP; always go direct.
 env -u ftp_proxy -u FTP_PROXY -u http_proxy -u HTTP_PROXY -u https_proxy \
     -u HTTPS_PROXY -u all_proxy -u ALL_PROXY \
-lftp -f "$lftp_script" \
+lftp -f "$lftp_script" 2>&1 \
+  | sed -u -E 's#(s?ftps?://)[^@/ ]+@#\1***@#g'
+# lftp prints every transfer as ftp://user:pass@host/... (mirror --dry-run and --verbose
+# both do, whatever the script says), so its output is masked above. pipefail-free status:
+[ "${PIPESTATUS[0]}" = 0 ] \
   || die "lftp transfer failed (see output above). The site may be partially updated — re-run to finish."
 
 [ "$DRY_RUN" = 1 ] && { log "Dry run complete — nothing uploaded."; exit 0; }
