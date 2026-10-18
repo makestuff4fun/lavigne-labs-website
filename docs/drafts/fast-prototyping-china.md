@@ -8,9 +8,15 @@ series: "field-notes"
 seriesOrder: 3
 ---
 
+<!-- REVIEW NOTE
+Corrected: Spelling and grammar fixed silently (including "specialize" to "specialize" to match "anodizing"). Facts, physics and terms: I found nothing in your draft that was wrong. I checked the Chinese search terms, the CNC and anodizing timings (your figures, unchanged), and the JLC PCB and assembly line.
+Added: (1) A sharper hook at the top: the quiet shop is a mismatch, not bad luck. (2) Ask each shop for DFM feedback before cutting. (3) Tolerance stack-up when parts come from different shops: tell each shop which features mate, and keep a few critical dimensions generous. (4) Anodizing adds thickness on the surface, so holes and mating faces need allowance or masking. (5) Order a spare of every part so one scrapped part does not reset the schedule. (6) Send drawings plus the 3D file plus a one-page spec, with material and finish marked explicitly. (7) Process choice: CNC vs 3D print vs sheet metal, in plain terms and without numbers. (8) A new subhead, "Before you cut", to hold items 2 to 7. No draft-angle advice anywhere. Strike any of these you would not do.
+Unsure: Nothing in the body. I gave no thickness figure for anodizing because it varies by type and shop; tell me if you want your own rule of thumb in.
+-->
+
 <!-- DRAFT: Brian must read before this moves to web/content/articles/ -->
 
-Almost every hardware team that comes to us has the same story about their prototype. The first version came back quickly and looked decent. The second took a little longer. By the third or fourth, messages sat unanswered for days, and then they stopped getting answered at all. The product wasn't finished, and the supplier had quietly gone cold.
+The prototype that goes quiet is rarely bad luck. Almost every hardware team that comes to us has the same story about their prototype. The first version came back quickly and looked decent. The second took a little longer. By the third or fourth, messages sat unanswered for days, and then they stopped getting answered at all. The product wasn't finished, and the supplier had quietly gone cold.
 
 Nothing mysterious happened. They asked the wrong kind of supplier to do the wrong kind of job.
 
@@ -44,7 +50,7 @@ Your only real hook is the lure of a big order down the road. That's a genuine i
 
 The fix is to stop asking factories to do something they aren't set up for. Instead:
 
-- **Find shops that specialise in prototypes.** They exist across China, and prototype work is the whole business. Quick turnaround isn't a favour to them; it's the product. Search in Chinese, not English: 手板 (hand-built prototype), 快速打样 (rapid sampling), CNC加工 (CNC machining), 阳极氧化 (anodizing) and 线束加工 (wire harness) will show you a very different set of shops than the English terms do.
+- **Find shops that specialize in prototypes.** They exist across China, and prototype work is the whole business. Quick turnaround isn't a favour to them; it's the product. Search in Chinese, not English: 手板 (hand-built prototype), 快速打样 (rapid sampling), CNC加工 (CNC machining), 阳极氧化 (anodizing) and 线束加工 (wire harness) will show you a very different set of shops than the English terms do.
 - **Source each part from a different shop.** Don't have one place coordinate everything for you. Every extra layer of coordination adds delay, and the coordinator has no reason to hurry.
 - **Do the hand fitting and assembly yourself.** Once the parts are in front of you, you can see what fits, what rubs and what needs another pass, and you can decide on the spot.
 
@@ -52,13 +58,21 @@ The fix is to stop asking factories to do something they aren't set up for. Inst
 
 A prototype shop quotes from what you send, so a vague request gets a slow, padded answer or none at all. For each part, send:
 
-1. A 3D file in a standard exchange format, plus a 2D drawing.
-2. Material and finish, stated plainly.
+1. A 3D file in a standard exchange format, plus a 2D drawing, plus a one-page spec that says what the part is, what it mates with and what matters.
+2. Material and finish, stated plainly and marked on the drawing, not left to the shop to assume.
 3. Quantity, which for a prototype is usually one to a handful.
 4. The dimensions that actually matter, with tolerances only where they do. Everything else can stay loose.
 5. Where it ships and when you need it.
 
 Mark the critical fits on the drawing. A shop that can see what matters will protect it; a shop that can't will guess.
+
+### Before you cut: ask, and leave room
+
+- **Ask each shop for DFM feedback before they cut.** A good prototype shop will tell you what is hard, what is slow and what they would change. A quick question costs minutes; a scrapped part costs days.
+- **Plan for tolerance stack-up.** When parts come from different shops, each one is made to its own tolerances, and the errors add up where the parts meet. Tell each shop which features mate and with what, and keep a few critical dimensions generous so a small error on one side doesn't stop the fit.
+- **Remember that anodizing adds thickness.** The finish is a build-up on the surface, so holes, threads and mating faces need allowance, or need to be masked. Say so on the drawing when you send the part.
+- **Order a spare of every part.** One scrapped or mis-measured part then doesn't reset the schedule. It is cheap insurance next to a second round trip.
+- **Pick the process that fits the part.** CNC suits parts that need strength, accuracy or a real material. 3D printing suits odd shapes and quick form checks. Sheet metal suits brackets and enclosures that are mostly flat. Choose per part, not per project.
 
 ### How to split and sequence the parts
 
