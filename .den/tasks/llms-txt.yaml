@@ -1,0 +1,36 @@
+do: |
+  THE JOB: Make the static export emit /llms.txt (file web/out/llms.txt), generated at build
+  time from content, in the llmstxt.org format. Implement it as a Next route handler
+  web/app/llms.txt/route.ts with `export const dynamic = "force-static"` (read the Next 16 docs in
+  web/node_modules/next/dist/docs/ first; this is not the Next you know). Content: an H1 "Lavigne
+  Labs", a blockquote summary (from content/site.ts), a short paragraph on what Brian Barrett
+  does (help US/Canada hardware teams manufacture in China), contact (hello@lavignelabs.com),
+  then H2 sections "Articles" (every article from lib/articles.ts: "- [Title](absolute URL): excerpt"),
+  "Tools" (every entry in content/tools.ts, absolute URL via toolHref), and "Pages" (home, work,
+  faq, contact, lab, play). Use site.url for absolute URLs. Do not hardcode article or tool lists.
+  The export script moves app/api aside; make sure the route is not under app/api.
+  THE WHY: Brian wants the site easy for AI agents to read ("that is the new way the web is
+  viewed"). A generated llms.txt cannot drift from the content.
+  GUARDRAILS: Do not deploy, do not touch web/scripts/deploy.sh, FTP or cert files. Do not change
+  robots.ts. No new dependencies. Existing pages must still build.
+  DONE MEANS: `cd web && npm run export` succeeds and web/out/llms.txt lists every article slug
+  and every tool href.
+done_when: |
+  cd web && npm run export >/tmp/llms-export.log 2>&1 && python3 - <<'PY'
+  import re,glob,os,sys
+  t=open('out/llms.txt',encoding='utf8').read()
+  assert t.startswith('# Lavigne Labs'), 'bad H1'
+  assert '## Articles' in t and '## Tools' in t
+  slugs=[os.path.basename(f)[:-3] for f in glob.glob('content/articles/*.md')]
+  assert slugs
+  for s in slugs: assert '/articles/'+s in t, s
+  for f in glob.glob('public/tools/**/*.html',recursive=True):
+      pass
+  tools=open('content/tools.ts',encoding='utf8').read()
+  hrefs=re.findall(r'href:\s*"([^"]+)"',tools)
+  assert hrefs
+  for h in hrefs: assert h in t, h
+  assert 'hello@lavignelabs.com' in t
+  PY
+protected: [".den/**"]
+runaway: {minutes: 25}
