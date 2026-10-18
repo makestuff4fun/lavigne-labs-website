@@ -1,0 +1,73 @@
+do: |
+  THE JOB: (1) Add /openapi.json, an OpenAPI 3.1 document generated at build time from the
+  REGISTRY in web/lib/api.ts (a force-static route, app/openapi.json/route.ts, like llms.txt). One
+  GET path per endpoint file under /api/v1/ (index, articles, articles/{slug}, services, faq,
+  portfolio, contact, tools, tools/{id}, search-index), each with summary/description from the
+  registry, a 200 response of application/json with a schema that is accurate for that endpoint
+  (use components/schemas and $ref; the shared envelope has version, generated, site). Parametrised
+  paths ({slug}, {id}) list their enum of real values from content. servers: [{url: site.url}].
+  info: title, version "v1", description, contact (email). Derive paths from the REGISTRY so a new
+  endpoint appears without editing the generator. (2) Link the API for discovery: add
+  /api/v1/index.json and /openapi.json to out/llms.txt (and llms-full.txt header); add
+  <link rel="alternate" type="application/json" href="/api/v1/index.json"> and a
+  <link rel="service-desc" type="application/vnd.oai.openapi+json" href="/openapi.json"> to the
+  root layout head (Next metadata `alternates.types` or a head link, whichever Next 16 supports;
+  read web/node_modules/next/dist/docs/); add both URLs to the sitemap (app/sitemap.ts, via
+  pageUrl() where it applies); add the API and openapi to the footer or a short "For agents" line
+  only if one already exists, otherwise skip.
+  THE WHY: Brian (2026-10-18): "/openapi.json describing all of it" and "Link
+  /api/v1/index.json from llms.txt, the home page <link rel=alternate type=application/json>, and
+  the sitemap." Agents discover the API from these; a wrong schema is worse than none, so schemas
+  must match what the endpoints really return.
+  GUARDRAILS: Do not deploy. No runtime server. Do not change existing endpoint shapes. Do not add
+  dependencies unless a dev-only validator is needed for your own check (prefer none).
+  DONE MEANS: after `cd web && npm run export`, out/openapi.json is valid OpenAPI 3.1 (every $ref
+  resolves, every path in index.json is present, example/enums match real content), and the three
+  discovery links exist in llms.txt, out/index.html and out/sitemap.xml.
+done_when: |
+  cd web && npm run export >/tmp/openapi-export.log 2>&1 && python3 - <<'PY'
+  import json,re
+  o=json.load(open('out/openapi.json',encoding='utf8'))
+  assert re.match(r'^3\.1\.\d+$',o['openapi']),o['openapi']
+  assert o['info']['title'] and o['info']['version']
+  assert o['servers'][0]['url'].startswith('https://')
+  idx=json.load(open('out/api/v1/index.json',encoding='utf8'))
+  paths=o['paths']
+  for e in idx['endpoints']:
+      assert e['path'] in paths,('missing',e['path'])
+  assert '/api/v1/articles/{slug}.json' in paths or '/api/v1/articles/{slug}' in paths
+  assert any('tools/{' in p for p in paths)
+  def refs(x):
+      if isinstance(x,dict):
+          for k,v in x.items():
+              if k=='$ref': yield v
+              else: yield from refs(v)
+      elif isinstance(x,list):
+          for v in x: yield from refs(v)
+  for r in refs(o):
+      assert r.startswith('#/'),r
+      cur=o
+      for part in r[2:].split('/'): cur=cur[part.replace('~1','/').replace('~0','~')]
+  for p,item in paths.items():
+      g=item['get']
+      assert g.get('summary') or g.get('description'),p
+      assert 'application/json' in g['responses']['200']['content'],p
+      for par in re.findall(r'\{(\w+)\}',p):
+          ps=[x for x in g.get('parameters',[])+item.get('parameters',[]) if x['name']==par]
+          assert ps and ps[0]['in']=='path' and ps[0]['required'] is True,(p,par)
+          assert ps[0]['schema'].get('enum'),(p,par,'no enum')
+  llms=open('out/llms.txt',encoding='utf8').read()
+  assert 'api/v1/index.json' in llms and 'openapi.json' in llms
+  home=open('out/index.html',encoding='utf8').read()
+  assert re.search(r'<link[^>]+rel="alternate"[^>]+type="application/json"[^>]+/api/v1/index\.json',home) or re.search(r'<link[^>]+/api/v1/index\.json[^>]+type="application/json"',home),'home link'
+  assert 'openapi.json' in home
+  sm=open('out/sitemap.xml',encoding='utf8').read()
+  assert 'api/v1/index.json' in sm and 'openapi.json' in sm
+  try:
+      from openapi_spec_validator import validate
+      validate(o)
+  except ImportError:
+      pass
+  PY
+protected: [".den/**"]
+runaway: {minutes: 30}
