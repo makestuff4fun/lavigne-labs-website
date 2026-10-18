@@ -1,0 +1,47 @@
+do: |
+  THE JOB: Update every structured-data and machine-readable surface: Organization/ProfessionalService JSON-LD (founder: Person Brian Barrett with the founder background; description in the new voice; NO job-seeker Person, no seeks/hasOccupation/jobTitle-as-candidate), llms.txt, llms-full.txt, every /api/v1 JSON (index.json, contact.json, services.json, about/site descriptions, engagement models renamed to 'How we work together'), openapi.json descriptions, rss.xml/feed.json site description, search-index.json descriptions, sitemap unaffected. Also README and docs that describe positioning (README.md, docs/CONTEXT.md 'What this is' and positioning section) and docs/CONTENT.md voice rules (add: we/our team voice, partners never named, philosophy line, the banned phrases list). Read web/content/site.ts as already rewritten by reposition-copy and reuse its exact wording.
+    THE WHY: Brian (2026-10-18, approved): "change the message everywhere. Everything must match and be consistent." The site moves from 'hire Brian / open to a full-time role' to 'Lavigne Labs: a Shenzhen hardware product-development team, ready to help you.' This is one of three chained repositioning tasks (copy -> structured data and AI files -> FAQ/contact/articles); stay inside your part but use the same wording as the others (read what earlier ones wrote). Engagement models become 'How we work together': prototype sprints, development to production, production support. Nav 'How I work' becomes 'How we work'.
+    THE MODEL (true; state it carefully, never overclaim): Lavigne Labs is a Shenzhen hardware product-development team. Lavigne Labs is the face and the accountable lead. Each project is matched to a vetted Shenzhen engineering team, design-led or production-integrated depending on the client's needs, with 40+ engineers between the partner teams. Brian Barrett is the first contact and puts his reputation on the results. Partners are NEVER named. No capacity claim beyond that truth (no "hundreds of engineers", no guaranteed turnaround numbers).
+    VOICE: "we" and "our team". Never "I'm looking for a role", "hire Brian", "join your team", "open to full-time", "fractional". "Founded by Brian Barrett" plus his background (13+ years in China, ran an LED factory for Black & Decker for 6 years, 2 EV startups) is welcome as a founder story (an About/Founder section). Mention no employer other than that. Keep the visual design: change the MESSAGE only. Keep the no-fabricated-numbers rule from docs/CONTEXT.md.
+    PHILOSOPHY (say it plainly, warmly, it filters clients): "We move fast. Speed costs money; we spend it where it saves weeks." Prototyping is the hook. Lowest unit cost at volume is a welcome PRODUCTION goal; penny-pinching on DEVELOPMENT is the poor fit, but never say that rudely. Who we work best with: funded startups and teams with a completed Kickstarter (say it warmly).
+    GUARDRAILS: no deploy; do not touch design/CSS beyond what copy needs; do not name partner teams; no credentials; keep the mailto:hello@lavignelabs.com fallback; keep all existing routes, feeds, llms.txt format and API shapes working; do not edit game or fastener/PCB calculator pages. The check ignores out/tools, out/play, out/qr-sync (calculators legitimately say 'fractional').
+    DONE MEANS: the scope above reads in the new voice and the done_when check passes.
+context: ["docs/CONTENT.md", "web/content/site.ts", "web/lib/api.ts"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/reposition.log 2>&1 || { tail -30 /tmp/reposition.log; exit 1; }
+  python3 - <<'PY'
+  import os,re,json
+  BAN=['full-time', 'full time role', 'hire me', 'hire brian', 'open to a', 'looking for the right team', 'join your team', 'fractional', "i'm looking", "what i'm after"]
+  SKIP=('out/_next','out/tools','out/play','out/qr-sync','out/games')
+  def files(exts):
+      for r,_,fs in os.walk('out'):
+          if r.startswith(SKIP): continue
+          for f in fs:
+              if f.endswith(exts): yield os.path.join(r,f)
+  EXTS=('.json','.txt','.xml')
+  bad=[]
+  for p in files(EXTS):
+      t=open(p,encoding='utf8',errors='ignore').read().lower().replace('&#x27;',"'").replace('&#39;',"'").replace('\u2019',"'")
+      t=re.sub(r'\s+',' ',t)
+      for b in BAN:
+          if b in t: bad.append((p,b))
+  assert not bad,bad[:15]
+  import glob
+  h=open('out/index.html',encoding='utf8').read()
+  blocks=[json.loads(x) for x in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>',h,re.S)]
+  flat=[]
+  for b in blocks: flat+= b['@graph'] if '@graph' in b else [b]
+  orgs=[o for o in flat if o.get('@type') in ('Organization','ProfessionalService') or 'ProfessionalService' in str(o.get('@type'))]
+  assert orgs,'no org jsonld'
+  o=json.dumps(orgs[0]); assert 'founder' in o and 'Brian Barrett' in o
+  assert not [x for x in flat if x.get('@type')=='Person' and 'seeks' in json.dumps(x).lower()]
+  l=open('out/llms.txt',encoding='utf8').read(); assert 'Founded by Brian Barrett' in l or 'founder' in l.lower()
+  assert 'product-development' in l.lower() or 'product development' in l.lower()
+  d=open('docs/CONTENT.md',encoding='utf8').read().lower()
+  assert 'our team' in d and 'partners are never named' in d
+  open('/dev/null')
+  PY
+protected: [".den/**"]
+runaway: {minutes: 50}
+needs: ["reposition-copy"]
