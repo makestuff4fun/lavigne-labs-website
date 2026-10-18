@@ -102,6 +102,20 @@ Your article body here, in **Markdown**. Headings (`##`), lists, **bold**,
   appears automatically on `/articles` (sorted by `date`). Reading time is
   computed from the word count.
 
+## Editorial strategy: the recipe, not the ingredients
+
+Brian's editorial strategy for every article (2026-10-18), verbatim:
+
+> The shops and suppliers don't need to be named. We are giving a recipe not the ingredients. The point is to give away the recipe but in a way that's hard to execute. Most readers aren't in china, don't speak chinese and can't do these things. It seems like giving away the secrets but it's really clever "honest advertising". I know what to do, I'll tell you what I do, but if you're not me, I can still do it better. I have years of existing relationships with trusted suppliers.
+
+Working rules:
+
+- **Give the method generously and specifically.** Real steps, real Chinese search terms, real timelines. It must read as honest help, never a teaser.
+- **Name no shops or suppliers.** The one exception is JLC, and only where Brian named it himself.
+- **Let the hard parts show, without bragging.** Being on the ground in China, speaking Chinese, visiting in person, payment and accounts, and above all years of trusted relationships (which can't be bought) should come through naturally in the telling.
+- **Let the close turn that into the CTA:** "you can do this yourself, and here's how, or we can do it faster and better because we already have the relationships." Warm and confident, not salesy.
+- **The point is honest advertising.** Everything we say is true and useful on its own; the reader decides whether to do it themselves or hand it to us.
+
 ## Engineering tools — `content/tools.ts`
 
 Lists the tool/calculator pages (the interactive UI is in
