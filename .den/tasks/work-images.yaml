@@ -1,0 +1,52 @@
+do: |
+  THE JOB: Build a web-optimised gallery of 3-6 images for each of the 12 projects in web/content/projects.ts,
+  committed under web/public/work/<slug>/ (e.g. 01.jpg, 02.jpg ...; keep the existing web/public/work/<slug-file> card
+  images in place). Resize so the long edge is <= 1600 px, save JPEG (quality ~80, or smaller until) each file
+  <= 300 KB (300000 bytes). PNG diagrams may become JPEG unless transparency matters. Use ImageMagick `convert`
+  or PIL (both on red). Also write web/content/projectGalleries.ts: `projectGalleries: Record<slug, {src:
+  string (/work/<slug>/01.jpg), alt: string, width: number, height: number}[]>`; alt text must describe what
+  you actually see (open the image with the Read tool) and avoid claims about the project not visible in it.
+  Image sources, in order of preference:
+   1. Brian's OneDrive via rclone on red (READ-ONLY: only `rclone lsf`, `rclone copy` TO a local temp dir, never
+      write, move or delete on OneDrive): `rclone lsf "onedrive2:Lavigne Labs/Website/Images"` holds multiple shots
+      per project (camera arm.jpg, camera arm2..5, keyboard*, leash*, hex puck*, microscope*, ff* = Freezing Fortress/
+      sokoban, ebike*, dog backpack*, brake*, numbered folders 1/ 2/ 3/, Grow Light/ ...) and
+      `rclone lsf "onedrive2:Lavigne Labs"` has per-project folders (Lektor, Grow Light, Guildstone, ...). Match shots to
+      projects by name; open candidates to confirm they show the right thing.
+   2. The image URLs recorded for each slug in web/content/projectDetails.ts (`images`, from the archived WordPress
+      page; fetch the `id_` Wayback form). Use these for the PCB/badge/LCD blog projects where OneDrive has nothing.
+  Work in a temp dir outside the checkout (e.g. /tmp/work-images); only the final optimised files go in the repo.
+  If a project truly has fewer than 3 usable photos after both sources, include what exists and list it in
+  docs/work-sources/IMAGES-SHORT.md with what you tried; do not duplicate one photo to pad.
+  THE WHY: Brian (2026-10-18): the work page used to show details and images per project and is broken. Step 2
+  of 3 (text, images, pages). The detail pages (next task) render these galleries.
+  GUARDRAILS: OneDrive is read-only. No secrets or rclone config in the repo. Keep every file <= 300000 bytes and the
+  whole addition under ~12 MB. Do not touch pages/components or deploy. Do not delete existing web/public/work files.
+  DONE MEANS: every project has its gallery directory and entries in projectGalleries.ts, each file exists, is a real
+  decodable image within the size and dimension limits.
+done_when: |
+  python3 - <<'PY'
+  import re,os
+  from PIL import Image
+  g=open('web/content/projectGalleries.ts',encoding='utf8').read()
+  slugs=re.findall(r'slug:\s*"([^"]+)"',open('web/content/projects.ts',encoding='utf8').read())
+  short=open('docs/work-sources/IMAGES-SHORT.md',encoding='utf8').read() if os.path.exists('docs/work-sources/IMAGES-SHORT.md') else ''
+  total=0
+  for s in slugs:
+      d=f'web/public/work/{s}'
+      files=sorted(f for f in os.listdir(d)) if os.path.isdir(d) else []
+      assert files,s
+      if s not in short: assert 3<=len(files)<=6,(s,len(files))
+      assert len(files)<=6,(s,len(files))
+      for f in files:
+          p=f'{d}/{f}'; sz=os.path.getsize(p); total+=sz
+          assert sz<=300000,(p,sz)
+          im=Image.open(p); im.load()
+          assert max(im.size)<=1600 and min(im.size)>=200,(p,im.size)
+          assert f'/work/{s}/{f}' in g,(p,'not in projectGalleries.ts')
+  assert total<14_000_000,total
+  assert len(re.findall(r'alt:\s*"[^"]{12,}"',g))>=30
+  PY
+needs: [work-text]
+protected: [".den/**"]
+runaway: {minutes: 45}
