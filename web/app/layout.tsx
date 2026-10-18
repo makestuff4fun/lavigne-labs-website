@@ -46,7 +46,13 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
   },
-  alternates: { canonical: site.url },
+  alternates: {
+    canonical: site.url,
+    types: {
+      "application/rss+xml": `${site.url}/rss.xml`,
+      "application/feed+json": `${site.url}/feed.json`,
+    },
+  },
 };
 
 export default function RootLayout({
