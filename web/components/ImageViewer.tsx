@@ -19,6 +19,13 @@ export function ImageViewer({ images, label }: { images: LightboxImage[]; label:
   const last = images.length - 1;
   const go = (i: number) => setIndex(Math.min(last, Math.max(0, i)));
 
+  const [fade, setFade] = useState({ l: false, r: false });
+  const measure = () => {
+    const b = strip.current;
+    if (b) setFade({ l: b.scrollLeft > 4, r: b.scrollLeft + b.clientWidth < b.scrollWidth - 4 });
+  };
+  useEffect(measure, [images.length]);
+
   // keep the active thumbnail visible without scrolling the page
   useEffect(() => {
     const el = strip.current?.children[index] as HTMLElement | undefined;
@@ -61,7 +68,7 @@ export function ImageViewer({ images, label }: { images: LightboxImage[]; label:
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${images.length}`}
             aria-hidden={i !== index}
-            className={`absolute inset-0 transition-opacity duration-300 ${i === index ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`absolute inset-0 p-3 transition-opacity sm:p-4 duration-300 ${i === index ? "opacity-100" : "pointer-events-none opacity-0"}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -93,7 +100,8 @@ export function ImageViewer({ images, label }: { images: LightboxImage[]; label:
       </div>
 
       {images.length > 1 && (
-        <div ref={strip} className="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Thumbnails">
+        <div className="relative mt-3">
+        <div ref={strip} onScroll={measure} className="thumb-strip flex gap-2 overflow-x-auto" role="group" aria-label="Thumbnails">
           {images.map((g, i) => (
             <button
               key={g.src}
@@ -101,12 +109,15 @@ export function ImageViewer({ images, label }: { images: LightboxImage[]; label:
               aria-label={`Show image ${i + 1} of ${images.length}`}
               aria-current={i === index}
               onClick={() => go(i)}
-              className={`relative h-16 w-20 flex-none overflow-hidden rounded-lg border bg-mist transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:h-[72px] sm:w-24 ${i === index ? "border-accent ring-2 ring-accent" : "border-line opacity-70 hover:opacity-100"}`}
+              className={`relative aspect-[4/3] w-[4.5rem] flex-none snap-start overflow-hidden rounded-lg border bg-mist transition sm:w-[calc((100%-2.5rem)/6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${i === index ? "border-accent ring-2 ring-accent" : "border-line opacity-70 hover:opacity-100"}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={g.src} alt="" width={g.width} height={g.height} loading="lazy" decoding="async" className="h-full w-full object-cover" />
             </button>
           ))}
+        </div>
+        {fade.l && <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white to-transparent" />}
+        {fade.r && <span aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" />}
         </div>
       )}
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { marked } from "marked";
+import { renderProjectBody } from "@/lib/projectBody";
 import { site, mailtoHref, pageUrl } from "@/content/site";
 import { Container, Eyebrow, ArrowIcon, Button } from "@/components/ui";
 import { projects } from "@/content/projects";
@@ -48,7 +48,7 @@ export default async function ProjectPage({
   const gallery = projectGalleries[slug] ?? [];
   const detail = projectDetails[slug];
   const description = detail?.description?.trim() ?? "";
-  const html = description ? (marked.parse(description) as string) : "";
+  const html = description ? renderProjectBody(description, project.title) : "";
 
   const writtenUp = getArticlesForProject(slug);
 
@@ -83,7 +83,7 @@ export default async function ProjectPage({
           className={`mt-8 grid gap-8 lg:gap-12 ${gallery.length > 0 ? "lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : "max-w-3xl"}`}
         >
           {gallery.length > 0 && (
-            <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+            <div className="min-w-0 sticky-viewer">
               <ImageViewer images={gallery} label={project.title} />
             </div>
           )}
@@ -106,7 +106,7 @@ export default async function ProjectPage({
 
             {html && (
               <div
-                className="prose prose-slate mt-8 max-w-none border-t border-line pt-8 prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
+                className="prose prose-slate mt-8 max-w-none border-t border-line pt-8 prose-headings:tracking-tight prose-h3:mb-3 prose-h3:mt-9 prose-h3:text-xl prose-h3:font-semibold prose-p:leading-relaxed prose-p:my-4 prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
                 dangerouslySetInnerHTML={{ __html: html }}
               />
             )}

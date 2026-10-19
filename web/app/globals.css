@@ -262,3 +262,22 @@ body {
     min-height: 2.25rem;
   }
 }
+
+/* Work detail: viewer column stays in view while the long text scrolls.
+   Only when the viewport is wide and tall enough to hold the viewer. */
+@media (min-width: 1024px) and (min-height: 700px) {
+  .sticky-viewer {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+  }
+}
+
+/* thumbnail strip: hide scrollbar, snap to thumbs */
+.thumb-strip {
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.thumb-strip::-webkit-scrollbar {
+  display: none;
+}
