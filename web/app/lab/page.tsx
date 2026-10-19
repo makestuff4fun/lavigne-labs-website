@@ -40,9 +40,10 @@ export default function LabPage() {
                     <Image
                       src={note.image}
                       alt={note.title}
-                      fill
+                      width={400}
+                      height={400}
                       sizes="(max-width: 640px) 100vw, 200px"
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 )}

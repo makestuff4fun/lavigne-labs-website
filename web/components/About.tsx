@@ -12,9 +12,10 @@ export function About() {
               <Image
                 src="/brand/brian.jpg"
                 alt="Brian Barrett, founder of Lavigne Labs"
-                fill
+                width={800}
+                height={1000}
                 sizes="(max-width: 1024px) 80vw, 30vw"
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           </div>

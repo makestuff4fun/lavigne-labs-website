@@ -48,10 +48,11 @@ export function Hero() {
               <Image
                 src="/brand/office.jpg"
                 alt="The Lavigne Labs hardware workshop in Shenzhen"
-                fill
+                width={1200}
+                height={900}
                 priority
                 sizes="(max-width: 1024px) 100vw, 45vw"
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-white px-5 py-4 text-ink shadow-card sm:block">

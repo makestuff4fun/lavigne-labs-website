@@ -57,9 +57,10 @@ export default function PlayPage() {
                   <Image
                     src={game.image}
                     alt={game.title}
-                    fill
+                    width={800}
+                    height={600}
                     sizes="(max-width: 640px) 100vw, 50vw"
-                    className="object-contain p-4 transition group-hover:scale-[1.03]"
+                    className="h-full w-full object-contain p-4 transition group-hover:scale-[1.03]"
                     style={{ imageRendering: "pixelated" }}
                   />
                 </div>

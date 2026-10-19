@@ -16,10 +16,11 @@ export function ProjectCard({
         <Image
           src={project.image}
           alt={project.title}
-          fill
+          width={800}
+          height={600}
           priority={priority}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition duration-500 group-hover:scale-[1.04]"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
         />
       </div>
       <div className="p-6">

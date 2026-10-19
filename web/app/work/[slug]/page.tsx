@@ -7,6 +7,7 @@ import { Container, Eyebrow, ArrowIcon, Button } from "@/components/ui";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
 import { getArticlesForProject, formatDate } from "@/lib/articles";
+import { ImageViewer } from "@/components/ImageViewer";
 import { projectGalleries } from "@/content/projectGalleries";
 
 export const dynamicParams = false;
@@ -70,7 +71,7 @@ export default async function ProjectPage({
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <Container className="max-w-4xl">
+      <Container className="max-w-6xl">
         <Link
           href="/work/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-slate transition hover:text-ink"
@@ -78,53 +79,45 @@ export default async function ProjectPage({
           <ArrowIcon className="rotate-180" /> All work
         </Link>
 
-        <div className="mt-6">
-          <Eyebrow>Project</Eyebrow>
-        </div>
-        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          {project.title}
-        </h1>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-mist px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-slate"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <p className="mt-6 text-lg leading-relaxed text-slate">{project.blurb}</p>
+        <div
+          className={`mt-8 grid gap-8 lg:gap-12 ${gallery.length > 0 ? "lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : "max-w-3xl"}`}
+        >
+          {gallery.length > 0 && (
+            <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+              <ImageViewer images={gallery} label={project.title} />
+            </div>
+          )}
+          <div className="min-w-0">
+            <Eyebrow>Project</Eyebrow>
+            <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              {project.title}
+            </h1>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-mist px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-slate"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="mt-6 text-lg leading-relaxed text-slate">{project.blurb}</p>
 
-        {gallery.length > 0 && (
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {gallery.map((g, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={g.src}
-                src={g.src}
-                alt={g.alt}
-                width={g.width}
-                height={g.height}
-                loading={i === 0 ? undefined : "lazy"}
-                className="h-auto w-full rounded-xl border border-line bg-mist"
+            {html && (
+              <div
+                className="prose prose-slate mt-8 max-w-none border-t border-line pt-8 prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
+                dangerouslySetInnerHTML={{ __html: html }}
               />
-            ))}
+            )}
+            {detail && !detail.verified && (
+              <p className="mt-6 text-sm text-slate">Description recovered from the original site</p>
+            )}
           </div>
-        )}
-
-        {html && (
-          <div
-            className="prose prose-slate mt-10 max-w-none prose-headings:tracking-tight prose-a:text-accent prose-a:no-underline hover:prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        )}
-        {detail && !detail.verified && (
-          <p className="mt-6 text-sm text-slate">Description recovered from the original site</p>
-        )}
+        </div>
 
         {writtenUp.length > 0 && (
-          <section className="mt-12" aria-label="Written up in">
+          <section className="mt-14" aria-label="Written up in">
             <h2 className="font-mono text-xs uppercase tracking-widest text-slate">
               Written up in
             </h2>
