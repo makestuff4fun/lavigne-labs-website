@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { site, mailtoHref, pageUrl } from "@/content/site";
 import { projects } from "@/content/projects";
 import { getSeries } from "@/content/series";
+import { ArticleLightbox } from "@/components/ArticleLightbox";
 import { Container, ArrowIcon, Button } from "@/components/ui";
 import {
   getArticle,
@@ -178,21 +179,24 @@ export default async function ArticlePage({
         </h1>
 
         {article.hero && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={article.hero}
-            alt={article.heroAlt ?? article.title}
-            width={1600}
-            height={900}
-            fetchPriority="high"
-            className="mt-8 aspect-[16/9] w-full rounded-2xl border border-line object-cover shadow-card"
-          />
+          <figure data-figure data-hero>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={article.hero}
+              alt={article.heroAlt ?? article.title}
+              width={1600}
+              height={900}
+              fetchPriority="high"
+            />
+          </figure>
         )}
 
         <div
           className="article-body prose prose-slate mt-8 max-w-none prose-headings:tracking-tight prose-h2:text-2xl prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-blockquote:border-accent prose-blockquote:text-ink prose-th:text-left"
           dangerouslySetInnerHTML={{ __html: article.html }}
         />
+
+        <ArticleLightbox />
 
         {article.faq && article.faq.length > 0 && (
           <section id="quick-answers" className="mt-12" aria-labelledby="quick-answers-h">

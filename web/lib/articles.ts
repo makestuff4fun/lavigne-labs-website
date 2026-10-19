@@ -100,14 +100,14 @@ function jpegSize(src: string): { w: number; h: number } | undefined {
 const escAttr = (t: string) =>
   t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
-/** Inline images: lazy, sized (no layout shift), and a <figure> with <figcaption> when a title is given. */
+/** Inline images: always a <figure data-figure> (sized, lazy), with <figcaption> when a title is given. */
 const renderer = new Renderer();
 renderer.image = ({ href, title, text }) => {
   const size = jpegSize(href);
   const img = `<img src="${escAttr(href)}" alt="${escAttr(text)}" loading="lazy" decoding="async"${
-    size ? ` width="${size.w}" height="${size.h}"` : ""
+    size ? ` width="${size.w}" height="${size.h}"` : ` style="aspect-ratio:4/3"`
   } />`;
-  return title ? `<figure>${img}<figcaption>${escAttr(title)}</figcaption></figure>` : img;
+  return `<figure data-figure>${img}${title ? `<figcaption>${escAttr(title)}</figcaption>` : ""}</figure>`;
 };
 
 const CALLOUT = /<blockquote>(\s*<p><strong>(Common mistakes|Rules? of thumb|Tip|Note)<\/strong>)/g;
@@ -116,6 +116,7 @@ const CALLOUT = /<blockquote>(\s*<p><strong>(Common mistakes|Rules? of thumb|Tip
 function renderMarkdown(md: string): string {
   const html = marked.parse(md, { renderer }) as string;
   return html
+    .replace(/<p>\s*(<figure data-figure>[\s\S]*?<\/figure>)\s*<\/p>/g, "$1")
     .replace(/<table>/g, '<div class="table-scroll"><table>')
     .replace(/<\/table>/g, "</table></div>")
     .replace(CALLOUT, (_m, rest: string, kind: string) => {

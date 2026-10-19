@@ -59,22 +59,47 @@ body {
 }
 
 /* Article body: figures, pull quotes, tables, callouts */
-.article-body figure {
+[data-figure] {
   margin: 2rem 0;
-}
-.article-body figure img,
-.article-body > p > img {
-  border-radius: 0.75rem;
+  overflow: hidden;
   border: 1px solid var(--color-line);
-  height: auto;
+  border-radius: 0.875rem;
+  background: var(--color-mist);
+  box-shadow: var(--shadow-card);
+}
+[data-figure] img {
+  display: block;
   width: 100%;
+  height: auto;
   margin: 0;
+  border: 0;
+  border-radius: 0;
+  max-height: 34rem;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+[data-figure][data-hero] {
+  margin: 2rem 0 0;
+}
+[data-figure][data-hero] img {
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 .article-body figcaption {
-  margin-top: 0.6rem;
+  margin: 0;
+  padding: 0.65rem 1rem 0.75rem;
+  border-top: 1px solid var(--color-line);
+  background: #fff;
   font-size: 0.8rem;
+  line-height: 1.45;
   color: var(--color-slate);
-  text-align: center;
+  text-align: left;
+}
+@media (min-width: 64rem) {
+  .article-body [data-figure] {
+    margin-inline: -3rem;
+  }
 }
 .article-body blockquote:not(.callout) {
   margin: 2rem 0;
