@@ -1,0 +1,35 @@
+do: |
+  THE JOB: Four fixes on the /work/<slug>/ detail pages (ImageViewer in web/components/ImageViewer.tsx, page in web/app/work/[slug]/page.tsx, text in web/content/projectDetails.ts, rendered with marked). Take BEFORE shots first (docs/design-review/before-detail/work-camera-arm-{desktop,mobile}.png and work-microscope-slider-{desktop,mobile}.png), then:
+  1. Sticky viewer: on desktop (>=1024px) the viewer column is position: sticky with a top offset under the header, align-self start, so it stays in view while the long text scrolls; fall back to normal flow when the viewport is shorter than the viewer (use a max-height media query, e.g. @media (min-height: 700px)). Make sure no ancestor overflow rule defeats sticky. (A task design-sticky may already have done part of this; verify it, do not duplicate.)
+  2. Frame padding: the image sits about 24px below the frame's top edge but flush left and right. Pick ONE treatment and apply it everywhere (stage, lightbox if relevant): equal inner padding on all sides, or full-bleed image with the frame radius. Check portrait and landscape photos both look intentional.
+  3. Thumbnail strip: on desktop the 6th thumbnail is clipped mid-image. Make up to 6 thumbnails fit in the row (smaller thumbs or a 6-column grid) and, for more than 6, a clear scroll affordance (edge fade plus scroll-snap). Keep the active thumbnail visible; keep tap targets usable on mobile.
+  4. The project body's first heading (an H2 or bold line) duplicates the page title (e.g. "Articulated Camera Arm: A Blend of..." under the title "Camera Arm"). In the text as rendered, drop the heading when it merely restates the title, or demote it to a normal intro lead, and turn the bold-only "Label:" paragraphs (e.g. "Adapting to Technological Trends:", "Innovative Design and Functionality:") into proper H3 headings with consistent spacing. Do this in the rendering (a small transform of the marked output or of the source strings in projectDetails.ts); do NOT rewrite the prose itself.
+  RENDER AND LOOK: `cd web && npm run export`, serve web/out (python3 -m http.server 8126 --directory web/out, kill after), screenshot with headless Chromium (chrome-headless-shell in ~/.cache/ms-playwright; or Playwright if installed; no new dependency) at 1440px and 390px: /work/camera-arm/ and /work/microscope-slider/ plus one landscape-photo project and a project with few images; also a viewport shot of the desktop page scrolled to mid-height to prove stickiness. Read the PNGs, judge, fix, re-shoot. Save AFTER shots to docs/design-review/after-detail/ with the same names (+ work-camera-arm-scrolled-desktop.png).
+  THE WHY: Managing-agent design review of the new viewer (2026-10-19): big empty left column, uneven frame padding, clipped 6th thumbnail, duplicated heading. Brian wants the portfolio to look professional.
+  GUARDRAILS: no change to wording of descriptions beyond removing a duplicate heading; no brand-colour change; no deploy; derive URLs from site.url; JSON-LD on work pages stays; .den/** untouched; export must pass.
+  DONE MEANS: the four items are fixed, you looked at the before/after screenshots, export passes.
+context: ["web/components/ImageViewer.tsx", "web/app/work/[slug]/page.tsx", "web/content/projectDetails.ts"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/dwd.log 2>&1 || { tail -30 /tmp/dwd.log; exit 1; }
+  python3 - <<'PY'
+  import re,glob,os,html
+  pages=glob.glob('out/work/*/index.html'); assert len(pages)>=8
+  n_h3=0
+  for p in pages:
+      h=open(p,encoding='utf8').read()
+      i=h.index('data-viewer'); assert re.search(r'sticky',h[max(0,i-2500):i+300]),(p,'sticky')
+      assert not re.search(r'<p>\s*<strong>[^<]{3,80}:</strong>\s*</p>',h),(p,'bold label paragraph left')
+      t=re.search(r'<h1[^>]*>(.*?)</h1>',h,re.S); title=html.unescape(re.sub('<[^>]+>','',t.group(1))).strip().lower()
+      for m in re.finditer(r'<h2[^>]*>(.*?)</h2>',h,re.S):
+          x=html.unescape(re.sub('<[^>]+>','',m.group(1))).strip().lower()
+          assert not (title and x.startswith(title)) ,(p,'dup heading',x)
+      n_h3+=len(re.findall(r'<h3\b',h))
+  assert n_h3>=10,n_h3
+  for n in ('work-camera-arm-desktop','work-camera-arm-mobile','work-camera-arm-scrolled-desktop','work-microscope-slider-desktop'):
+      assert os.path.getsize('../docs/design-review/after-detail/%s.png'%n)>5000,n
+  assert os.path.getsize('../docs/design-review/before-detail/work-camera-arm-desktop.png')>5000
+  PY
+protected: [".den/**"]
+needs: ["design-sticky"]
+runaway: {minutes: 60}
