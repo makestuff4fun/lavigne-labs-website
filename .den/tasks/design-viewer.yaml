@@ -1,0 +1,41 @@
+do: |
+  THE JOB: (1) Take BEFORE screenshots first, before changing any code, into docs/design-review/before/ named <page>-<desktop|mobile>.png (page names like home, work-index, work-<slug>, article-<slug>, charts). (2) Build a reusable image viewer for the work detail pages (web/app/work/[slug]/page.tsx renders projectGalleries[slug] as a stacked gallery today; it looks messy). Replace it with a carousel viewer component (e.g. web/components/ImageViewer.tsx, client component): a main image stage with a fixed aspect ratio (object-fit contain on a neutral background, so photos are never cropped badly, no layout shift: reserve the box with aspect-ratio and give images width/height), a thumbnail strip below (scrolls horizontally on mobile), prev/next arrow buttons, swipe on touch (pointer or touch events, no library), keyboard left/right arrows when focused, a counter ("2 / 6"), tap or click on the main image opens a lightbox (fullscreen overlay, dark backdrop, arrows, close button, Esc closes, arrow keys navigate, focus trapped and returned to the trigger, body scroll locked). Lazy-load every slide except the first; keep each image's alt text. Accessible: buttons have aria-labels, visible focus rings, role="region" aria-roledescription="carousel", slides marked with data-slide. Mark the root with data-viewer. No heavy carousel library; hand-written is preferred (a tiny vetted dependency is OK only if it works in a static export). Build the lightbox as its own exported component (web/components/Lightbox.tsx) because the articles task reuses it. Design the text and spec layout beside or under the viewer so it feels deliberate (on desktop viewer left, text right is fine; stacks on mobile). (3) Take AFTER screenshots into docs/design-review/after/ with the same names.
+  RENDER AND LOOK: build with `cd web && npm run export`, serve web/out locally (`python3 -m http.server 8123 --directory web/out` in the background; kill it after). Screenshot with headless Chromium: chrome-headless-shell is in ~/.cache/ms-playwright (chromium_headless_shell-*/chrome-linux*/headless_shell or similar; find it) or use Playwright if installed (do not add it as a repo dependency; keep any script in web/scripts/shoot.mjs or .sh and make it take base URL, output dir and a page list). Shoot at 1440px and 390px wide, full page. Read each PNG with the Read tool and judge it like a design reviewer: alignment, spacing rhythm, image sizing and cropping, hierarchy, consistency. Fix what looks wrong and re-shoot until it looks professional. Pages: / , /work/ , two /work/<slug>/ pages (pick ones with many images), two articles that contain images (e.g. /articles/fast-prototyping-china/ and /articles/lowest-cost-manufacturing-china/), /tools/charts/. Small PNGs only (downscale or use JPEG-quality PNG optimisation so each stays under ~400 KB; commit them).
+  THE WHY: Brian (2026-10-19): "we need an image viewer. carousel type I think. the work portfolio looks messy when you go to the details view. I think this is the reason ... make a design pass and try and make it look more professional. render pages, check the look and judge for yourself."
+  GUARDRAILS: Do not change copy or brand colours. Do not deploy. Derive URLs from site.url, never hard-code lavignelabs.com (export fails on it). Keep JSON-LD image lists on work pages. Static export must still pass (npm run export). Do not touch .den/**. Leave articles to the next task except where the shared Lightbox component lives.
+  DONE MEANS: every /work/<slug>/ page has the viewer with all its images as slides, keyboard and touch work (state in your report how you tested at least keyboard via the headless browser), before and after screenshots exist for the listed pages, and you looked at them.
+context: ["web/app/work/[slug]/page.tsx", "web/content/projects.ts", "docs/CONTENT.md"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/dv.log 2>&1 || { tail -30 /tmp/dv.log; exit 1; }
+  python3 - <<'PY'
+  import glob,re,json,os
+  pages=glob.glob('out/work/*/index.html')
+  assert len(pages)>=8,len(pages)
+  many=0
+  for p in pages:
+      h=open(p,encoding='utf8').read()
+      assert 'data-viewer' in h,p
+      n=len(re.findall(r'data-slide\b',h))
+      ld=[json.loads(m) for m in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>',h,re.S)]
+      imgs=0
+      for o in ld:
+          for x in (o if isinstance(o,list) else [o]):
+              im=x.get('image') if isinstance(x,dict) else None
+              if isinstance(im,list): imgs=max(imgs,len(im))
+      assert n>=max(1,imgs),(p,n,imgs)
+      if n>=3: many+=1
+  assert many>=5,many
+  for p in glob.glob('out/work/*/index.html')+glob.glob('out/articles/*/index.html')+['out/index.html','out/work/index.html']:
+      h=open(p,encoding='utf8').read()
+      for t in re.findall(r'<img\b[^>]*>',h):
+          assert ('width=' in t and 'height=' in t) or 'aspect' in t,(p,t[:120])
+  assert os.path.exists('components/Lightbox.tsx') and os.path.exists('components/ImageViewer.tsx')
+  for d in ('before','after'):
+      fs=glob.glob('../docs/design-review/%s/*.png'%d)
+      assert len(fs)>=10,(d,len(fs))
+      assert all(os.path.getsize(f)>5000 for f in fs)
+      assert any('work-' in os.path.basename(f) and 'mobile' in f for f in fs) and any('work-' in os.path.basename(f) and 'desktop' in f for f in fs)
+  PY
+protected: [".den/**"]
+runaway: {minutes: 60}
