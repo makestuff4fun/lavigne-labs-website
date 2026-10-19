@@ -1,0 +1,18 @@
+{
+  "anatomy": {
+    "files": ["anatomy.svg"],
+    "caption": "Anatomy of a cantilever snap fit, side view: the beam bends at the root, and the hook at its tip has an insertion (lead-in) face and a retention face."
+  },
+  "deflection": {
+    "files": ["deflection.svg"],
+    "caption": "The beam bending away as the hook rides over the mating part's edge. Dashed is the start position, solid the deflected one, and the strain concentrates at the root."
+  },
+  "moldability": {
+    "files": ["moldability-pull.svg", "moldability-lifter.svg"],
+    "caption": "A hook that faces the pull direction, formed through a window in the wall, needs no slide. A hook facing inward on a closed wall needs a lifter."
+  },
+  "rules": {
+    "files": ["rules.svg"],
+    "caption": "The rules of thumb as ratios of the root thickness t."
+  }
+}

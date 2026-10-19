@@ -78,6 +78,24 @@ body {
   object-fit: contain;
   cursor: zoom-in;
 }
+[data-diagram] .diagram-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--color-mist);
+}
+[data-diagram] svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  max-width: 44rem;
+  cursor: zoom-in;
+}
+[data-diagram="moldability"] svg {
+  max-width: 24rem;
+}
 [data-figure][data-hero] {
   margin: 2rem 0 0;
 }

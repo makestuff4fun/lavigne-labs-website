@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 356" width="640" height="356" role="img" aria-labelledby="df-t df-d" aria-label="Side view of the beam bending upward as its hook rides over the edge of the mating part. The start position is dashed, the deflected position is solid, the deflection y is marked at the tip, and the strain is highlighted at the root.">
+<title id="df-t">Deflection of a cantilever snap-fit beam</title>
+<desc id="df-d">The beam is shown twice. The dashed outline is its start position, straight out from the wall. The solid shape is the deflected position, bent upward at the root so the hook clears the edge of the mating part. The deflection y is marked at the tip. A soft highlight at the root shows where the strain concentrates.</desc>
+<defs>
+<pattern id="df-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#e2e8f0"/><line x1="0" y1="0" x2="0" y2="8" stroke="#cbd5e1" stroke-width="2"/></pattern>
+<marker id="df-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1b2942"/></marker>
+</defs>
+<rect width="640" height="356" fill="#f4f6fb"/>
+<rect x="72" y="110" width="32" height="190" fill="url(#df-hatch)" stroke="#475569" stroke-width="2.5"/>
+<rect x="300" y="184" width="280" height="106" fill="url(#df-hatch)" stroke="#475569" stroke-width="2.5"/>
+<path d="M104 134 A18 18 0 0 0 122 153 L372 168 L372 184 L326 212 L316 212 L316 184 L122 184 A18 18 0 0 0 104 202 Z" fill="none" stroke="#2563eb" stroke-opacity=".6" stroke-width="2.5" stroke-dasharray="7 6" stroke-linejoin="round"/>
+<path d="M104 134 A18 18 0 0 0 122 153 C200 153 300 148 372 140 L372 156 L326 184 L316 184 L316 158 C270 176 200 184 122 184 A18 18 0 0 0 104 202 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<ellipse cx="130" cy="168" rx="46" ry="36" fill="#f59e0b" fill-opacity=".38"/>
+<g fill="none" stroke="#1b2942" stroke-width="2">
+<line x1="372" y1="140" x2="408" y2="140" stroke-dasharray="4 3"/>
+<line x1="372" y1="168" x2="408" y2="168" stroke-dasharray="4 3"/>
+<line x1="402" y1="140" x2="402" y2="168" marker-start="url(#df-arr)" marker-end="url(#df-arr)"/>
+<line x1="560" y1="258" x2="350" y2="258" marker-end="url(#df-arr)"/>
+</g>
+<g stroke="#475569" stroke-width="2" fill="none">
+<line x1="158" y1="80" x2="136" y2="136"/>
+<line x1="268" y1="238" x2="299" y2="192"/>
+</g>
+<g stroke-width="3" fill="none"><line x1="8" y1="318" x2="48" y2="318" stroke="#2563eb" stroke-opacity=".6" stroke-dasharray="7 6"/><line x1="8" y1="342" x2="48" y2="342" stroke="#2563eb"/></g>
+<g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="17" fill="#0b1220">
+<text x="120" y="68">Highest strain at the root</text>
+<text x="416" y="138">Deflection y</text>
+<text x="416" y="158">(at least the undercut)</text>
+<text x="110" y="250">Mating part's edge</text>
+<text x="440" y="232" text-anchor="middle">Mating part slides in</text>
+<text x="56" y="324">Start position (dashed)</text>
+<text x="56" y="348">Deflected position (solid)</text>
+<text x="238" y="112" text-anchor="middle" fill="#475569">Beam bends away</text>
+</g>
+</svg>

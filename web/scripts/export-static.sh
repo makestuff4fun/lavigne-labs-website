@@ -25,7 +25,7 @@ trap - EXIT; restore
 # Raw Markdown alternates: out/articles/<slug>.md (beside the <slug>/ page dir)
 # (HTML comment blocks starting "<!-- REVIEW NOTE" are stripped: owner-only notes)
 for f in content/articles/*.md; do
-  python3 -c 'import re,sys; sys.stdout.write(re.sub(r"<!--\s*REVIEW NOTE[\s\S]*?-->\s*", "", open(sys.argv[1], encoding="utf8").read()))' "$f" > "out/articles/$(basename "$f")"
+  python3 -c 'import re,sys,json; t=re.sub(r"<!--\s*REVIEW NOTE[\s\S]*?-->\s*", "", open(sys.argv[1], encoding="utf8").read()); d=json.load(open("content/diagrams/diagrams.json", encoding="utf8")); sys.stdout.write(re.sub(r"\{\{diagram:([a-z0-9-]+)\}\}", lambda m: "*Figure: "+d[m.group(1)]["caption"]+"*", t))' "$f" > "out/articles/$(basename "$f")"
 done
 
 # Every JSON-LD block in the export must parse as JSON.

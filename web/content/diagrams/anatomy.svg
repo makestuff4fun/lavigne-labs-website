@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 372" width="640" height="372" role="img" aria-labelledby="an-t an-d" aria-label="Side view of a cantilever snap fit: a tapered beam grows out of a wall at its root, which has a radius, and ends in a hook with an insertion face and a retention face that catches the edge of the mating part.">
+<title id="an-t">Anatomy of a cantilever snap fit</title>
+<desc id="an-d">A beam of length L and root thickness t leaves the wall at the root, which has a root radius of about half t. The beam tapers to a tip about half t thick and ends in a hook. The hook has a sloped insertion (lead-in) face and a retention face that catches the edge of the mating part. The hook depth is the undercut.</desc>
+<defs>
+<pattern id="an-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#e2e8f0"/><line x1="0" y1="0" x2="0" y2="8" stroke="#cbd5e1" stroke-width="2"/></pattern>
+<marker id="an-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1b2942"/></marker>
+</defs>
+<rect width="640" height="372" fill="#f4f6fb"/>
+<rect x="72" y="110" width="32" height="190" fill="url(#an-hatch)" stroke="#475569" stroke-width="2.5"/>
+<rect x="128" y="188" width="176" height="102" fill="url(#an-hatch)" stroke="#475569" stroke-width="2.5"/>
+<path d="M104 134 A18 18 0 0 0 122 153 L372 168 L372 184 L326 212 L316 212 L316 184 L122 184 A18 18 0 0 0 104 202 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<g fill="none" stroke="#1b2942" stroke-width="2">
+<line x1="104" y1="96" x2="104" y2="110" stroke-dasharray="4 3"/>
+<line x1="104" y1="100" x2="372" y2="100" marker-start="url(#an-arr)" marker-end="url(#an-arr)"/>
+<line x1="372" y1="104" x2="372" y2="164" stroke-dasharray="4 3"/>
+<line x1="36" y1="152" x2="66" y2="152" stroke-dasharray="4 3"/>
+<line x1="36" y1="184" x2="66" y2="184" stroke-dasharray="4 3"/>
+<line x1="52" y1="152" x2="52" y2="184" marker-start="url(#an-arr)" marker-end="url(#an-arr)"/>
+<line x1="372" y1="184" x2="394" y2="184" stroke-dasharray="4 3"/>
+<line x1="326" y1="212" x2="394" y2="212" stroke-dasharray="4 3"/>
+<line x1="388" y1="184" x2="388" y2="212" marker-start="url(#an-arr)" marker-end="url(#an-arr)"/>
+<path d="M348 212 A22 22 0 0 0 344.8 200.6"/>
+<path d="M316 204 H324 V212" stroke-width="1.5"/>
+</g>
+<g stroke="#475569" stroke-width="2" fill="none">
+<line x1="52" y1="316" x2="52" y2="192"/>
+<line x1="80" y1="58" x2="106" y2="132"/>
+<line x1="402" y1="162" x2="375" y2="172"/>
+<line x1="396" y1="246" x2="359" y2="192"/>
+<line x1="338" y1="231" x2="323" y2="214"/>
+<line x1="310" y1="304" x2="315.5" y2="202"/>
+<line x1="250" y1="272" x2="301" y2="272" marker-end="url(#an-arr)"/>
+</g>
+<g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="17" fill="#0b1220">
+<text x="8" y="50">Root radius ≈ ½ t</text>
+<text x="238" y="90" text-anchor="middle">Beam length L ≈ 5–10 × t</text>
+<text x="238" y="142" text-anchor="middle">Beam</text>
+<text x="404" y="138">Tip thickness</text>
+<text x="404" y="158">≈ ½ t (taper)</text>
+<text x="398" y="200">Hook depth</text>
+<text x="398" y="220">(undercut)</text>
+<text x="346" y="248" text-anchor="middle">Hook</text>
+<text x="400" y="256">Insertion (lead-in) face</text>
+<text x="400" y="276">angle ≈ 25–35°</text>
+<text x="400" y="296">from direction of travel</text>
+<text x="322" y="322">Retention face</text>
+<text x="322" y="342">angle ≈ 90° (permanent)</text>
+<text x="322" y="362">or 30–45° (releasable)</text>
+<text x="8" y="336">Root thickness t</text>
+<text x="216" y="236" text-anchor="middle">Mating part</text>
+<text x="244" y="277" text-anchor="end">its edge</text>
+</g>
+</svg>

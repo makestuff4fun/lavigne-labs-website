@@ -35,10 +35,15 @@ export function stripReviewNotes(md: string): string {
   return md.replace(/<!--\s*REVIEW NOTE[\s\S]*?-->\s*/g, "");
 }
 
+/** Text alternates (markdown, llms-full, search): each diagram placeholder becomes its caption as an italic line, never SVG markup. */
+export function withDiagramCaptions(md: string): string {
+  return md.replace(DIAGRAM_RE, (_m, key: string) => `*Figure: ${diagramDef(key).caption}*`);
+}
+
 /** Article markdown body (frontmatter and review notes removed). */
 export function getArticleBody(slug: string): string {
   const raw = fs.readFileSync(path.join(ARTICLES_DIR, `${slug}.md`), "utf8");
-  return stripReviewNotes(matter(raw).content).trim();
+  return withDiagramCaptions(stripReviewNotes(matter(raw).content).trim());
 }
 
 /** Plain text of markdown for comparisons: no emphasis/code/link syntax, collapsed whitespace. */
@@ -110,12 +115,32 @@ renderer.image = ({ href, title, text }) => {
   return `<figure data-figure>${img}${title ? `<figcaption>${escAttr(title)}</figcaption>` : ""}</figure>`;
 };
 
+type DiagramDef = { files: string[]; caption: string };
+const DIAGRAMS_DIR = path.join(process.cwd(), "content/diagrams");
+const DIAGRAM_RE = /\{\{diagram:([a-z0-9-]+)\}\}/g;
+
+function diagramDef(key: string): DiagramDef {
+  const defs = JSON.parse(fs.readFileSync(path.join(DIAGRAMS_DIR, "diagrams.json"), "utf8")) as Record<string, DiagramDef>;
+  if (!defs[key]) throw new Error(`unknown diagram placeholder: ${key}`);
+  return defs[key];
+}
+
+/** A `{{diagram:key}}` line becomes a figure holding the inline SVG file(s) and a caption. */
+function diagramFigure(key: string): string {
+  const d = diagramDef(key);
+  const svgs = d.files
+    .map((f) => fs.readFileSync(path.join(DIAGRAMS_DIR, f), "utf8").replace(/^<\?xml[^>]*>\s*/, "").trim())
+    .join("");
+  return `<figure data-figure data-diagram="${key}"><div class="diagram-body">${svgs}</div><figcaption>${escAttr(d.caption)}</figcaption></figure>`;
+}
+
 const CALLOUT = /<blockquote>(\s*<p><strong>(Common mistakes|Rules? of thumb|Tip|Note)<\/strong>)/g;
 
 /** Markdown -> HTML. A blockquote opening with **Common mistakes** / **Rule of thumb** becomes a callout box. */
 function renderMarkdown(md: string): string {
   const html = marked.parse(md, { renderer }) as string;
   return html
+    .replace(/<p>\s*\{\{diagram:([a-z0-9-]+)\}\}\s*<\/p>/g, (_m, key: string) => diagramFigure(key))
     .replace(/<p>\s*(<figure data-figure>[\s\S]*?<\/figure>)\s*<\/p>/g, "$1")
     .replace(/<table>/g, '<div class="table-scroll"><table>')
     .replace(/<\/table>/g, "</table></div>")

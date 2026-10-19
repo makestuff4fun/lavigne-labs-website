@@ -52,6 +52,8 @@ Five names are worth learning.
 
 The depth of the hook, how far it hangs over the mating part, is called the undercut. The beam must bend at least that far to get past.
 
+{{diagram:anatomy}}
+
 ## Beam length versus thickness
 
 Think of length as a multiple of the thickness at the root. Our rule of thumb is a length of about 5 to 10 times the root thickness.
@@ -66,6 +68,8 @@ If you cannot fit a long enough beam, do not shrink the hook and hope. Both manu
 Make the beam thinner towards the tip, to about half the root thickness. Both manuals suggest roughly this, and it is an approximation, not a magic number.
 
 A straight beam concentrates all the strain at the root while the tip barely works. Tapering shares the strain along the length, so you can bend further for the same stress. It also saves a little material and cycle time.
+
+{{diagram:deflection}}
 
 ## Hook depth, and what the material allows
 
@@ -114,6 +118,8 @@ Often you can design them out. The parting line and the pull direction are the m
 - **Gang the snaps in one direction.** If every snap on the part points the same way, one mold action serves them all. Hooks pointing in opposing directions each need their own mechanism.
 - **Know what forces a lifter.** A hook facing inward on a closed wall, with nothing beneath it to open up, has nowhere for steel to come from. That is the case that costs you a lifter.
 
+{{diagram:moldability}}
+
 Does the window cost anything? A little, in appearance and in stiffness, and sometimes a dust path. If it matters, a small cover or the mating part can hide it. Work this out with the shop early, since they decide the split.
 
 Our advice matches the one from the molds article: give the shop a clean model and your requirements, and let their engineers choose the parting line and how each hook is formed. We have seen a single reorientation of a hook remove a slide entirely, and a single reorientation add one.
@@ -129,6 +135,8 @@ If you want the wider picture on moldable features, we cover it in [Designing Mo
 > - A hook that faces inward on a closed wall and forces a lifter.
 
 ## Rules of thumb
+
+{{diagram:rules}}
 
 | Feature | Rule of thumb |
 |---|---|

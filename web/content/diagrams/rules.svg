@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="640" height="300" role="img" aria-labelledby="rt-t rt-d" aria-label="The rules of thumb for a cantilever snap fit as ratios of the root thickness t: beam length L about 5 to 10 times t, tip about half t, root radius about half t, insertion angle about 25 to 35 degrees, retention angle about 90 degrees for permanent or 30 to 45 degrees for releasable.">
+<title id="rt-t">Rules of thumb as ratios of the root thickness t</title>
+<desc id="rt-d">The beam of the snap fit with each rule of thumb marked on it: length L about 5 to 10 times t, tip thickness about half t, root radius about half t, insertion angle about 25 to 35 degrees, and retention angle about 90 degrees for a permanent snap or 30 to 45 degrees for a releasable one.</desc>
+<defs>
+<pattern id="rt-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#e2e8f0"/><line x1="0" y1="0" x2="0" y2="8" stroke="#cbd5e1" stroke-width="2"/></pattern>
+<marker id="rt-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1b2942"/></marker>
+</defs>
+<rect width="640" height="300" fill="#f4f6fb"/>
+<g transform="translate(0,-40)">
+<rect x="72" y="110" width="32" height="120" fill="url(#rt-hatch)" stroke="#475569" stroke-width="2.5"/>
+<path d="M104 134 A18 18 0 0 0 122 153 L372 168 L372 184 L326 212 L316 212 L316 184 L122 184 A18 18 0 0 0 104 202 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+<g fill="none" stroke="#1b2942" stroke-width="2">
+<line x1="104" y1="100" x2="372" y2="100" marker-start="url(#rt-arr)" marker-end="url(#rt-arr)"/>
+<line x1="372" y1="104" x2="372" y2="164" stroke-dasharray="4 3"/>
+<line x1="36" y1="152" x2="66" y2="152" stroke-dasharray="4 3"/>
+<line x1="36" y1="184" x2="66" y2="184" stroke-dasharray="4 3"/>
+<line x1="52" y1="152" x2="52" y2="184" marker-start="url(#rt-arr)" marker-end="url(#rt-arr)"/>
+<path d="M348 212 A22 22 0 0 0 344.8 200.6"/>
+<path d="M316 204 H324 V212" stroke-width="1.5"/>
+<line x1="326" y1="212" x2="372" y2="212" stroke-dasharray="4 3"/>
+</g>
+<g stroke="#475569" stroke-width="2" fill="none">
+<line x1="80" y1="58" x2="106" y2="132"/>
+<line x1="402" y1="162" x2="375" y2="172"/>
+<line x1="400" y1="226" x2="359" y2="192"/>
+<line x1="304" y1="230" x2="315.5" y2="204"/>
+</g>
+</g>
+<g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="17" fill="#0b1220">
+<text x="22" y="140" text-anchor="middle">t</text>
+<text x="8" y="24">Root radius ≈ ½ t</text>
+<text x="238" y="50" text-anchor="middle">L ≈ 5–10 × t</text>
+<text x="404" y="98">Tip ≈ ½ t</text>
+<text x="404" y="118">(taper)</text>
+<text x="404" y="196">Insertion angle ≈ 25–35°</text>
+<text x="300" y="206" text-anchor="end">Retention angle</text>
+<text x="300" y="226" text-anchor="end">≈ 90° permanent</text>
+<text x="300" y="246" text-anchor="end">≈ 30–45° releasable</text>
+<text x="8" y="272">t = root thickness</text>
+<text x="8" y="294">Width scales force, not strain</text>
+</g>
+</svg>
