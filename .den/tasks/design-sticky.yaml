@@ -1,0 +1,21 @@
+do: |
+  THE JOB: On /work/<slug>/ desktop (>=1024px), the image viewer column is empty below the thumbnails while the long text scrolls on the right. Make the viewer column sticky (position: sticky, top below the header height, align-self: start) so the viewer stays in view while the text scrolls; on mobile it stays in normal flow. Make sure sticky is not defeated by an ancestor overflow rule. RENDER AND LOOK: `cd web && npm run export`, serve web/out (python3 -m http.server 8125 --directory web/out, kill after), screenshot /work/microscope-slider/ at 1440px wide scrolled to mid-page (viewport shot, not full page) and at 390px full page with headless Chromium (chrome-headless-shell in ~/.cache/ms-playwright, or Playwright if installed; no new dependency); Read the PNGs. Save to docs/design-review/after/work-sticky-desktop.png and work-sticky-mobile.png.
+  THE WHY: Brian wants the work detail pages to look professional; the empty left column under the viewer looked unbalanced in the design-viewer review.
+  GUARDRAILS: CSS/class change only; no copy change; no deploy; .den/** untouched; export must pass.
+  DONE MEANS: the viewer column is sticky on desktop, normal flow on mobile, screenshots exist and you looked at them.
+context: ["web/app/work/[slug]/page.tsx", "web/components/ImageViewer.tsx"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/ds.log 2>&1 || { tail -30 /tmp/ds.log; exit 1; }
+  python3 - <<'PY'
+  import re,os,glob
+  h=open('out/work/microscope-slider/index.html',encoding='utf8').read()
+  i=h.index('data-viewer')
+  seg=h[max(0,i-1500):i+200]
+  assert re.search(r'\b(lg:|md:|xl:)?sticky\b',seg),'no sticky near viewer'
+  for n in ('desktop','mobile'):
+      assert os.path.getsize('../docs/design-review/after/work-sticky-%s.png'%n)>5000
+  PY
+protected: [".den/**"]
+needs: ["design-polish"]
+runaway: {minutes: 30}
