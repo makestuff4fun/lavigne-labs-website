@@ -1,0 +1,38 @@
+do: |
+  THE JOB: Add original inline SVG diagrams to the cantilever snap-fit article (web/content/articles/cantilever-snap-fits.md, rendered by web/lib/articles.ts). Read the article first and use ITS terms exactly in labels (beam, root, root radius, hook, insertion face/angle, retention face/angle, hook depth/undercut, lead-in, lifter, pull direction, mating part). Our own drawing, nothing traced or copied from BASF/Bayer manuals. Style: clean technical line art in the site's brand colours (take them from app/globals.css), strokes readable on a 390px phone, labels as REAL SVG <text> (not paths), each SVG with role="img" plus <title>/<desc> and aria-label as alt text, viewBox set with width/height so there is no layout shift, text size that stays legible when the SVG scales to 340px wide (design the viewBox about 640x360 or tighter with 16+ unit text), leader lines that do not cross labels.
+  Diagrams: (1) ANATOMY, side view, under "Anatomy of a snap": the beam, root with its radius, hook, insertion (lead-in) face and its angle, retention face and its angle, hook depth (undercut), beam length L, root thickness t, tip thickness (taper), and the mating part's edge. (2) DEFLECTION, near the beam length/taper or hook-depth section: the beam bending as it slides over the mating edge, ghosted start position shown dashed, deflected position solid, deflection y marked, strain concentrated at the root shown as a subtle highlight. (3) MOLDABILITY, under "Hook direction and moldability": two small side-by-side panels (stack on mobile): hook facing the mold pull direction, formed through a window in the wall with no slide; versus a hook facing inward on a closed wall that needs a lifter. A pull-direction arrow in each; label them with the article's wording. (4) OPTIONAL if it fits cleanly: a ratio cheat-sheet graphic next to the "Rules of thumb" table (L about 5 to 10 times t, root radius about 0.5 t, tip about 0.5 t when tapered, angles as the table says). Do not contradict the article's numbers; take every number from the article. Per Brian's standing rule never suggest adding draft angles.
+  Mechanics: put each SVG where the article explains that part, wrapped as a figure with a caption (<figure><svg/>...<figcaption>). Markdown can hold raw HTML but check that the marked renderer in web/lib/articles.ts passes inline SVG through intact and that the SVG is not wrapped in a <p>; better: store SVGs as files under web/content/diagrams/*.svg or React/TS strings and inject them via a simple placeholder (e.g. a line {{diagram:anatomy}} in the Markdown replaced in articles.ts) so the Markdown stays readable; the md alternate (/articles/<slug>.md or similar) and llms-full.txt must NOT contain raw SVG markup; for those replace each placeholder with the caption text as an italic line. If the figure and Lightbox components from the design-articles task exist (web/components/Lightbox.tsx, figure styling), use the same figure styling and let tap open the SVG in the lightbox; otherwise plain figure. RENDER AND LOOK: run `cd web && npm run export`, serve web/out (python3 -m http.server 8124 --directory web/out, kill afterwards), screenshot /articles/cantilever-snap-fits/ with headless Chromium (chrome-headless-shell is in ~/.cache/ms-playwright; or Playwright if installed, do not add it as a dependency) at 1440px and 390px wide, Read the PNGs and check that labels do not collide or clip, text is legible on the phone shot, arrows point the right way, and the beam actually looks like a cantilever snap hook. Fix and re-shoot until clean. Save final shots to docs/design-review/after/snapfit-anatomy-desktop.png and snapfit-anatomy-mobile.png (crop to the anatomy diagram, small PNGs), plus snapfit-article-desktop.png and snapfit-article-mobile.png (full page).
+  THE WHY: Brian (2026-10-19): "the plastic snap hook needs a diagram, make one please. the article is good but without diagram to explain which part is what, it loses impact."
+  GUARDRAILS: do not change the article's prose; the only Markdown edits are the placeholder lines (and captions live next to them). No deploy. Derive URLs from site.url (export fails on lavignelabs.com). Article JSON-LD, search index and feeds must still build. Do not touch .den/**.
+  DONE MEANS: the article page has at least three inline SVG figures each with a caption and real text labels, anatomy terms present, accessible names, screenshots exist and you looked at them and the labels are clean at 390px.
+context: ["web/content/articles/cantilever-snap-fits.md", "web/lib/articles.ts", "docs/CONTENT.md"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/sf.log 2>&1 || { tail -30 /tmp/sf.log; exit 1; }
+  python3 - <<'PY'
+  import re,glob,os
+  h=open('out/articles/cantilever-snap-fits/index.html',encoding='utf8').read()
+  figs=[m for m in re.finditer(r'<figure\b[^>]*>(.*?)</figure>',h,re.S) if '<svg' in m.group(1)]
+  assert len(figs)>=3,len(figs)
+  for m in figs:
+      b=m.group(1)
+      assert '<figcaption' in b,'caption'
+      assert 'viewBox' in b and ('role="img"' in b) and '<title' in b,'svg a11y'
+      assert len(re.findall(r'<text\b',b))>=3,'text labels'
+  svgtext=' '.join(re.findall(r'<text\b[^>]*>(.*?)</text>',h,re.S)).lower()
+  svgtext=re.sub(r'<[^>]+>','',svgtext)
+  for k in ('root','hook','retention','insertion'):
+      assert k in svgtext,k
+  assert 'lead-in' in svgtext or 'lead in' in svgtext
+  assert 'lifter' in svgtext and 'pull' in svgtext
+  # no raw svg in md alternates or llms-full
+  for p in glob.glob('out/articles/cantilever-snap-fits*.md')+glob.glob('out/articles/cantilever-snap-fits/*.md')+['out/llms-full.txt']:
+      if os.path.exists(p): assert '<svg' not in open(p,encoding='utf8').read(),p
+  assert '{{diagram' not in h
+  for n in ('anatomy-desktop','anatomy-mobile'):
+      f='../docs/design-review/after/snapfit-%s.png'%n
+      assert os.path.getsize(f)>5000,f
+  PY
+protected: [".den/**"]
+needs: ["design-articles"]
+runaway: {minutes: 60}
