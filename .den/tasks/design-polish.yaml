@@ -1,0 +1,26 @@
+do: |
+  THE JOB: An overall professional design pass over the whole site, after the viewer and article figures exist. Review the rendered pages (home, /work/, /articles/, a work detail, an article, /faq/, /contact/, /tools/, /tools/charts/, footer) at 1440px and 390px and fix what a design reviewer would flag: typography scale and line lengths, vertical spacing rhythm between sections, consistent card design and equal image crops on /work/ and /articles/ index cards (same aspect ratio, same radius, hover/focus state), heading hierarchy, button and link styles, header/nav behaviour on mobile, footer layout, tap targets at least 44px, contrast, focus rings. Keep changes to CSS/Tailwind classes and component markup; prefer shared tokens in app/globals.css over one-off values. Take final after screenshots into docs/design-review/after/ for every page you touched (names <page>-<desktop|mobile>.png), and write docs/design-review/NOTES.md: a short list of what was wrong and what you changed per page, and anything you saw but left alone.
+  RENDER AND LOOK: build with `cd web && npm run export`, serve web/out locally (`python3 -m http.server 8123 --directory web/out` in the background; kill it after). Screenshot with headless Chromium: chrome-headless-shell is in ~/.cache/ms-playwright (chromium_headless_shell-*/chrome-linux*/headless_shell or similar; find it) or use Playwright if installed (do not add it as a repo dependency; keep any script in web/scripts/shoot.mjs or .sh and make it take base URL, output dir and a page list). Shoot at 1440px and 390px wide, full page. Read each PNG with the Read tool and judge it like a design reviewer: alignment, spacing rhythm, image sizing and cropping, hierarchy, consistency. Fix what looks wrong and re-shoot until it looks professional. Pages: / , /work/ , two /work/<slug>/ pages (pick ones with many images), two articles that contain images (e.g. /articles/fast-prototyping-china/ and /articles/lowest-cost-manufacturing-china/), /tools/charts/. Small PNGs only (downscale or use JPEG-quality PNG optimisation so each stays under ~400 KB; commit them). Also include /faq/ , /contact/ , /tools/ and /articles/ in the shots.
+  THE WHY: Brian (2026-10-19): "make a design pass and try and make it look more professional. render pages, check the look and judge for yourself."
+  GUARDRAILS: no copy changes, no brand-colour changes unless something is clearly broken (say which in NOTES.md); no deploy; the static calculators in public/tools are out of scope; derive URLs from site.url; export must pass; .den/** untouched; do not break the viewer or the article figures.
+  DONE MEANS: pages look consistent and professional in your own review of the screenshots, NOTES.md exists, export passes.
+context: ["web/app/globals.css", "docs/CONTENT.md", "docs/design-review/NOTES.md"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/dp.log 2>&1 || { tail -30 /tmp/dp.log; exit 1; }
+  python3 - <<'PY'
+  import glob,os,re
+  n=open('../docs/design-review/NOTES.md',encoding='utf8').read()
+  assert len(n)>600 and re.search(r'work|article',n,re.I)
+  names=' '.join(os.path.basename(f) for f in glob.glob('../docs/design-review/after/*.png'))
+  for k in ('home','work-index','faq','contact','tools','articles'):
+      assert k in names,k
+  for p in glob.glob('out/work/*/index.html')+glob.glob('out/articles/*/index.html')+['out/index.html']:
+      h=open(p,encoding='utf8').read()
+      for t in re.findall(r'<img\b[^>]*>',h):
+          assert ('width=' in t and 'height=' in t) or 'aspect' in t,(p,t[:120])
+  assert 'data-viewer' in open(glob.glob('out/work/*/index.html')[0],encoding='utf8').read()
+  PY
+protected: [".den/**"]
+needs: ["design-articles"]
+runaway: {minutes: 60}
