@@ -1,0 +1,32 @@
+do: |
+  THE JOB: Make article images ("stickers": the inline images and callouts) sit properly in the page. Today web/lib/articles.ts renders inline Markdown images as plain <img> or <figure><img><figcaption> (see its image renderer near line 103) inside the prose in web/app/articles/[slug]/page.tsx; they integrate badly with the text. Design and build: a consistent figure treatment (inline figures at text width or slightly wider on desktop, full width on mobile; consistent rounded corners, border or shadow in the brand style, a neutral background so contain-fit images are not cropped badly; captions styled small and muted beneath, always a <figure> with <figcaption> when there is a title, and a figure wrapper (class or data-figure) even without a caption); the hero image full-bleed within the article column; width/height or aspect-ratio on every image (no layout shift), lazy loading, alt text kept; float or side placement only where it reads well on desktop and stacks cleanly on mobile; pull quotes (blockquotes) and callout boxes styled consistently with the brand (check how existing articles use blockquote and bold lead-ins and make those look intentional); and tap/click on any article figure image opens the SAME Lightbox component built by the previous task (web/components/Lightbox.tsx; articles are rendered from Markdown HTML, so add a small client component that attaches to figure images, e.g. event delegation on the article body). Do not change the article text. Do not edit Markdown content except where an image line is clearly malformed.
+  RENDER AND LOOK: build with `cd web && npm run export`, serve web/out locally (`python3 -m http.server 8123 --directory web/out` in the background; kill it after). Screenshot with headless Chromium: chrome-headless-shell is in ~/.cache/ms-playwright (chromium_headless_shell-*/chrome-linux*/headless_shell or similar; find it) or use Playwright if installed (do not add it as a repo dependency; keep any script in web/scripts/shoot.mjs or .sh and make it take base URL, output dir and a page list). Shoot at 1440px and 390px wide, full page. Read each PNG with the Read tool and judge it like a design reviewer: alignment, spacing rhythm, image sizing and cropping, hierarchy, consistency. Fix what looks wrong and re-shoot until it looks professional. Pages: / , /work/ , two /work/<slug>/ pages (pick ones with many images), two articles that contain images (e.g. /articles/fast-prototyping-china/ and /articles/lowest-cost-manufacturing-china/), /tools/charts/. Small PNGs only (downscale or use JPEG-quality PNG optimisation so each stays under ~400 KB; commit them). Put new screenshots in docs/design-review/after/ (names article-<slug>-<desktop|mobile>.png, overwriting earlier after shots of those pages); look at at least four articles that have images and one without.
+  THE WHY: Brian (2026-10-19): "the articles don't incorporate the stickers very well ... make a design pass and try and make it look more professional. render pages, check the look and judge for yourself."
+  GUARDRAILS: no copy or brand-colour changes; no deploy; derive URLs from site.url (export fails on lavignelabs.com); keep Article JSON-LD and the markdown alternates working; the rest of the site stays as is; .den/** untouched.
+  DONE MEANS: article pages show figures in a consistent component with captions, clicking an image opens the lightbox, no layout shift, before/after screenshots reviewed by you.
+context: ["web/lib/articles.ts", "web/app/articles/[slug]/page.tsx", "web/components/Lightbox.tsx", "docs/CONTENT.md"]
+done_when: |
+  set -e
+  cd web && npm run export >/tmp/da.log 2>&1 || { tail -30 /tmp/da.log; exit 1; }
+  python3 - <<'PY'
+  import glob,re,os
+  tot=0
+  for p in glob.glob('out/articles/*/index.html'):
+      h=open(p,encoding='utf8').read()
+      for t in re.findall(r'<img\b[^>]*>',h):
+          assert ('width=' in t and 'height=' in t) or 'aspect' in t,(p,t[:120])
+          assert 'alt=' in t,(p,t[:80])
+      for m in re.finditer(r'<figure\b[^>]*>(.*?)</figure>',h,re.S):
+          tot+=1
+          assert '<img' in m.group(1)
+      assert not re.search(r'<p>\s*<img',h),p
+  assert tot>=8,tot
+  src=open('app/articles/[slug]/page.tsx',encoding='utf8').read()+open('lib/articles.ts',encoding='utf8').read()+''.join(open(f,encoding='utf8').read() for f in glob.glob('components/*.tsx'))
+  assert 'Lightbox' in src
+  fs=glob.glob('../docs/design-review/after/article-*.png')
+  assert len(fs)>=8,len(fs)
+  assert all(os.path.getsize(f)>5000 for f in fs)
+  PY
+protected: [".den/**"]
+needs: ["design-viewer"]
+runaway: {minutes: 60}
