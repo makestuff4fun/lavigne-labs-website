@@ -22,13 +22,13 @@ export function Footer() {
 
           {Object.entries(footerLinks).map(([heading, items]) => (
             <div key={heading}>
-              <h3 className="font-mono text-xs uppercase tracking-widest text-white/50">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-white/65">
                 {heading}
               </h3>
-              <ul className="mt-4 space-y-3 text-sm">
+              <ul className="mt-4 space-y-1 text-sm">
                 {items.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href} className="text-white/75 transition hover:text-white">
+                    <Link href={item.href} className="tap text-white/75 transition hover:text-white">
                       {item.label}
                     </Link>
                   </li>
@@ -38,12 +38,12 @@ export function Footer() {
           ))}
 
           <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-white/50">
+            <h3 className="font-mono text-xs uppercase tracking-widest text-white/65">
               Get in touch
             </h3>
-            <ul className="mt-4 space-y-3 text-sm text-white/75">
+            <ul className="mt-4 space-y-2 text-sm text-white/75">
               <li>
-                <a href={mailtoHref} className="transition hover:text-white">
+                <a href={mailtoHref} className="tap transition hover:text-white">
                   {site.email}
                 </a>
               </li>
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-xs text-white/45">
+        <div className="mt-12 border-t border-white/10 pt-6 text-xs text-white/60">
           © {new Date().getFullYear()} {site.name}. All rights reserved.
         </div>
       </Container>

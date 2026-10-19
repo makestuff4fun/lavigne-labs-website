@@ -22,12 +22,12 @@ export function Header() {
           <span className="text-ink">{site.name}</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-slate transition hover:text-ink"
+              className="tap text-sm font-medium text-slate transition hover:text-ink"
             >
               {item.label}
             </Link>
@@ -39,7 +39,7 @@ export function Header() {
 
         <button
           type="button"
-          className="md:hidden -mr-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-ink"
+          className="md:hidden -mr-1 inline-flex h-11 w-11 items-center justify-center rounded-lg text-ink"
           aria-label="Toggle menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -61,7 +61,7 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-mist"
+                className="rounded-lg px-3 py-3.5 text-base font-medium text-ink hover:bg-mist"
                 onClick={() => setOpen(false)}
               >
                 {item.label}

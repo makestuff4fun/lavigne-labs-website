@@ -96,7 +96,7 @@ export default async function ProjectPage({
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-mist px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-slate"
+                  className="rounded-full bg-mist px-2.5 py-1 font-mono text-xs uppercase tracking-wide text-slate"
                 >
                   {tag}
                 </span>

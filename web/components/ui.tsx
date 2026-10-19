@@ -36,7 +36,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <Link
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full min-h-11 px-6 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

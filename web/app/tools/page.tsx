@@ -14,7 +14,7 @@ function ToolCard({ tool }: { tool: Tool }) {
   const body = (
     <>
       <div>
-        <span className="font-mono text-[11px] uppercase tracking-wide text-accent">
+        <span className="font-mono text-xs uppercase tracking-wide text-accent">
           {tool.kind}
         </span>
         <h3 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">

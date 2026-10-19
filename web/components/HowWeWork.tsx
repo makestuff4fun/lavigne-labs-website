@@ -21,7 +21,7 @@ export function HowWeWork() {
             >
               <div className="flex items-center gap-3">
                 <h3 className="text-xl font-semibold tracking-tight">{model.name}</h3>
-                <span className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-accent">
+                <span className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-xs uppercase tracking-wide text-accent">
                   {model.tag}
                 </span>
               </div>

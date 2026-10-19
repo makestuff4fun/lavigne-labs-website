@@ -7,7 +7,7 @@ node scripts/shoot.mjs "$1" "$2" home=/ work-index=/work/ \
   article-lowest-cost-manufacturing-china=/articles/lowest-cost-manufacturing-china/ \
   article-designing-moldable-parts=/articles/designing-moldable-parts/ article-taobao-factory-sourcing=/articles/taobao-factory-sourcing/ \
   article-vetting-a-factory=/articles/vetting-a-factory/ \
-  charts=/tools/charts/cheat-sheet/
+  charts=/tools/charts/cheat-sheet/ faq=/faq/ contact=/contact/ tools=/tools/ articles=/articles/
 # shrink: palette-quantise so each PNG stays small
 python3 - "$2" <<'PY'
 import sys,glob

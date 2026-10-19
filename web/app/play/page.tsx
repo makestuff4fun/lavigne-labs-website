@@ -65,7 +65,7 @@ export default function PlayPage() {
                   />
                 </div>
                 <div className="p-7">
-                  <span className="font-mono text-[11px] uppercase tracking-wide text-accent">
+                  <span className="font-mono text-xs uppercase tracking-wide text-accent">
                     {game.tag}
                   </span>
                   <h2 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">

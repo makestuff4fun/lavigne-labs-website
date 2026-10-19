@@ -35,7 +35,7 @@ export default function ArticlesPage() {
             <Link
               key={s.slug}
               href={`/articles/series/${s.slug}`}
-              className="group mb-8 block rounded-2xl border border-accent/30 bg-mist p-7 transition hover:border-accent"
+              className="group mb-8 block rounded-2xl border border-accent/30 bg-mist p-7 transition hover:border-accent hover:shadow-card"
             >
               <span className="font-mono text-xs uppercase tracking-widest text-accent">Series</span>
               <h2 className="mt-2 text-xl font-semibold tracking-tight group-hover:text-accent">{s.title}</h2>
@@ -50,7 +50,7 @@ export default function ArticlesPage() {
               <Link
                 key={a.slug}
                 href={`/articles/${a.slug}`}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition hover:border-accent/40"
+                className="card group"
               >
                 {a.hero && (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -60,10 +60,10 @@ export default function ArticlesPage() {
                     width={1600}
                     height={900}
                     loading="lazy"
-                    className="aspect-[16/9] w-full border-b border-line object-cover"
+                    className="card-media"
                   />
                 )}
-                <div className="flex flex-1 flex-col p-7">
+                <div className="card-body">
                 <div className="flex items-center gap-3 text-xs">
                   <span className="rounded-full bg-accent/10 px-2.5 py-1 font-mono uppercase tracking-wide text-accent">
                     {a.tag}
