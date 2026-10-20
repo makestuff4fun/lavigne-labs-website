@@ -1,0 +1,13 @@
+do: |
+  THE JOB: Delete these 7 parked, superseded den task files from the repo and commit in ONE commit: .den/tasks/work-pages.yaml, revise-prototyping.yaml, revise-taobao.yaml, revise-wechat.yaml, revise-lowest-cost.yaml, snap-fits-draft.yaml, contact-form.yaml (use git rm). Commit message says what superseded each: work-pages -> work-pages2; revise-prototyping, revise-taobao, revise-wechat, revise-lowest-cost -> the r2-* / recipe-* tasks; snap-fits-draft -> snap-fits-v2; contact-form -> contact-form-hq, then the forms.lavignelabs.net endpoint. Push.
+  THE WHY: The managing agent's board showed 7 PARKED tasks, all superseded by later work; they are clutter.
+  GUARDRAILS: delete only those 7 files; touch nothing else, including other .den/tasks files.
+  DONE MEANS: the 7 files are gone from HEAD, nothing else changed, pushed to main.
+done_when: |
+  set -e
+  for t in work-pages revise-prototyping revise-taobao revise-wechat revise-lowest-cost snap-fits-draft contact-form; do
+    test ! -e .den/tasks/$t.yaml || { echo "still present: $t"; exit 1; }
+  done
+  test -e .den/tasks/contact-form-hq.yaml
+  test -e .den/tasks/design-sticky.yaml
+runaway: {minutes: 10}
