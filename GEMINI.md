@@ -1,7 +1,7 @@
 @AGENTS.md
 @docs/CONTEXT.md
 
-# CLAUDE.md — Lavigne Labs website
+# GEMINI.md — Lavigne Labs website
 
 The two imports above carry the details: **AGENTS.md** (Next.js 16 is not the
 Next you were trained on — read `web/node_modules/next/dist/docs/` before writing
