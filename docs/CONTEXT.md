@@ -21,7 +21,10 @@ Black & Decker for six years; two EV startups), who is the first contact.
   `docs/` = these docs · the fastener calculators are **live on `/tools`**
   (served from `web/public/tools/fasteners/`) · `pcb/` = a standalone calculator
   **not yet wired into `/tools`** (see pcb/README.md).
-- **Production:** `lavignelabs.com` — **LIVE with this Next.js site** (static
+- **Production (2026-11-04):** **`lavignelabs.net`** (Caddy on tunnel-bear, `web/scripts/deploy-net.sh`).
+  `lavignelabs.com` + `www` now 301 every path to `.net` (old host `.htaccess`, docs/DEPLOYMENT.md).
+  Enquiries reach Brian at `hello@lavignelabs.net` and via the form (`forms.lavignelabs.net`).
+- _Before 2026-10-18:_ `lavignelabs.com` — **LIVE with this Next.js site** (static
   export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
   site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
 
@@ -29,13 +32,13 @@ Black & Decker for six years; two EV startups), who is the first contact.
 
 | Area | State |
 |---|---|
-| **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in `web/`, and **LIVE at lavignelabs.com** as a static export. Home is the new positioning overhaul. |
+| **Next.js site** (home, work, articles, tools, faq, contact, lab, play) | Built, in `web/`, and **LIVE at lavignelabs.net** as a static export (`.com` 301s there since 2026-11-04). Home is the new positioning overhaul. |
 | **Games** (Shiverwing, Freezing Fortress) | Done, in repo. Faithful ports; synth SFX + mute toggle wired. |
 | **QR Time Sync tool** (2026-07-31, grid card removed 2026-08-03) | Flashes epoch-ms timestamps as QR codes to sync multi-camera/egocentric rigs. **The branded `/tools/qr-sync` page was removed from the `/tools` grid on 2026-08-03** (took the `/tools/[slug]` route with it). The **unbranded standalone stays live** at `lavignelabs.com/qr-sync` (`public/qr-sync/index.html`, self-contained, no site chrome — shareable with clients without looking like advertising), decoder at `/qr-sync/decode_sync.py`. The React component `components/tools/QrTimeSync.tsx` + encoder `lib/qrTimeSync.ts` remain in the repo (unused) so the branded page can be restored. Standalone origin copy: `github.com/makestuff4fun/ha-qr-sync` (also `~/projects/ha-qr-sync/` on blue). |
 | **Tools grid** (reorganized 2026-08-03) | `/tools` is grouped into **sections** instead of a flat list — driven by a `category` field per tool + a `toolCategories` list in `content/tools.ts`, rendered one section per category by `app/tools/page.tsx`. Two sections now: **Fasteners** (the 6 fastener pages) and **Electronics** (Copper & Patina PCB, `web/public/tools/pcb/pcb-calculator.html` — repo-root `pcb/` + injected back-bar; root stays the editing source). Every tool is an `href` static page, so there is **no `/tools/[slug]` route** anymore. The React electronics calculators are gone (removed in `4fc44d7`; `bolt-sizes` went with the fastener work). **Stale-checkout warning, learned the hard way:** a deploy from a checkout 4 commits behind briefly reverted the live site — `git fetch` + confirm `main` is up to date before every deploy. |
 | **Game sounds** | **Real device SFX wired** (recovered WT588F recordings → `public/games/sfx/*.mp3`, registered via `sfx.useSamples` in each game). Synth voices remain as fallback. `score` (pipe-pass) uses `bell` as a chosen cue — badge was silent there. See docs/SOUNDS.md. |
 | **Static WordPress freeze** | **Superseded** — the Next.js site went live instead of the freeze. The freeze work (Simply Static, trimmed 825 MB→168 MB, static "Our Projects" grid) still exists locally / regenerable per docs/DEPLOYMENT.md, but is no longer the deploy path. |
-| **Deployment** | **LIVE.** `lavignelabs.com` serves the Next.js static export from `public_html`, games at `/play` (no subdomain, existing SSL). Redeploy = `cd web && npm run export`, upload `out/` (or `lavigne-site-full.zip`) via cPanel/FTP. |
+| **Deployment** | **LIVE on lavignelabs.net** via `web/scripts/deploy-net.sh` (releases + `--rollback`). _Old, retired:_ `lavignelabs.com` served the Next.js static export from `public_html`, games at `/play` (no subdomain, existing SSL). Redeploy = `cd web && npm run export`, upload `out/` (or `lavigne-site-full.zip`) via cPanel/FTP. |
 
 ## Deployment (as shipped)
 

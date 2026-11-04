@@ -5,8 +5,9 @@
 
 > **Status (2026-10-18): the canonical site is `https://lavignelabs.net`, served by
 > Caddy on tunnel-bear** and published with `scripts/deploy-net.sh` (below).
-> `lavignelabs.com` (old cPanel host, FTPS) still serves the previous copy until
-> its 301 to `.net` is flipped; the FTPS route under "Old host" is only for that.
+> **Since 2026-11-04 `lavignelabs.com` and `www` 301 every path to `.net`** (the old
+> cPanel host's `.htaccess`, below). Never deploy the site to the old host again; the FTPS
+> route under "Old host" is only for that `.htaccess` and the cert renewals.
 
 ## lavignelabs.net (the live site): `scripts/deploy-net.sh`
 
@@ -47,12 +48,15 @@ credentials, no FTP, nothing to put in an env file.
   `https://lavignelabs.net` and `https://lavignelabs.com`. The site's endpoint
   is the one constant `formsEndpoint` in `content/site.ts`.
 
-**Flipping lavignelabs.com to .net (prepared, NOT applied):**
+**lavignelabs.com -> .net redirect (LIVE since 2026-11-04, Brian: "cut over to the .net only"):**
 `scripts/htaccess-redirect.txt` is the old host's `.htaccess` (PHP handler kept)
 plus a 301 of every path on `lavignelabs.com` and `www` to the same path on
-`https://lavignelabs.net`. The original is saved as `docs/htaccess.orig`. To flip,
-upload it as `.htaccess` to the old docroot over FTPS from tunnel-bear; to undo,
-upload `docs/htaccess.orig`. Let's Encrypt renewals under `/.well-known/` stay
+`https://lavignelabs.net`. The original is saved as `docs/htaccess.orig`. It was
+uploaded with plain `curl --ssl-reqd -k --netrc-file … -T` from **red** (FTPS worked
+direct from red on 2026-11-04; red and tunnel-bear have no `lftp`). To undo, upload
+`docs/htaccess.orig` the same way. Re-fetch the live `.htaccess` before any edit:
+cPanel rewrites its PHP-handler block (it moved php80 -> php83 between 10-18 and 11-04).
+`REDIRECT_STATUS` is exempt so Apache's error pages (`/404.shtml`) are not bounced. Let's Encrypt renewals under `/.well-known/` stay
 un-redirected so the old host's cert keeps renewing while the redirect lives.
 The Search Console verification file `/google<hex>.html` is exempt too (served, not
 redirected) until Google's Change of Address completes.

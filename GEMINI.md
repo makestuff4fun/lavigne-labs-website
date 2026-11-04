@@ -64,9 +64,12 @@ section per category). Current sections: **Fasteners** (6) and **Electronics**
 - **Contact form:** `app/api/contact/route.ts` emails via **Resend**
   (`RESEND_API_KEY` in `.env.local`; without it, dev logs submissions to the terminal).
 
-## Current state (2026-07-24)
+## Current state (2026-11-04)
 
-**Live.** `lavignelabs.com` now serves this Next.js site as a static export,
+**Live at `lavignelabs.net`** (Caddy on tunnel-bear, deploy with `web/scripts/deploy-net.sh`).
+`lavignelabs.com` 301s every path there since 2026-11-04, so the cPanel/FTPS deploy notes
+below are history: never mirror the site to the old host again (it would only be hidden
+behind the redirect). _Before 2026-10-18:_ `lavignelabs.com` served this Next.js site as a static export,
 games included at `/play` — the old WordPress site has been replaced. Real
 device SFX (WT588F recordings) are wired. Full status table: **docs/CONTEXT.md**.
 
