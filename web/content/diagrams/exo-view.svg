@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300" width="320" height="300" role="img" aria-labelledby="xv-t xv-d">
+<title id="xv-t">Exocentric capture: a fixed camera watches the wearer</title>
+<desc id="xv-d">The same person and bench, with no camera on the person. A camera on a stand watches the scene from across the bench. It sees the whole body, but the task and the person's own arm can hide the hands.</desc>
+<defs>
+<pattern id="xv-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#e2e8f0"/><line x1="0" y1="0" x2="0" y2="8" stroke="#cbd5e1" stroke-width="2"/></pattern>
+</defs>
+<rect width="320" height="300" fill="#f4f6fb"/>
+<path d="M290 58 L4 40 L4 296 L200 296 Z" fill="#64748b" fill-opacity="0.10" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="150" y="206" width="160" height="10" fill="url(#xv-hatch)" stroke="#475569" stroke-width="2"/>
+<line x1="166" y1="216" x2="166" y2="290" stroke="#475569" stroke-width="2.5"/>
+<line x1="294" y1="216" x2="294" y2="290" stroke="#475569" stroke-width="2.5"/>
+<rect x="232" y="186" width="34" height="20" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+<g fill="#dbeafe" stroke="#1b2942" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+<circle cx="66" cy="76" r="20"/>
+<path d="M56 98 L80 98 L86 210 L52 210 Z"/>
+<path d="M70 112 L104 168 L190 200" fill="none" stroke-width="7"/>
+<line x1="60" y1="210" x2="58" y2="290" stroke-width="7"/>
+<line x1="78" y1="210" x2="84" y2="290" stroke-width="7"/>
+</g>
+<circle cx="194" cy="201" r="7" fill="#dbeafe" stroke="#1b2942" stroke-width="2.5"/>
+<g fill="#475569">
+<rect x="290" y="50" width="22" height="16" rx="2"/>
+<line x1="301" y1="66" x2="301" y2="290" stroke="#475569" stroke-width="2.5"/>
+</g>
+<g font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" fill="#0b1220">
+<text x="12" y="28" font-size="17" font-weight="600">Exocentric (third-person)</text>
+<text x="284" y="46" font-size="15" text-anchor="end">Fixed camera</text>
+<text x="112" y="254" font-size="15">whole body,</text>
+<text x="112" y="272" font-size="15">hands often hidden</text>
+</g>
+</svg>
