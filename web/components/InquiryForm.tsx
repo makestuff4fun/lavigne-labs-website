@@ -102,8 +102,8 @@ export function InquiryForm() {
       <h2 className="text-xl font-semibold text-ink">Tell us about your project</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate">
         Only name, email and message are required. The rest helps us see your
-        stage, funding and timeline. Please keep to a link or two, as we may
-        not see messages with many links.
+        stage, funding and timeline. Keep links to one or two; messages with
+        many links can get filtered out.
       </p>
 
       <div ref={msgRef} tabIndex={-1} role="status" aria-live="polite" className="outline-none">

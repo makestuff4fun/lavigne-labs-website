@@ -13,9 +13,9 @@ export function FeaturedWork() {
               Proof, not promises.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-slate">
-              Boards, mechanisms, and products I designed and built with my own
-              hands — the same hands that would be on your factory floor. This is
-              what I bring to your product.
+              Most client work stays under NDA, so these are builds we can show:
+              boards, mechanisms and products from our own bench. The same design,
+              PCB and mechanical work goes into every client project.
             </p>
           </div>
           <Button href="/work" variant="secondary">

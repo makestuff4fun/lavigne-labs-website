@@ -1,7 +1,7 @@
 ---
 title: "Cantilever Snap Fits: Ratios, Not Equations"
 date: "2026-10-18"
-tag: "Sourcing"
+tag: "Design"
 excerpt: "Snap fits are some of our favourite features to design. The maths is nice, but a handful of thickness ratios gets you most of the way, and which way the hook faces decides whether the mold is simple or painful."
 related: ["hex-puck-lights"]
 series: "field-notes"

@@ -1,7 +1,7 @@
 ---
 title: "Designing Moldable Parts: A Checklist Before You Send the File"
 date: "2026-10-18"
-tag: "Sourcing"
+tag: "Design"
 excerpt: "Most injection molding problems are designed in, long before the mold is cut. A skimmable checklist for walls, ribs, bosses, corners, holes, text and finish, so the file you send is one a shop can actually mold."
 related: ["hex-puck-lights"]
 series: "field-notes"

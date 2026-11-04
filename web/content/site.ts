@@ -72,7 +72,7 @@ export const engagement = {
     {
       name: "Development to production",
       tag: "Design to units",
-      body: "Take a proven prototype through design for manufacturing, tooling, pilot runs and scale-up, with a vetted Shenzhen engineering team matched to your product. Lowest unit cost at volume is a welcome goal here.",
+      body: "Take a proven prototype through design for manufacturing, tooling, pilot runs and scale-up, with a vetted Shenzhen engineering team matched to your product.",
     },
     {
       name: "Production support",
@@ -90,7 +90,6 @@ export const credibility = [
   { value: "13+ yrs", label: "Founder's engineering & manufacturing in China" },
   { value: "6 yrs", label: "Founder ran an LED factory for Black & Decker" },
   { value: "40+", label: "Engineers across our vetted Shenzhen partner teams" },
-  { value: "Shenzhen", label: "Based where hardware gets built" },
 ] as const;
 
 export const services = [
@@ -147,7 +146,7 @@ export const problems = [
   },
   {
     risk: "Hidden costs & slipping timelines",
-    fix: "Clear quoting, tooling oversight, and a build plan that holds, managed on the ground in your blind-spot timezone.",
+    fix: "Clear quoting, tooling oversight, and a build plan that holds, managed on the ground while you sleep.",
   },
 ];
 

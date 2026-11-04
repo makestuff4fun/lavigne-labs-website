@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { mailtoHref } from "@/content/site";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projects } from "@/content/projects";
@@ -20,9 +19,10 @@ export default function WorkPage() {
             Things we&apos;ve designed, built, and made real.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
-            Each of these blends electronics, mechanical design, and a path to
-            production. It&apos;s the same approach we bring to taking your product
-            to manufacturing.
+            Most client work stays under NDA, so these are the builds we can
+            show, from shipped consumer lighting to our own bench projects. Each
+            blends electronics, mechanical design and a path to production, the
+            same approach we bring to your product.
           </p>
         </Container>
       </section>
@@ -47,8 +47,8 @@ export default function WorkPage() {
               Bring your prototype or product. We&apos;ll help you design it
               and get it built, reliably, at volume.
             </p>
-            <Button href={mailtoHref}>
-              Get in touch <ArrowIcon />
+            <Button href="/contact/">
+              Start a project <ArrowIcon />
             </Button>
           </div>
         </Container>

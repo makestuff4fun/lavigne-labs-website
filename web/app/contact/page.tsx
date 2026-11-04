@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
+import { Container, Eyebrow } from "@/components/ui";
 import { InquiryForm } from "@/components/InquiryForm";
 import { site, mailtoHref } from "@/content/site";
 
@@ -24,16 +24,6 @@ export default function ContactPage() {
             a note and we&apos;ll get back to you within one business day.
             Brian Barrett is your first contact.
           </p>
-          <p className="mt-4 leading-relaxed text-slate">
-            The button below opens your mail app with a short outline ready to
-            fill in. It helps to tell us what you&apos;re building, what stage
-            it&apos;s at, how many units you need, and your timeline.
-          </p>
-          <div className="mt-8">
-            <Button href={mailtoHref}>
-              Email us about your project <ArrowIcon />
-            </Button>
-          </div>
 
           <InquiryForm />
 
@@ -44,12 +34,11 @@ export default function ContactPage() {
               </a>
             </ContactItem>
             <ContactItem label="WeChat">{site.wechat}</ContactItem>
-            <ContactItem label="Hours">{site.hours}</ContactItem>
+            <ContactItem label="Location">{site.hours}</ContactItem>
           </dl>
 
           <p className="mt-10 max-w-sm text-sm text-slate">
             Prefer to talk directly? Reach out on WeChat or by email anytime.
-            Working on something like this? Get in touch.
           </p>
         </div>
       </Container>

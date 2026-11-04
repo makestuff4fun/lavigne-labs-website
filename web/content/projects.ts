@@ -9,6 +9,15 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "hex-puck-lights",
+    title: "Hex Puck Lights",
+    blurb:
+      "Black + Decker Hex Puck under cabinet lighting: a master puck with satellite pucks and a low-profile, screwless clip-together housing.",
+    image: "/work/hex-puck.png",
+    tags: ["PCB", "Lighting", "Product design"],
+    featured: true,
+  },
+  {
     slug: "microscope-slider",
     title: "Microscope X/Y Slider",
     blurb:
@@ -51,15 +60,6 @@ export const projects: Project[] = [
       "A whiteboard plotter inspired by draw bots, built on plywood with linear rails, a 3D printer control board and open-source software.",
     image: "/work/plotter.jpg",
     tags: ["Mechanical", "Motion control"],
-    featured: true,
-  },
-  {
-    slug: "hex-puck-lights",
-    title: "Hex Puck Lights",
-    blurb:
-      "Black + Decker Hex Puck under cabinet lighting: a master puck with satellite pucks and a low-profile, screwless clip-together housing.",
-    image: "/work/hex-puck.png",
-    tags: ["PCB", "Lighting", "Product design"],
     featured: true,
   },
   {

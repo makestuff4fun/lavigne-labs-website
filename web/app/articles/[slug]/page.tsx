@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { site, mailtoHref, pageUrl } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { projects } from "@/content/projects";
 import { getSeries } from "@/content/series";
 import { ArticleLightbox } from "@/components/ArticleLightbox";
@@ -263,8 +263,8 @@ export default async function ArticlePage({
               ? "Lavigne Labs is a Shenzhen hardware product-development team — get in touch."
               : "We\u2019re a Shenzhen hardware product-development team, ready to help you build it."}
           </p>
-          <Button href={mailtoHref} className="mt-5">
-            Get in touch <ArrowIcon />
+          <Button href="/contact/" className="mt-5">
+            Start a project <ArrowIcon />
           </Button>
         </div>
       </Container>

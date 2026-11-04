@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button, Container, ArrowIcon } from "./ui";
-import { credibility, site, mailtoHref } from "@/content/site";
+import { credibility, site } from "@/content/site";
 
 export function Hero() {
   return (
@@ -27,8 +27,8 @@ export function Hero() {
               puts his reputation on the results.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button href={mailtoHref}>
-                Get in touch <ArrowIcon />
+              <Button href="/contact/">
+                Start a project <ArrowIcon />
               </Button>
               <Button href="/work" variant="ghost">
                 See the work
@@ -56,13 +56,13 @@ export function Hero() {
               />
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-white px-5 py-4 text-ink shadow-card sm:block">
-              <p className="font-mono text-2xl font-bold">13+ yrs</p>
-              <p className="text-xs text-slate">founder on the factory floor</p>
+              <p className="font-mono text-2xl font-bold">Shenzhen</p>
+              <p className="text-xs text-slate">our workshop, close to the factories</p>
             </div>
           </div>
         </div>
 
-        <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/10 pt-10 lg:grid-cols-4">
+        <dl className="mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/10 pt-10 lg:grid-cols-3">
           {credibility.map((item) => (
             <div key={item.label}>
               <dt className="font-mono text-2xl font-bold text-white sm:text-3xl">

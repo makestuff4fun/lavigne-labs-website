@@ -17,15 +17,12 @@ export function Services() {
         </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {services.map((service, i) => (
+          {services.map((service) => (
             <div
               key={service.id}
               className="flex flex-col rounded-2xl border border-line bg-white p-7 shadow-card transition hover:border-accent/40"
             >
-              <span className="font-mono text-sm text-accent">
-                0{i + 1}
-              </span>
-              <h3 className="mt-3 text-xl font-semibold tracking-tight">
+              <h3 className="text-xl font-semibold tracking-tight">
                 {service.title}
               </h3>
               <p className="mt-3 leading-relaxed text-slate">

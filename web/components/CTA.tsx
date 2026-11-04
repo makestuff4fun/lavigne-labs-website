@@ -21,8 +21,8 @@ export function CTA() {
               personally.
             </p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Button href={mailtoHref}>
-                Get in touch <ArrowIcon />
+              <Button href="/contact/">
+                Start a project <ArrowIcon />
               </Button>
               <Button href={mailtoHref} variant="ghost">
                 {site.email}

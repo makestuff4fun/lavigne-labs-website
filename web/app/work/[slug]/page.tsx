@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { renderProjectBody } from "@/lib/projectBody";
-import { site, mailtoHref, pageUrl } from "@/content/site";
+import { site, pageUrl } from "@/content/site";
 import { Container, Eyebrow, ArrowIcon, Button } from "@/components/ui";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
@@ -146,8 +146,8 @@ export default async function ProjectPage({
             We&apos;re a Shenzhen hardware product-development team, ready to help you
             build it.
           </p>
-          <Button href={mailtoHref} className="mt-5">
-            Get in touch <ArrowIcon />
+          <Button href="/contact/" className="mt-5">
+            Start a project <ArrowIcon />
           </Button>
         </div>
       </Container>
