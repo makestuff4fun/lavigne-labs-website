@@ -18,6 +18,8 @@ the page instantly.
 
 **Positioning (Brian, 2026-11-05):** Lavigne Labs gets hardware made for funded startups. "We handle everything for you, and you can work with me and talk to the team / factories we work with. Leverage my expertise, relationships and experience to avoid costly mistakes and delays. Sell it hard." Camera and sensor devices are the specialty.
 
+**Don't say the quiet part out loud (Brian, 2026-11-05):** funded startups are the ideal customer, but the site must not turn anyone else away: smaller inquiries still make money (referrals to small design shops, commission on CNC and parts orders). So attract the ideal customer through what the page talks about (production, DFM, pilot runs, factories, cameras), say "who we work best with" once and warmly, lower down, and give everyone else a clear way in ("smaller jobs are welcome too… if we're not the right fit, we'll point you to someone who is"). Never put "for funded startups" in the hero, tagline or meta description.
+
 **Honest scale (never overclaim):** Lavigne Labs is a small, founder-led team. Brian leads every project himself; engineering and production are done with vetted partners (design houses, camera and electronics factories, suppliers), 40+ engineers *across the partner teams*. Clients can talk to those teams and factories directly. Never write "our engineers", "our factory", "in-house", "under one roof", or a headcount that is not clearly the partners'. "We" is fine: a founder, staff and a partner network is a firm.
 
 **Years in China:** never hard-code. `yearsInChina` in `content/site.ts` is computed at build time from 2012-11-30 ("13+" until 2026-11-30, then "14+").

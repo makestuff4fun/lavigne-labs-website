@@ -14,14 +14,14 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="eyebrow text-accent-300">
-              For funded hardware startups
+              Hardware development and manufacturing · Shenzhen
             </p>
             <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
               Get your hardware made, without the costly mistakes.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              You&apos;ve raised the money. We handle the rest: engineering
-              partners, prototypes, factories, quality and shipping. You work
+              You bring the product. We handle the rest: engineering partners,
+              prototypes, factories, quality and shipping. You work
               directly with {site.founder}, {yearsInChina} years making products in
               China, and you can talk to every team and factory building your
               product.

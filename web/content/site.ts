@@ -10,9 +10,9 @@ export const yearsInChina = `${yearsInChinaWhole}+`;
 
 export const site = {
   name: "Lavigne Labs",
-  tagline: "Hardware made for funded startups, from Shenzhen.",
+  tagline: "Hardware development and manufacturing in Shenzhen.",
   description:
-    "Lavigne Labs gets hardware made for funded startups. From Shenzhen, we handle engineering partners, prototypes, factories, quality and shipping, led by Brian Barrett, who puts his reputation on the results. Camera and sensor devices are our specialty.",
+    "Lavigne Labs gets hardware made, from prototype to production. From Shenzhen, we handle engineering partners, prototypes, factories, quality and shipping, led by Brian Barrett, who puts his reputation on the results. Camera and sensor devices are our specialty.",
   url: "https://lavignelabs.net",
   founder: "Brian Barrett",
   email: "hello@lavignelabs.net",

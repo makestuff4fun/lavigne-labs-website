@@ -13,11 +13,12 @@ export function CTA() {
           />
           <div className="relative mx-auto max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Funded and ready to build?
+              Ready to build?
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-white/70">
-              Tell us what you&apos;re making and where it stands. Brian Barrett
-              replies personally, within one business day.
+              Tell us what you&apos;re making and where it stands, from a full
+              product to a single machined part. Brian Barrett replies
+              personally, within one business day.
             </p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
               <Button href="/contact/">

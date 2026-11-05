@@ -20,15 +20,17 @@ export default function ContactPage() {
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-slate">
             Tell us what you&apos;re making, where it stands and when you need
-            it. Funded startups and teams with a completed Kickstarter are our
-            best fit, and a second opinion on a quote is welcome too.
+            it. Taking a product from prototype to production is what we do
+            best, and smaller jobs are welcome too: machined or printed parts,
+            a quick prototype, or a second opinion on a quote. If we&apos;re not
+            the right fit, we&apos;ll point you to someone who is.
           </p>
 
           <div className="mt-10">
             <h2 className="text-xl font-semibold text-ink">What happens next</h2>
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-slate">
               <li>Brian replies personally, within one business day.</li>
-              <li>A short call about your product, your stage and your timeline.</li>
+              <li>For a full product, a short call about your stage and your timeline.</li>
               <li>A clear plan: who builds what, what it costs and how long it takes.</li>
             </ol>
           </div>
