@@ -1,8 +1,18 @@
+/** Brian started in China on 2012-11-30. Whole years, computed at build time ("13+" until 2026-11-30, then "14+"). */
+const CHINA_SINCE = new Date("2012-11-30T00:00:00+08:00");
+function wholeYearsSince(start: Date, now = new Date()): number {
+  let y = now.getFullYear() - start.getFullYear();
+  if (now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())) y--;
+  return y;
+}
+export const yearsInChinaWhole = wholeYearsSince(CHINA_SINCE);
+export const yearsInChina = `${yearsInChinaWhole}+`;
+
 export const site = {
   name: "Lavigne Labs",
-  tagline: "A Shenzhen hardware product-development team, ready to help you.",
+  tagline: "Hardware made for funded startups, from Shenzhen.",
   description:
-    "Lavigne Labs is a Shenzhen hardware product-development team. We move fast: prototype sprints, development to production, and production support, each project matched to a vetted Shenzhen engineering team and led by Brian Barrett, who puts his reputation on the results.",
+    "Lavigne Labs gets hardware made for funded startups. From Shenzhen, we handle engineering partners, prototypes, factories, quality and shipping, led by Brian Barrett, who puts his reputation on the results. Camera and sensor devices are our specialty.",
   url: "https://lavignelabs.net",
   founder: "Brian Barrett",
   email: "hello@lavignelabs.net",
@@ -27,13 +37,13 @@ export const bestFit = {
 export const founderStory = {
   heading: "Founded by Brian Barrett",
   paragraphs: [
-    "Lavigne Labs was founded by Brian Barrett, a hardware engineer with 13+ years in China. He ran an LED factory for Black & Decker for six years, and worked with two EV startups building tilting vehicles and electric motorcycles.",
+    `Lavigne Labs was founded by Brian Barrett, a hardware engineer with ${yearsInChina} years in China. He ran an LED factory for Black & Decker for six years, and worked with two EV startups building tilting vehicles and electric motorcycles.`,
     "Here is how we work. Lavigne Labs is the face and the accountable lead. Each project is matched to a vetted Shenzhen engineering team, design-led or production-integrated depending on what you need, with 40+ engineers across our partner teams. Brian is your first contact and puts his reputation on the results.",
   ],
 };
 
 export const nav = [
-  { label: "Services", href: "/#services" },
+  { label: "What you get", href: "/#services" },
   { label: "Work", href: "/work" },
   { label: "Articles", href: "/articles" },
   { label: "Tools", href: "/tools" },
@@ -43,7 +53,8 @@ export const nav = [
 
 export const footerLinks = {
   Company: [
-    { label: "Services", href: "/#services" },
+    { label: "What you get", href: "/#services" },
+    { label: "Camera & sensor devices", href: "/#cameras" },
     { label: "How we work", href: "/#how-we-work" },
     { label: "Work", href: "/work" },
     { label: "FAQ", href: "/faq" },
@@ -86,8 +97,61 @@ export const engagement = {
   },
 };
 
+/** "What you get": the offer, sold plainly. Every line must stay true (see docs/CONTENT.md, "Honest scale"). */
+export const offer = {
+  heading: "We handle everything. You stay in the loop.",
+  intro:
+    "One accountable lead, the right specialists for your product, and a clear view of who is building it.",
+  points: [
+    {
+      title: "One accountable lead",
+      body: "Brian leads your project from first prototype to shipped units. One contract, and one person who answers for the result.",
+    },
+    {
+      title: "The right specialists for your product",
+      body: `Design houses, camera and electronics factories, and suppliers we have vetted over ${yearsInChinaWhole} years. We pick the partner that fits your product, not the one with spare capacity.`,
+    },
+    {
+      title: "Direct access, no black box",
+      body: "Talk to the engineers and the factories building your product. We bring you into the room instead of keeping you out of it.",
+    },
+    {
+      title: "On the ground in Shenzhen",
+      body: "We are in the factories in person, at the prototype, the pilot run and the production line, catching problems before they ship by the thousand.",
+    },
+  ],
+  coverage: [
+    "Electronics & PCB design",
+    "Mechanical & enclosure design",
+    "Firmware & bring-up",
+    "Prototypes & small batches",
+    "DFM, tooling & pilot runs",
+    "Factory matching, QC & logistics",
+  ],
+  setup: {
+    title: "How we're set up",
+    body: `Lavigne Labs is a small, founder-led team. Brian leads every project himself. For engineering and production we bring in partners we have vetted over ${yearsInChinaWhole} years: design houses, camera and electronics factories, and suppliers. You get one contract, one accountable lead, and the right specialists for your product.`,
+  },
+};
+
+/** Specialty: camera and sensor devices. Brian 2026-11-05: the existence of egocentric projects may be stated, never specifics. */
+export const specialty = {
+  heading: "Camera and sensor devices",
+  body: [
+    "Cameras are where hardware gets hard: lenses and image sensors, IMUs, synchronisation and calibration, heat in a small enclosure, and factories that can build all of it the same way every time. It is where we do our best work.",
+    "We have worked on several egocentric data-capture projects: head-worn camera rigs that record how people use their hands, to train robots and AI.",
+  ],
+  points: [
+    "Mono, stereo and multi-camera rigs",
+    "Camera module and lens selection",
+    "Camera and IMU calibration",
+    "Time sync across devices",
+    "Wearable mounts built for a full shift",
+  ],
+};
+
 export const credibility = [
-  { value: "13+ yrs", label: "Founder's engineering & manufacturing in China" },
+  { value: `${yearsInChina} yrs`, label: "Founder's engineering & manufacturing in China" },
   { value: "6 yrs", label: "Founder ran an LED factory for Black & Decker" },
   { value: "40+", label: "Engineers across our vetted Shenzhen partner teams" },
 ] as const;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
 import { allSeries } from "@/content/series";
+import { yearsInChina } from "@/content/site";
 import { getAllArticles, getSeriesArticles, formatDate } from "@/lib/articles";
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default function ArticlesPage() {
             Lessons from the factory floor.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate">
-            Hard-won notes on sourcing, costing, and quality from 13+ years
+            Hard-won notes on sourcing, costing, and quality from {yearsInChina} years
             making products in China — the things we wish every team knew before
             they wired their first deposit.
           </p>

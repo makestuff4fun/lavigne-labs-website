@@ -11,9 +11,9 @@ export function ProblemSolution() {
             Getting hardware built is where it gets hard.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate">
-            The gap between a working prototype and thousands of reliable units
-            in the field is where products stall. The four places teams get
-            stuck — and how we take them off the table.
+            Most hardware delays and cost overruns come from four mistakes.
+            We have seen each one up close, and we keep them off your
+            project.
           </p>
         </div>
 

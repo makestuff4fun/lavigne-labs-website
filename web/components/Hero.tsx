@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button, Container, ArrowIcon } from "./ui";
-import { credibility, site } from "@/content/site";
+import { credibility, site, yearsInChina } from "@/content/site";
 
 export function Hero() {
   return (
@@ -14,32 +14,30 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="eyebrow text-accent-300">
-              Hardware product development · Shenzhen
+              For funded hardware startups
             </p>
             <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              We design hardware, and{" "}
-              <span className="text-accent-300">get it built.</span>
+              Get your hardware made, without the costly mistakes.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-              {site.name} is a Shenzhen hardware product-development team, ready to
-              help you. We move fast: prototype sprints, development to
-              production, and production support, led by {site.founder}, who
-              puts his reputation on the results.
+              You&apos;ve raised the money. We handle the rest: engineering
+              partners, prototypes, factories, quality and shipping. You work
+              directly with {site.founder}, {yearsInChina} years making products in
+              China, and you can talk to every team and factory building your
+              product.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button href="/contact/">
                 Start a project <ArrowIcon />
               </Button>
-              <Button href="/work" variant="ghost">
-                See the work
+              <Button href="/#how-we-work" variant="ghost">
+                How we work
               </Button>
             </div>
             <p className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-white/55">
-              <span className="font-medium text-white/80">PCB &amp; product design</span>
-              <span className="text-white/30">·</span>
-              <span className="font-medium text-white/80">rapid prototyping</span>
-              <span className="text-white/30">·</span>
-              <span className="font-medium text-white/80">production in Shenzhen</span>
+              <span className="font-medium text-white/80">
+                Camera and sensor devices are our specialty.
+              </span>
             </p>
           </div>
 
@@ -57,7 +55,7 @@ export function Hero() {
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-white px-5 py-4 text-ink shadow-card sm:block">
               <p className="font-mono text-2xl font-bold">Shenzhen</p>
-              <p className="text-xs text-slate">our workshop, close to the factories</p>
+              <p className="text-xs text-slate">on the ground, next to the factories</p>
             </div>
           </div>
         </div>

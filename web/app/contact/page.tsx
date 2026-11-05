@@ -16,14 +16,22 @@ export default function ContactPage() {
         <div className="max-w-2xl">
           <Eyebrow>Get in touch</Eyebrow>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Let&apos;s bring your product to life.
+            Start a project.
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-slate">
-            Whether you have a question, need a second opinion on a quote, or
-            you&apos;re ready to take a prototype to production, send our team
-            a note and we&apos;ll get back to you within one business day.
-            Brian Barrett is your first contact.
+            Tell us what you&apos;re making, where it stands and when you need
+            it. Funded startups and teams with a completed Kickstarter are our
+            best fit, and a second opinion on a quote is welcome too.
           </p>
+
+          <div className="mt-10">
+            <h2 className="text-xl font-semibold text-ink">What happens next</h2>
+            <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-slate">
+              <li>Brian replies personally, within one business day.</li>
+              <li>A short call about your product, your stage and your timeline.</li>
+              <li>A clear plan: who builds what, what it costs and how long it takes.</li>
+            </ol>
+          </div>
 
           <InquiryForm />
 

@@ -1,4 +1,4 @@
-import { site, pageUrl, philosophy } from "@/content/site";
+import { site, pageUrl, philosophy, yearsInChina, offer, specialty } from "@/content/site";
 import { allSeries } from "@/content/series";
 import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { projects } from "@/content/projects";
@@ -24,7 +24,11 @@ export function GET() {
     "",
     `> ${site.description}`,
     "",
-    `Founded by ${site.founder}, who has 13+ years in China, ran an LED factory for Black & Decker for six years and worked with two EV startups. ${philosophy.line} Best fit: funded startups and teams with a completed Kickstarter.`,
+    `Founded by ${site.founder}, who has ${yearsInChina} years in China, ran an LED factory for Black & Decker for six years and worked with two EV startups. ${philosophy.line} Best fit: funded startups and teams with a completed Kickstarter.`,
+    "",
+    `${offer.setup.body}`,
+    "",
+    `Specialty: ${specialty.heading.toLowerCase()}. ${specialty.body.join(" ")}`,
     "",
     `Contact: ${site.email} (inquiries can also be sent via the form on /contact)`,
     "",
