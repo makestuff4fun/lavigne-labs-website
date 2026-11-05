@@ -55,7 +55,7 @@ export function Hero() {
             </div>
             <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-white px-5 py-4 text-ink shadow-card sm:block">
               <p className="font-mono text-2xl font-bold">Shenzhen</p>
-              <p className="text-xs text-slate">on the ground, next to the factories</p>
+              <p className="text-xs text-slate">our lab, next to the factories</p>
             </div>
           </div>
         </div>
