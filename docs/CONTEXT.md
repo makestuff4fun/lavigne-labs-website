@@ -28,6 +28,16 @@ Black & Decker for six years; two EV startups), who is the first contact.
   export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
   site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
 
+## Latest (2026-11-05)
+
+- **lavignelabs.com now 301s to lavignelabs.net** (old host `.htaccess`, see docs/DEPLOYMENT.md).
+- **Repositioned as a funnel** (Brian): hardware made for funded startups without saying it in the hero; smaller jobs welcome, with referrals for misfits. "What you get" (one accountable lead, the right specialists, direct access to teams and factories, on the ground) plus an honest "How we're set up"; camera and sensor devices as the specialty; "several egocentric data-capture projects" may be stated. Rules: docs/CONTENT.md ("Don't say the quiet part out loud", "Honest scale").
+- **Years in China are computed** from 2012-11-30, so "13+" becomes "14+" only when the site is **rebuilt and deployed after 2026-11-30**.
+- **New founder photo** (Brian's own lab, retouched with his approval). The image makeover continues: hero (photo 3, blur WeChat), "on the ground" (photo 2, crop the headline monitor), lab/About (photo 4). Originals are in den media from 2026-11-05 19:27.
+- **Deployed** release 20261105T123124Z.
+- **Drafts, not on main:** branch `draft/egocentric-articles` (4 parts: what it is, camera design, calibration, IMU calibration; part 5 sync next). Branch `reposition-funnel` is merged.
+- **Open:** a "What do you need?" form field (needs the lavigne-inquiries receiver FIELDS changed); anonymised case studies from Brian's stories; a mold/tooling photo; the WeChat article (keep?); the design pass (diagram-style identity); the den channel for this repo (.mcp.json) so phone messages reach the session.
+
 ## Status by workstream
 
 | Area | State |
