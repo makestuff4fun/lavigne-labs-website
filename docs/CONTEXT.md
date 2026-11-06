@@ -35,7 +35,7 @@ Black & Decker for six years; two EV startups), who is the first contact.
 - **Years in China are computed** from 2012-11-30, so "13+" becomes "14+" only when the site is **rebuilt and deployed after 2026-11-30**.
 - **New founder photo** (Brian's own lab, retouched with his approval). The image makeover continues: hero (photo 3, blur WeChat), "on the ground" (photo 2, crop the headline monitor), lab/About (photo 4). Originals are in den media from 2026-11-05 19:27.
 - **Deployed** release 20261105T123124Z.
-- **Drafts, not on main:** branch `draft/egocentric-articles` (4 parts: what it is, camera design, calibration, IMU calibration; part 5 sync next). Branch `reposition-funnel` is merged.
+- **Egocentric article drafts moved out of this repo** (2026-11-06). Lavigne Labs keeps its camera-and-sensor specialty and the egocentric-projects line on the home page; the articles themselves no longer belong here.
 - **Open:** a "What do you need?" form field (needs the lavigne-inquiries receiver FIELDS changed); anonymised case studies from Brian's stories; a mold/tooling photo; the WeChat article (keep?); the design pass (diagram-style identity); the den channel for this repo (.mcp.json) so phone messages reach the session.
 
 ## Status by workstream
