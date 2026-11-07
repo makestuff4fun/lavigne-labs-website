@@ -28,6 +28,22 @@ Black & Decker for six years; two EV startups), who is the first contact.
   export on cPanel/FTP, Let's Encrypt SSL), games at `/play`. The old WordPress
   site has been replaced. Contact: `hello@lavignelabs.com`, WeChat `briantb`.
 
+## ⏸ PAUSED (Brian, 2026-11-07)
+
+Brian has paused this site while egocam.ai takes priority. Report this status at startup, but
+don't start work here unless he asks. The site is live and stable (release 20261105T123124Z).
+When he resumes it, these are open:
+- **After 2026-11-30:** rebuild and redeploy so the computed years read "14+".
+- The photo makeover: hero (photo 3, blur the WeChat code), "on the ground" (photo 2, crop the
+  headline monitor), lab/About (photo 4).
+- `GEMINI.md` is stale. It still describes the cPanel/FTPS deploy and gives an SSL expiry of
+  2026-11-30, but `deploy-net.sh` is the deploy now. The old .com host's certificate expires
+  2027-01-29 and is needed only for the 301.
+- The other "Open" items listed under Latest, below.
+
+egocam.ai is a **separate business** with its own repo (`~/projects/egocam-site`, status in
+`docs/CONTEXT.md` there). Never link the two.
+
 ## Latest (2026-11-05)
 
 - **lavignelabs.com now 301s to lavignelabs.net** (old host `.htaccess`, see docs/DEPLOYMENT.md).
