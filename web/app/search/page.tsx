@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Container, Eyebrow } from "@/components/ui";
 import { SearchBox } from "@/components/SearchBox";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/search/"),
   title: "Search",
   description:
     "Search articles, FAQ answers, services and projects on Lavigne Labs.",

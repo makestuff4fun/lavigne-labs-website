@@ -3,8 +3,10 @@ import Image from "next/image";
 import { Container, Eyebrow } from "@/components/ui";
 import { labNotes } from "@/content/labNotes";
 import { formatDate } from "@/lib/articles";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/lab/"),
   title: "Lab Notes",
   description:
     "Behind-the-scenes from the Lavigne Labs bench — side projects, experiments, and the maker habit that keeps our manufacturing instincts sharp.",

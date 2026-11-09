@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Container, Eyebrow } from "@/components/ui";
 import { InquiryForm } from "@/components/InquiryForm";
 import { site, mailtoHref } from "@/content/site";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/contact/"),
   title: "Contact",
   description:
     "Get in touch with the Lavigne Labs team, a Shenzhen hardware product-development team led by Brian Barrett. Reach out by email or WeChat.",

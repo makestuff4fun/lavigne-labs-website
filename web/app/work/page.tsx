@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
 import { ProjectCard } from "@/components/ProjectCard";
 import { projects } from "@/content/projects";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/work/"),
   title: "Work",
   description:
     "Selected hardware projects from Lavigne Labs — PCBs, prototypes, and products designed and built to be manufactured at volume.",

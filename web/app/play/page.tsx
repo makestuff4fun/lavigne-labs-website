@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/play/"),
   title: "Play",
   description:
     "Browser versions of my side projects — Shiverwing, the Flappy-Bird game from my ESP32 badge, and a Sokoban puzzle. Because people are people.",

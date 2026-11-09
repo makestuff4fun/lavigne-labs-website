@@ -9,6 +9,7 @@ import { projectDetails } from "@/content/projectDetails";
 import { getArticlesForProject, formatDate } from "@/lib/articles";
 import { ImageViewer } from "@/components/ImageViewer";
 import { projectGalleries } from "@/content/projectGalleries";
+import { alternates } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -26,6 +27,7 @@ export async function generateMetadata({
   if (!project) return {};
   const first = projectGalleries[slug]?.[0];
   return {
+    alternates: alternates(`/work/${slug}/`),
     title: project.title,
     description: project.blurb,
     openGraph: {

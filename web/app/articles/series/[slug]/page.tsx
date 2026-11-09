@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
 import { allSeries, getSeries } from "@/content/series";
 import { getSeriesArticles, formatDate } from "@/lib/articles";
+import { alternates } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const s = getSeries(slug);
   if (!s) return {};
-  return { title: s.title, description: s.intro };
+  return { title: s.title, description: s.intro, alternates: alternates(`/articles/series/${slug}/`) };
 }
 
 export default async function SeriesPage({

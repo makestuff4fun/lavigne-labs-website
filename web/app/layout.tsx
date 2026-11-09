@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { site } from "@/content/site";
+import { feeds } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,14 +47,9 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
   },
-  alternates: {
-    canonical: site.url,
-    types: {
-      "application/rss+xml": `${site.url}/rss.xml`,
-      "application/feed+json": `${site.url}/feed.json`,
-      "application/json": `${site.url}/api/v1/index.json`,
-    },
-  },
+  // Feeds only, never a canonical: a canonical here is inherited by every page that lacks one.
+  // Each page sets its own with alternates() from lib/seo.ts.
+  alternates: { types: feeds },
 };
 
 export default function RootLayout({

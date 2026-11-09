@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { ChartShell } from "@/components/charts/ChartShell";
 import { HoleDiagram } from "@/components/charts/HoleDiagram";
 import { MetricTable, metricRows } from "@/components/charts/tables";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Metric Tap Drill Chart (M1–M24)",
   description:
     "ISO metric coarse and fine tap drill sizes M1–M24 with hard-material drills, clearance holes, counterbores and countersinks. Printable A4 / US Letter.",
-  alternates: { canonical: "/tools/charts/metric-tap-drills/" },
+  alternates: alternates("/tools/charts/metric-tap-drills/"),
 };
 
 export default function Page() {

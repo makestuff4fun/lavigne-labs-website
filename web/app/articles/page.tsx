@@ -4,8 +4,10 @@ import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
 import { allSeries } from "@/content/series";
 import { yearsInChina } from "@/content/site";
 import { getAllArticles, getSeriesArticles, formatDate } from "@/lib/articles";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/articles/"),
   title: "Articles",
   description:
     "Field notes on manufacturing in China — sourcing, costing, quality, and the lessons that save hardware teams real money.",

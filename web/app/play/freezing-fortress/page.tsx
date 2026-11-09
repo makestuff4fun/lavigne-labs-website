@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Container, ArrowIcon } from "@/components/ui";
 import FreezingFortress from "@/components/games/FreezingFortress";
 import { SoundToggle } from "@/components/SoundToggle";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/play/freezing-fortress/"),
   title: "Freezing Fortress",
   description:
     "Play Freezing Fortress featuring Shiverwing — Brian's 14×10 addressable-LED Sokoban. Push every ice cube into a fire pit. Real colours, fire-flicker, and cube-melt from the firmware.",

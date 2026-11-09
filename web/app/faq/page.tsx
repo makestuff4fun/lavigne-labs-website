@@ -3,8 +3,10 @@ import { mailtoHref } from "@/content/site";
 import { Container, Eyebrow, Button, ArrowIcon } from "@/components/ui";
 import { FaqList } from "@/components/Faq";
 import { faqs } from "@/content/faq";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/faq/"),
   title: "FAQ",
   description:
     "Honest answers about working with our team: how we work together, design plus manufacturing, building hardware in Shenzhen, MOQs, quality, and cost.",

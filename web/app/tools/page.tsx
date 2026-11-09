@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Container, Eyebrow, ArrowIcon } from "@/components/ui";
 import { toolCategories, toolsInCategory, type Tool } from "@/content/tools";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/tools/"),
   title: "Engineering Tools",
   description:
     "Free bench calculators and reference sheets — fastener dimensions, holding force, and tightening torque plus PCB and circuit math.",

@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Container, ArrowIcon } from "@/components/ui";
 import Shiverwing from "@/components/games/Shiverwing";
 import { SoundToggle } from "@/components/SoundToggle";
+import { alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  alternates: alternates("/play/shiverwing/"),
   title: "Shiverwing",
   description:
     "Play Shiverwing — the Flappy-Bird game from Brian's ESP32 hardware badge, ported pixel-for-pixel to the browser. Real sprites, physics, fonts, and screens.",

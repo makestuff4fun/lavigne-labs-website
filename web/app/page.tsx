@@ -10,6 +10,10 @@ import { FaqSection } from "@/components/Faq";
 import { CTA } from "@/components/CTA";
 import { featuredFaqs } from "@/content/faq";
 import { buildOrganizationJsonLd } from "@/content/organization";
+import type { Metadata } from "next";
+import { alternates } from "@/lib/seo";
+
+export const metadata: Metadata = { alternates: alternates("/") };
 
 const jsonLd = buildOrganizationJsonLd();
 
