@@ -26,7 +26,7 @@ the page instantly.
 
 **Egocentric projects:** "We have worked on several egocentric data-capture projects" may be said (Brian, 2026-11-05: an NDA allows a project's existence to be known). Never specifics, clients, or camera counts beyond stereo.
 
-- **We / our team voice.** Write "we" and "our team". Brian appears as the founder ("Founded by Brian Barrett": 13+ years in China, ran an LED factory for Black & Decker for six years, two EV startups) and as first contact, never as a job candidate. Mention no other employer.
+- **We / our team voice.** Write "we" and "our team". Brian appears as the founder ("Founded by Brian Barrett": 13+ years in China, ran an LED factory for Black & Decker for six years, two EV startups) and as first contact, never as a job candidate. Mention no other employer by name. **Exception (Brian, 2026-11-12):** the founder bio says he has worked with "a fast-growing egocentric data-capture company" on its head-worn camera rigs, for the search terms (egocentric data capture, robot learning, physical AI). Never name the company, on the site or in any AI file; his LinkedIn names it, the site does not.
 - **Partners are never named.** Partner teams, factories and shops are not named anywhere, including JSON-LD, llms.txt and the API.
 - **Philosophy line:** "We move fast. Speed costs money; we spend it where it saves weeks." Prototyping is the hook. Lowest unit cost at volume is a welcome production goal; never be rude about penny-pinching in development, just say what we do.
 - **Who we work best with:** funded startups and teams with a completed Kickstarter (say it warmly).

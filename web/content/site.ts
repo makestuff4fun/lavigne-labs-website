@@ -38,6 +38,7 @@ export const founderStory = {
   heading: "Founded by Brian Barrett",
   paragraphs: [
     `Lavigne Labs was founded by Brian Barrett, a hardware engineer with ${yearsInChina} years in China. He ran an LED factory for Black & Decker for six years, and worked with two EV startups building tilting vehicles and electric motorcycles.`,
+    "Most recently, Brian has worked with a fast-growing egocentric data-capture company on its head-worn camera rigs: the wearable hardware that records how people use their hands, so robots and physical AI can learn from it. It is the same work our camera and sensor specialty is built on.",
     "Here is how we work. Lavigne Labs is the face and the accountable lead. Each project is matched to a vetted Shenzhen engineering team, design-led or production-integrated depending on what you need, with 40+ engineers across our partner teams. Brian is your first contact and puts his reputation on the results.",
   ],
 };
@@ -45,6 +46,7 @@ export const founderStory = {
 export const nav = [
   { label: "What you get", href: "/#services" },
   { label: "Work", href: "/work" },
+  { label: "About", href: "/#about" },
   { label: "Articles", href: "/articles" },
   { label: "Tools", href: "/tools" },
   { label: "Play", href: "/play" },
@@ -57,6 +59,7 @@ export const footerLinks = {
     { label: "Camera & sensor devices", href: "/#cameras" },
     { label: "How we work", href: "/#how-we-work" },
     { label: "Work", href: "/work" },
+    { label: "About", href: "/#about" },
     { label: "FAQ", href: "/faq" },
     { label: "Contact", href: "/contact" },
   ],

@@ -22,7 +22,9 @@ export function buildOrganizationJsonLd() {
     founder: {
       "@type": "Person",
       name: site.founder,
-      description: founderStory.paragraphs[0],
+      description: `${founderStory.paragraphs[0]} ${founderStory.paragraphs[1]}`,
+      image: `${site.url}/brand/brian.jpg`,
+      knowsAbout: ["Egocentric data capture", "Head-worn camera rigs", "Robot learning data", "Manufacturing in China"],
     },
     areaServed: [
       { "@type": "City", name: "Shenzhen" },
@@ -60,6 +62,8 @@ export function buildOrganizationJsonLd() {
       "Design for manufacturability",
       "Manufacturing in Shenzhen",
       "Wearable & sensor devices",
+      "Camera devices",
+      "Egocentric data capture hardware",
     ],
   };
 }
