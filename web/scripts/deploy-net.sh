@@ -72,8 +72,8 @@ CHANGED=()
 if [[ -n "$PREV" ]]; then
   while read -r f; do
     p=${f%index.html}; CHANGED+=("$URL/${p}")
-  done < <(rsync -anc --out-format='%n' --include='*/' --include='index.html' --exclude='*' \
-             out/ "$HOST:$BASE/$PREV/" | grep -E '(^|/)index\.html$' | grep -vE '^(404|_not-found)/' || true)
+  done < <(rsync -anc --out-format='%n' --include='*/' --include='index.html' --include='llms*.txt' --exclude='*' \
+             out/ "$HOST:$BASE/$PREV/" | grep -E '(^|/)index\.html$|^llms(-full)?\.txt$' | grep -vE '^(404|_not-found)/' || true)
 fi
 rsync -a --delete --chmod=D755,F644 "${LINK[@]}" out/ "$HOST:$REL/"
 
@@ -97,8 +97,12 @@ INDEXNOW_KEY=947ca2574a9bdda3d8f74054157574b9
 if (( ${#CHANGED[@]} )); then
   body=$(python3 -c 'import json,sys; print(json.dumps({"host":"lavignelabs.net","key":sys.argv[1],
     "keyLocation":"https://lavignelabs.net/"+sys.argv[1]+".txt","urlList":sys.argv[2:]}))' "$INDEXNOW_KEY" "${CHANGED[@]}")
-  code=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json; charset=utf-8' \
-    --data "$body" https://api.indexnow.org/indexnow || echo 000)
+  code=000
+  for _ in 1 2 3; do   # the proxy drops the odd TLS handshake: retry before reporting failure
+    code=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json; charset=utf-8' \
+      --data "$body" https://api.indexnow.org/indexnow 2>/dev/null) || code=000
+    [[ $code == 200 || $code == 202 ]] && break; sleep 5
+  done
   echo "IndexNow: ${#CHANGED[@]} changed page(s), HTTP $code (200/202 = accepted)"
 else
   echo "IndexNow: no page HTML changed, nothing to submit"
