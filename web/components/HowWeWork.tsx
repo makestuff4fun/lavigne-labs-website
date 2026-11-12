@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container, Eyebrow } from "./ui";
 import { engagement, philosophy, bestFit } from "@/content/site";
 
@@ -41,16 +42,27 @@ export function HowWeWork() {
           </ul>
         </div>
 
-        <div className="mt-6 flex items-start gap-4 rounded-2xl bg-ink p-7 text-white">
-          <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/20 text-accent-300">
-            <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M10 2.5l6 2.5v4c0 4-2.7 6.5-6 7.5-3.3-1-6-3.5-6-7.5V5l6-2.5Z" strokeLinejoin="round" />
-              <path d="m7.5 10 1.7 1.7L13 8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-          <div>
-            <h3 className="text-lg font-semibold">{engagement.loyalty.title}</h3>
-            <p className="mt-2 leading-relaxed text-white/70">{engagement.loyalty.body}</p>
+        <div className="mt-6 grid overflow-hidden rounded-2xl bg-ink text-white lg:grid-cols-2">
+          <div className="flex items-start gap-4 p-7 sm:p-9 lg:self-center">
+            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent/20 text-accent-300">
+              <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M10 2.5l6 2.5v4c0 4-2.7 6.5-6 7.5-3.3-1-6-3.5-6-7.5V5l6-2.5Z" strokeLinejoin="round" />
+                <path d="m7.5 10 1.7 1.7L13 8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <div>
+              <h3 className="text-lg font-semibold">{engagement.loyalty.title}</h3>
+              <p className="mt-2 leading-relaxed text-white/70">{engagement.loyalty.body}</p>
+            </div>
+          </div>
+          <div className="relative aspect-[3/2] lg:aspect-auto lg:min-h-[320px]">
+            <Image
+              src="/brand/lab-bench.jpg"
+              alt="Our bench in Shenzhen: oscilloscope, soldering station, inspection microscope and labelled parts drawers"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </Container>

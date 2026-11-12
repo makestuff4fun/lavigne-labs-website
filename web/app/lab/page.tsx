@@ -26,6 +26,16 @@ export default function LabPage() {
             know about making things well, we learned messing around on the bench
             with no deadline and no client.
           </p>
+          <div className="relative mt-10 aspect-[21/9] overflow-hidden rounded-2xl ring-1 ring-line shadow-card">
+            <Image
+              src="/brand/lab-wide.jpg"
+              alt="The Lavigne Labs lab in Shenzhen: benches, test instruments, keyboards on the wall and parts storage"
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1200px"
+              className="object-cover"
+            />
+          </div>
         </Container>
       </section>
 

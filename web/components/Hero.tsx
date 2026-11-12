@@ -44,8 +44,8 @@ export function Hero() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-card">
               <Image
-                src="/brand/office.jpg"
-                alt="The Lavigne Labs hardware workshop in Shenzhen"
+                src="/brand/lab-hero.jpg"
+                alt="The Lavigne Labs bench in Shenzhen: oscilloscope, power supplies, inspection microscope and parts drawers"
                 width={1200}
                 height={900}
                 priority

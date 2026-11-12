@@ -34,8 +34,11 @@ Brian has paused this site while egocam.ai takes priority. Report this status at
 don't start work here unless he asks. The site is live and stable (release 20261105T123124Z).
 When he resumes it, these are open:
 - **After 2026-11-30:** rebuild and redeploy so the computed years read "14+".
-- The photo makeover: hero (photo 3, blur the WeChat code), "on the ground" (photo 2, crop the
-  headline monitor), lab/About (photo 4).
+- ~~The photo makeover~~ **done 2026-11-12**: hero `brand/lab-hero.jpg` (photo 3, WeChat window
+  blurred), "On the ground" card `brand/lab-bench.jpg` (photo 2, headline monitor cropped off),
+  `/lab` banner `brand/lab-wide.jpg` (photo 4, chat window blurred). `office.jpg` is now unused.
+- **IndexNow** runs on every `deploy-net.sh` (2026-11-12); Bing Webmaster Tools verified via
+  `BingSiteAuth.xml`; Google Change of Address .com -> .net submitted 2026-11-09.
 - `GEMINI.md` is stale. It still describes the cPanel/FTPS deploy and gives an SSL expiry of
   2026-11-30, but `deploy-net.sh` is the deploy now. The old .com host's certificate expires
   2027-01-29 and is needed only for the 301.
