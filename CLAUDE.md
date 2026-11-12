@@ -1,1 +1,224 @@
-GEMINI.md
+@AGENTS.md
+@docs/CONTEXT.md
+
+# CLAUDE.md — Lavigne Labs website
+
+The two imports above carry the details: **AGENTS.md** (Next.js 16 is not the
+Next you were trained on — read `web/node_modules/next/dist/docs/` before writing
+Next code) and **docs/CONTEXT.md** (the living status/handoff — read it first).
+This file is the tight complement: stack, gotchas, and where it runs. Don't
+duplicate CONTEXT.md here — update _that_ file when status changes.
+
+## Goal
+
+Marketing + portfolio site for **Lavigne Labs** (Brian Barrett — helps US/Canada
+hardware teams manufacture in China without costly mistakes). Also hosts two
+faithful browser ports of his hardware side-projects: **Shiverwing** (ESP32-badge
+Flappy Bird) and **Freezing Fortress** (addressable-LED Sokoban).
+
+## Repo layout (read this before touching paths)
+
+```
+web/        THE SITE — the whole Next.js app. Run npm here. Paths named below
+            (app/, content/, lib/, public/, scripts/) are relative to web/.
+            The 6 fastener calculators are LIVE here at
+            web/public/tools/fasteners/*.html, listed in content/tools.ts.
+docs/       Project docs (CONTEXT = status, CONTENT, DEPLOYMENT, GAMES, SOUNDS,
+            + the two fastener-sheet-*MAINTAINERS.md guides).
+pcb/        Editing source for "Copper & Patina" PCB calculators — LIVE at
+            web/public/tools/pcb/pcb-calculator.html. See pcb/README.md.
+```
+
+**The fastener calculators are wired into `/tools`** — served as static pages
+from `web/public/tools/fasteners/`, each an entry in `content/tools.ts` whose
+card opens the page in a new tab. Editing the served `.html` is the whole change;
+the export copies `public/` into `out/` as-is. **`pcb/` is wired the same way
+since 2026-07-31**: `web/public/tools/pcb/pcb-calculator.html` is the served
+copy (repo-root `pcb/` + the injected "← Lavigne Labs · Tools" back-bar);
+`pcb/` at the repo root stays the editing source — after editing, re-copy and
+re-inject the back-bar. The **QR Time Sync** tool lives on as the
+unbranded client-shareable standalone at `/qr-sync`
+(`web/public/qr-sync/index.html`, plus the decoder at
+`/qr-sync/decode_sync.py`). **Its branded `/tools/qr-sync` page was removed
+from the `/tools` grid on 2026-08-03** (the whole `/tools/[slug]` route went
+with it — every remaining tool is an `href` static page). The React component
++ `web/lib/qrTimeSync.ts` are still in the repo, unused, so the branded page
+can be restored later; the standalone `/qr-sync` is untouched.
+
+The **`/tools` page is grouped into sections** (`content/tools.ts` carries a
+`category` per tool + a `toolCategories` list; `app/tools/page.tsx` renders one
+section per category). Current sections: **Fasteners** (6) and **Electronics**
+(Copper & Patina PCB).
+
+## Architecture & stack
+
+- **Next.js 16.2.9** (App Router) + **React 19.2** + **TypeScript 5** + **Tailwind v4**
+  (`@tailwindcss/postcss`, no `tailwind.config` — v4 is CSS-first via `app/globals.css`).
+- **ESLint 9** flat config (`eslint.config.mjs`, `eslint-config-next`).
+- **Content model:** copy/data lives in `content/` as TS objects
+  (`site.ts`, `projects.ts`, `tools.ts`, `faq.ts`, `labNotes.ts`) + Markdown
+  posts in `content/articles/*.md` (gray-matter frontmatter, rendered by `marked`,
+  loaded via `lib/articles.ts`). **Edit content without touching code** — see docs/CONTENT.md.
+- **Games:** canvas components in `components/games/`; real assets in `public/games/`.
+  Web-Audio SFX engine in `lib/sfx.ts` (docs/SOUNDS.md).
+- **Contact form:** `app/api/contact/route.ts` emails via **Resend**
+  (`RESEND_API_KEY` in `.env.local`; without it, dev logs submissions to the terminal).
+
+## Current state (2026-11-04)
+
+**Live at `lavignelabs.net`** (Caddy on tunnel-bear, deploy with `web/scripts/deploy-net.sh`).
+`lavignelabs.com` 301s every path there since 2026-11-04, so the cPanel/FTPS deploy notes
+below are history: never mirror the site to the old host again (it would only be hidden
+behind the redirect). _Before 2026-10-18:_ `lavignelabs.com` served this Next.js site as a static export,
+games included at `/play` — the old WordPress site has been replaced. Real
+device SFX (WT588F recordings) are wired. Full status table: **docs/CONTEXT.md**.
+
+## Key decisions & gotchas
+
+- **Two build modes.** Normal `next build` = Node-server app. `STATIC_EXPORT=1`
+  (via `npm run export`) = fully static `./out` for cPanel/FTP. See `next.config.ts`.
+- **`npm run export` moves `app/api/contact` aside** during the static build (the
+  Resend route can't be exported) and restores it. If it dies mid-run leaving
+  `_api_contact_tmp/`, run `mv _api_contact_tmp app/api/contact`.
+- **Static JSON API** at `/api/v1/` is built from content by `lib/api.ts`; add an
+  endpoint with one entry in its `REGISTRY` (served by `app/api/v1/[...endpoint]`).
+- **Game bundles use root-absolute paths** (`/_next`, `/games`) — must be served
+  from a domain/subdomain **root**, not a nested folder, or assets 404.
+- **Static host has no API** → the contact form needs a form service or `mailto:`
+  (still open). Resend only works on the Node-served build.
+- **Deploy artifacts are git-ignored** (`out/`, `dist-games/`, `lavigne-*.zip`) —
+  they're regenerated by `npm run export`, not committed.
+
+## Run / build / deploy
+
+```bash
+cd web             # everything below runs in web/
+npm install --maxsockets=4    # plain `npm install` ECONNRESETs behind the proxy
+npm run dev        # http://localhost:3000
+npm run build      # Node-server production build
+npm run lint       # 9 pre-existing errors in the game components — known, not yours
+npm run export     # STATIC_EXPORT=1 build -> out/ + deployable game zips
+```
+
+Requires **Node ≥20.9**. Blue's default PATH node is **20.18.2** at
+`~/.local/node` (works; the 22.23.1 this file used to claim is not in PATH, and
+`/usr/bin/node` is v18 — too old). Verified building on blue 2026-07-31.
+**Correction (2026-09-01):** `sudo` on blue **is** fully passwordless
+(`(ALL) NOPASSWD: ALL`). Both the 2026-07-31 note that `apt-get install` prompts
+and the "NOPASSWD only for apt/dpkg/…" claim under Network gotchas are wrong —
+measured with `sudo -n -l`, not assumed.
+
+**Deploy:** `cd web && ./scripts/deploy.sh` — builds, then mirrors `out/` into
+the docroot at `lavignelabs.com` over FTPS, then verifies the live site. Runs
+unattended. Credentials: `~/.config/lavigne-labs/deploy.env` (mode 0600, outside
+the repo; template + verified values at `web/scripts/deploy.env.example`).
+`--dry-run` to preview. **Prefer tunnel-bear** — a clean-IP host does a full
+mirror in one shot. But note tunnel-bear may be unreachable from a given blue
+checkout (its `authorized_keys` didn't trust blue's key on 2026-08-03; adding it
+is a Brian action), and all other fleet hosts sit behind tunnel-bear via
+ProxyJump.
+
+**Deploying from blue directly (2026-08-03, works for small diffs):** the plain
+`deploy.sh` from blue hangs/dies — clash TUN in fake-IP mode hijacks the FTP
+host to a `198.18.x` fake address and can't proxy FTP's data channel. The
+working recipe:
+1. Resolve the real IP over DoH (HTTPS *does* work through clash):
+   `curl -s 'https://dns.google/resolve?name=lavignelabs.com&type=A'` →
+   `103.107.107.101`.
+2. Pin a `/32` host route **around** the TUN, and keep re-asserting it because
+   clash re-syncs its table every few seconds:
+   `while :; do sudo ip route replace 103.107.107.101/32 via <lan-gw> dev eth0; sleep 2; done`
+   (`sudo ip` is passwordless on blue; find `<lan-gw>` with `ip route show default`).
+3. Point the deploy at the **IP, not the hostname** (a temp copy of `deploy.env`
+   with `DEPLOY_HOST=<ip>` via `LAVIGNE_DEPLOY_ENV=…`, `DEPLOY_SSL_VERIFY=false`).
+4. Mirror **size-only, single-stream, in a retry loop**: `lftp mirror --reverse
+   --delete --ignore-time --continue --parallel=1 …`. A full 11 MB mirror still
+   dies on the large `work/` images (GFW throttles sustained transfer), but
+   `--ignore-time` skips every byte-identical file so an incremental deploy is a
+   tiny transfer that lands. Afterward, `sudo ip route del <ip>/32` and kill the
+   watchdog to restore normal routing. Scratch scripts: `scripts/` in the
+   session scratchpad if kept.
+
+The mirror runs with `--delete`, so the server ends up exactly matching `out/`.
+`DEPLOY_PROTECT` (default `.well-known cgi-bin`) is never deleted — `.well-known`
+carries Let's Encrypt renewal challenges. **No automatic backup**: recovery means
+re-deploying from a known-good commit.
+
+**SSL is NOT auto-renewed.** The cert is issued with certbot on blue (manual
+http-01; the hook uploads the challenge via tunnel-bear, reusing `deploy.env`)
+and then **installed by hand in cPanel** — issuing alone does nothing to the live
+site. `web/scripts/acme-{put,auth-hook,cleanup-hook}.sh`; full runbook in
+docs/DEPLOYMENT.md. Renewed 2026-09-01, **expires 2026-11-30** — renew with
+weeks of runway, not days. Never FTP `privkey.pem` into the docroot.
+
+Alternative: host the Next app on Vercel/Netlify/CF Pages (root directory would
+be `web`). Full procedure: **docs/DEPLOYMENT.md**.
+
+## Where it runs (fleet)
+
+- **blue** (laptop) — **full dev box: edit, `npm install`, build, lint, export.**
+  Verified 2026-07-24 (Node 22.23.1, `npm run build` + `npm run export` both
+  pass). Requires the local proxy on `127.0.0.1:7897` to be up.
+- **tunnel-bear** (Tokyo VPS, always-on, clean IP) — fallback / unattended builds
+  and deploys. No GPU needed.
+- **cpu88** — GFW'd, no proxy; don't install or deploy from it.
+
+> **Correction (2026-07-24):** this file used to claim blue couldn't run installs
+> or builds and that everything had to happen on tunnel-bear. That was wrong and
+> cost real time. See "Network gotchas" — the failures were fixable locally.
+
+## Resuming on another machine / after a reboot
+
+Git carries the source, but **four things this session set up live outside git**
+and must be recreated on a fresh checkout or a different OS install:
+
+1. **Node ≥20.9.** A fresh Ubuntu ships Node 18, which Next 16 refuses. Install
+   Node 22 from NodeSource — on a box where `curl … | sudo bash` is blocked,
+   fetch the `.deb` and `sudo apt-get install ./nodejs_*.deb` (verify its SHA256
+   against `deb.nodesource.com/.../Packages.gz` first).
+2. **lftp** — needed by `web/scripts/deploy.sh`. `sudo apt-get install lftp`.
+3. **Deploy credentials** — `~/.config/lavigne-labs/deploy.env`, mode 0600. The
+   working values are recorded (non-secret) at the top of
+   `web/scripts/deploy.env.example`; paste the password from cPanel. Verified
+   2026-07-29: FTPS login + passive mode work **from tunnel-bear** (FTP is
+   blocked from blue — run the deploy there).
+4. **`.claude/settings.local.json`** — the permission allowlist that lets the
+   deploy script run without a prompt. It's git-ignored, so recreate it (allow
+   `Bash(./scripts/deploy.sh*)`, `Bash(npm run export*)`, `Bash(npm run build*)`).
+
+Then: `cd web && npm install --maxsockets=4 && npm run build` to confirm.
+
+## Network gotchas (China / proxy)
+
+- **Node 20.9+ is required** (Next 16 hard-refuses older). blue runs **22.23.1**
+  from NodeSource; Ubuntu's distro Node 18 is too old. (`sudo` on blue is
+  passwordless for everything — see the 2026-09-01 correction above.)
+- **`npm install` dies with `ECONNRESET`** — not the GFW. npm's ~50 concurrent
+  sockets swamp the local proxy. Throttle it:
+  ```bash
+  npm install --maxsockets=4 --fetch-retries=5 --fetch-timeout=120000
+  ```
+  (Worth putting in `~/.npmrc`. Don't set `registry=` globally — that rewrites
+  `resolved` URLs in `package-lock.json` and creates noisy cross-machine diffs.)
+- **Large downloads truncate** through the same proxy — `curl --retry 5
+  --retry-all-errors -C -` resumes cleanly.
+- **A build can fail once on `fonts.gstatic.com`** (`next/font/google` fetches at
+  build time) and succeed on retry — same proxy flakiness. Just re-run.
+
+## Open items
+
+Tracked in docs/CONTEXT.md: wire the live contact form to a form service (static
+host has no API); verify the 8 inferred portfolio blurbs; decide whether the
+`pcb/` calculator gets wired into `/tools` (the fastener calculators already are).
+
+## Key files
+
+- `web/next.config.ts` — dual build-mode config (static export toggle)
+- `web/content/` — all editable copy/data; `web/content/articles/*.md` — blog posts
+- `web/lib/articles.ts`, `web/lib/sfx.ts` — Markdown loader, sound engine
+- `web/app/api/contact/route.ts` — Resend contact handler
+- `web/scripts/export-static.sh` — static export + game-bundle builder
+- `docs/` — CONTEXT (status), CONTENT (editing), DEPLOYMENT, GAMES, SOUNDS
+- `web/public/tools/fasteners/*.html` — the 6 fastener calculators, live on
+  `/tools` (listed in `web/content/tools.ts`); maintainer guides in `docs/`
+- `pcb/` — standalone calculator still staged for `/tools` (see pcb/README.md)
