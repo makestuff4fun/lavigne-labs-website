@@ -1,4 +1,4 @@
-import { services, site, founderStory } from "./site";
+import { services, site, founderStory, egocentricCapture } from "./site";
 
 export function buildOrganizationJsonLd() {
   return {
@@ -43,7 +43,10 @@ export function buildOrganizationJsonLd() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: `${site.name} services`,
-      itemListElement: services.map((s) => ({
+      itemListElement: [
+        ...services.map((s) => ({ title: s.title, summary: s.summary })),
+        { title: egocentricCapture.heading, summary: egocentricCapture.intro },
+      ].map((s) => ({
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",

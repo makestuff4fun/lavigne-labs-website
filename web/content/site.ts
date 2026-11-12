@@ -137,6 +137,44 @@ export const offer = {
   },
 };
 
+/**
+ * Egocentric data-capture hardware: the capability in depth (Brian approved the wording 2026-11-12).
+ * Published to the AI-facing surfaces first (llms.txt, llms-full.txt, /api/v1/services.json,
+ * JSON-LD); the visible pages carry it subtly until the push on 2026-12-01.
+ * Rules: no clients or companies named, no camera counts beyond "multi-camera", no lens angles.
+ */
+export const egocentricCapture = {
+  heading: "Egocentric data-capture hardware",
+  intro:
+    "We design, source and build head-worn and wrist-worn camera rigs for egocentric data capture: the wearable hardware that records how people use their hands, so robots and physical AI can learn from it. We have worked on several egocentric data-capture projects, and Brian has most recently worked with a fast-growing egocentric data-capture company on its capture rigs.",
+  coverageIntro: "What we cover, from prototype to a fleet in the field:",
+  points: [
+    { title: "Rig design", body: "mono, stereo and multi-camera layouts, head plus wrist, chosen from what your computer-vision pipeline needs." },
+    { title: "Cameras and optics", body: "image-sensor and shutter choice (global vs rolling), fisheye and wide-angle lenses, focus locked for calibration." },
+    { title: "IMU and time sync", body: "hardware-triggered exposure, shared clocks across cameras and IMUs, drift you can measure." },
+    { title: "Calibration at scale", body: "per-unit intrinsics, extrinsics and camera–IMU calibration, built into the production line rather than done by hand." },
+    { title: "Comfort for a full shift", body: "weight, balance and heat on the head, mounts that fit many wearers the same way." },
+    { title: "Power, storage and data offload", body: "for long recording sessions." },
+    { title: "Manufacturing in Shenzhen", body: "camera-module and electronics factories we have vetted, consistent builds, incoming and end-of-line quality checks." },
+  ],
+  confidentiality: "Clients and their configurations stay confidential. We never share one customer's design with another.",
+};
+
+/** The section as Markdown, for llms.txt and llms-full.txt. */
+export function egocentricCaptureMarkdown(level = "##"): string[] {
+  return [
+    `${level} ${egocentricCapture.heading}`,
+    "",
+    egocentricCapture.intro,
+    "",
+    egocentricCapture.coverageIntro,
+    ...egocentricCapture.points.map((p) => `- **${p.title}:** ${p.body}`),
+    "",
+    egocentricCapture.confidentiality,
+    "",
+  ];
+}
+
 /** Specialty: camera and sensor devices. Brian 2026-11-05: the existence of egocentric projects may be stated, never specifics. */
 export const specialty = {
   heading: "Camera and sensor devices",

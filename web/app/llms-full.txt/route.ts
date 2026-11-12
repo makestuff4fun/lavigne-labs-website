@@ -1,4 +1,4 @@
-import { site, pageUrl, services, engagement, philosophy, bestFit, founderStory, process as howWeWork } from "@/content/site";
+import { site, pageUrl, services, engagement, philosophy, bestFit, founderStory, process as howWeWork, egocentricCaptureMarkdown } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { allSeries } from "@/content/series";
@@ -23,6 +23,7 @@ export function GET() {
     "## Services",
     "",
     ...services.flatMap((s) => [`### ${s.title}`, "", s.summary, "", ...s.points.map((p) => `- ${p}`), ""]),
+    ...egocentricCaptureMarkdown(),
     "## Philosophy",
     "",
     philosophy.line,

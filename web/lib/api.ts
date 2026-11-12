@@ -1,4 +1,4 @@
-import { site, pageUrl, services, engagement, philosophy, bestFit, process as howWeWork } from "@/content/site";
+import { site, pageUrl, services, engagement, philosophy, bestFit, process as howWeWork, egocentricCapture } from "@/content/site";
 import { faqs } from "@/content/faq";
 import { projects } from "@/content/projects";
 import { projectDetails } from "@/content/projectDetails";
@@ -164,9 +164,10 @@ export const REGISTRY: Endpoint[] = [
   {
     path: "services.json",
     name: "services",
-    description: "Services offered, plus how we work together (prototype sprints, development to production, production support) and our process.",
+    description: "Services offered, our egocentric data-capture hardware capability, plus how we work together (prototype sprints, development to production, production support) and our process.",
     build: () => ({
       services,
+      egocentricCapture,
       howWeWorkTogether: { intro: engagement.intro, models: engagement.models },
       philosophy,
       bestFit,

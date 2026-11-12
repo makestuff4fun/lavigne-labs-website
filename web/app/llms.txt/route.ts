@@ -1,4 +1,4 @@
-import { site, pageUrl, philosophy, yearsInChina, offer, specialty } from "@/content/site";
+import { site, pageUrl, philosophy, yearsInChina, offer, specialty, egocentricCaptureMarkdown } from "@/content/site";
 import { allSeries } from "@/content/series";
 import { getAllArticles, getSeriesArticles } from "@/lib/articles";
 import { projects } from "@/content/projects";
@@ -30,6 +30,7 @@ export function GET() {
     "",
     `Specialty: ${specialty.heading.toLowerCase()}. ${specialty.body.join(" ")}`,
     "",
+    ...egocentricCaptureMarkdown(),
     `Contact: ${site.email} (inquiries can also be sent via the form on /contact)`,
     "",
     `Full site as one Markdown document: [llms-full.txt](${abs("/llms-full.txt")})`,
