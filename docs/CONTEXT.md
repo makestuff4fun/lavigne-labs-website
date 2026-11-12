@@ -33,7 +33,8 @@ Black & Decker for six years; two EV startups), who is the first contact.
 Brian has paused this site while egocam.ai takes priority. Report this status at startup, but
 don't start work here unless he asks. The site is live and stable (release 20261105T123124Z).
 When he resumes it, these are open:
-- **After 2026-11-30:** rebuild and redeploy so the computed years read "14+".
+- ~~After 2026-11-30: "14+" years~~ **done 2026-11-12** (Brian: show it now; the count rounds to the nearest year).
+- **Makeover in phases (Brian, 2026-11-12):** visible site stays a subtle upgrade until the egocentric push on **2026-12-01**; the AI files already carry the full egocentric capability (`egocentricCapture` in `content/site.ts`). Phase 1 copy edits done; Phase 2 = article diagrams (one consistent vector style, replacing the repeated hex-puck photos and the AI laptop/telephone); Phase 3 = remaining pages + Brian's own factory photos.
 - ~~The photo makeover~~ **done 2026-11-12**: hero `brand/lab-hero.jpg` (photo 3, WeChat window
   blurred), "On the ground" card `brand/lab-bench.jpg` (photo 2, headline monitor cropped off),
   `/lab` banner `brand/lab-wide.jpg` (photo 4, chat window blurred). `office.jpg` is now unused.

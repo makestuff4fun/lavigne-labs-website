@@ -1,9 +1,10 @@
-/** Brian started in China on 2012-11-30. Whole years, computed at build time ("13+" until 2026-11-30, then "14+"). */
+/**
+ * Brian started in China on 2012-11-30. Years computed at build time and rounded to the nearest
+ * whole year (Brian, 2026-11-12: show "14+" from mid-November rather than waiting for the 30th).
+ */
 const CHINA_SINCE = new Date("2012-11-30T00:00:00+08:00");
 function wholeYearsSince(start: Date, now = new Date()): number {
-  let y = now.getFullYear() - start.getFullYear();
-  if (now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())) y--;
-  return y;
+  return Math.round((now.getTime() - start.getTime()) / (365.2425 * 24 * 3600 * 1000));
 }
 export const yearsInChinaWhole = wholeYearsSince(CHINA_SINCE);
 export const yearsInChina = `${yearsInChinaWhole}+`;
@@ -29,7 +30,7 @@ export const bestFit = {
   title: "Who we work best with",
   lines: [
     "Funded startups with a device to get built and a clock that matters.",
-    "Teams who have completed a Kickstarter and are ready to take the product to real production. We love working with you.",
+    "Teams with a completed Kickstarter, ready to turn backer promises into real production units.",
     "Anyone who values speed in development and cost discipline once volume starts.",
   ],
 };
@@ -81,7 +82,7 @@ export const engagement = {
     {
       name: "Prototype sprints",
       tag: "Where we start",
-      body: "Real hardware in your hands, fast. Concept to working prototype, then quick rounds of testing and refinement. This is the hook: you learn more in a few weeks of building than in months of planning.",
+      body: "Real hardware in your hands, fast. Concept to working prototype, then quick rounds of testing and refinement. A few weeks of building teaches you more than months of planning.",
     },
     {
       name: "Development to production",
@@ -183,7 +184,7 @@ export const specialty = {
     "We have worked on several egocentric data-capture projects: head-worn camera rigs that record how people use their hands, to train robots and AI.",
   ],
   points: [
-    "Mono, stereo and multi-camera rigs",
+    "Stereo and multi-camera rigs, head and wrist",
     "Camera module and lens selection",
     "Camera and IMU calibration",
     "Time sync across devices",
@@ -226,7 +227,7 @@ export const services = [
     id: "production",
     title: "Production in Shenzhen",
     summary:
-      "Your hardware, built reliably at the source. We match your product to a vetted engineering team, run on-site quality control, and get hundreds or thousands of units into the field.",
+      "Your hardware, built reliably at the source. We match your product to a vetted engineering team, run on-site quality control, and get your units into the field, from the first hundred to the first ten thousand.",
     points: [
       "Vetted factory and engineering-team matching",
       "On-site quality control & inspections",
@@ -251,7 +252,7 @@ export const problems = [
   },
   {
     risk: "Hidden costs & slipping timelines",
-    fix: "Clear quoting, tooling oversight, and a build plan that holds, managed on the ground while you sleep.",
+    fix: "Clear quoting, tooling oversight, and a build plan that holds, managed on the ground in Shenzhen, overnight from where you are.",
   },
 ];
 

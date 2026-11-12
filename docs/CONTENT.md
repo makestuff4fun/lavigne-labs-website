@@ -22,7 +22,7 @@ the page instantly.
 
 **Honest scale (never overclaim):** Lavigne Labs is a small, founder-led team. Brian leads every project himself; engineering and production are done with vetted partners (design houses, camera and electronics factories, suppliers), 40+ engineers *across the partner teams*. Clients can talk to those teams and factories directly. Never write "our engineers", "our factory", "in-house", "under one roof", or a headcount that is not clearly the partners'. "We" is fine: a founder, staff and a partner network is a firm.
 
-**Years in China:** never hard-code. `yearsInChina` in `content/site.ts` is computed at build time from 2012-11-30 ("13+" until 2026-11-30, then "14+").
+**Years in China:** never hard-code. `yearsInChina` in `content/site.ts` is computed at build time from 2012-11-30 (rounded to the nearest whole year: "14+" from mid-November 2026, Brian 2026-11-12).
 
 **Egocentric projects:** "We have worked on several egocentric data-capture projects" may be said (Brian, 2026-11-05: an NDA allows a project's existence to be known). Never specifics, clients, or camera counts beyond stereo.
 
