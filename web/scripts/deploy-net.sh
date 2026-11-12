@@ -67,6 +67,14 @@ ssh "$HOST" "mkdir -p $BASE/releases"
 # what changed crosses the wire and each extra release costs almost no disk.
 LINK=()
 [[ -n "$PREV" ]] && LINK=(--link-dest="$BASE/$PREV")
+# Pages whose HTML differs from the live release: these are the URLs IndexNow is told about.
+CHANGED=()
+if [[ -n "$PREV" ]]; then
+  while read -r f; do
+    p=${f%index.html}; CHANGED+=("$URL/${p}")
+  done < <(rsync -anc --out-format='%n' --include='*/' --include='index.html' --exclude='*' \
+             out/ "$HOST:$BASE/$PREV/" | grep -E '(^|/)index\.html$' | grep -vE '^(404|_not-found)/' || true)
+fi
 rsync -a --delete --chmod=D755,F644 "${LINK[@]}" out/ "$HOST:$REL/"
 
 # Atomic swap: a new symlink renamed over the old one (rename(2) is atomic).
@@ -81,3 +89,17 @@ if ! verify; then
   exit 1
 fi
 echo "deployed $TS"
+
+# IndexNow: tell Bing (and through it ChatGPT search), Yandex and others which pages changed,
+# so they recrawl now instead of on their own schedule. The key is public by design: it is
+# served at $URL/$INDEXNOW_KEY.txt (web/public/). A failed ping never fails the deploy.
+INDEXNOW_KEY=947ca2574a9bdda3d8f74054157574b9
+if (( ${#CHANGED[@]} )); then
+  body=$(python3 -c 'import json,sys; print(json.dumps({"host":"lavignelabs.net","key":sys.argv[1],
+    "keyLocation":"https://lavignelabs.net/"+sys.argv[1]+".txt","urlList":sys.argv[2:]}))' "$INDEXNOW_KEY" "${CHANGED[@]}")
+  code=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json; charset=utf-8' \
+    --data "$body" https://api.indexnow.org/indexnow || echo 000)
+  echo "IndexNow: ${#CHANGED[@]} changed page(s), HTTP $code (200/202 = accepted)"
+else
+  echo "IndexNow: no page HTML changed, nothing to submit"
+fi
