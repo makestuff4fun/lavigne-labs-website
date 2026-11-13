@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>To Watch: private film and TV tracker</title>
+<style>
+/* Layout: one readable column, a "ticket stub" summary block, then plain sections */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --fg: #1a1d24; --muted: #5b6270;
+  --line: #dde1e8; --accent: #0d7a8a;
+  --display: system-ui, sans-serif;
+  --body: system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --surface: #1a1e26; --fg: #e8ebf0; --muted: #9aa3b2; --line: #2b313c; --accent: #4fc3d2; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --surface: #1a1e26; --fg: #e8ebf0; --muted: #9aa3b2; --line: #2b313c; --accent: #4fc3d2; color-scheme: dark }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; }
+main { max-width: 680px; margin: 0 auto; display: grid; gap: 36px; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.15rem; }
+p { margin: 0; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+header { display: grid; gap: 10px; }
+.lede { color: var(--muted); font-size: 1.05rem; }
+.facts { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin: 0;
+  display: grid; grid-template-columns: max-content 1fr; }
+.facts dt, .facts dd { padding: 10px 16px; border-top: 1px solid var(--line); margin: 0; }
+.facts dt { color: var(--muted); font-size: .88rem; padding-top: 12px; }
+.facts dt:first-of-type, .facts dt:first-of-type + dd { border-top: 0; }
+@media (max-width: 480px) { .facts { grid-template-columns: 1fr; }
+  .facts dd { border-top: 0; padding-top: 0; } .facts dt { padding-bottom: 2px; } .facts dt:first-of-type { border-top: 0; } }
+section { display: grid; gap: 10px; }
+ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.flow { font-family: var(--display); font-size: .95rem; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 16px; overflow-wrap: anywhere; }
+.flow b { color: var(--accent); font-weight: 500; }
+.attrib { border-top: 1px solid var(--line); padding-top: 20px; color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+
+<main>
+  <header>
+    <div class="eyebrow">Private project · Personal, non-commercial use</div>
+    <h1>To Watch</h1>
+    <p class="lede">A personal film and TV tracker for one person. It runs inside a private Android app on the owner's own phone. Nobody else has access, and nothing is published or sold.</p>
+  </header>
+
+  <dl class="facts">
+    <dt>What it is</dt><dd>A watch list: search films and TV, see what is coming out, save titles to a list</dd>
+    <dt>Users</dt><dd>One (the developer); no public sign-up, no app-store listing</dd>
+    <dt>Platform</dt><dd>Native Android app, privately installed, plus a private home server</dd>
+    <dt>Money</dt><dd>None: no ads, no subscriptions, no paid features, no data sales</dd>
+    <dt>Status</dt><dd>In development; the list feature comes first</dd>
+  </dl>
+
+  <section>
+    <h2>What it does</h2>
+    <ul>
+      <li>Search all of film and television history by title or person.</li>
+      <li>Show a title page with its poster, overview, cast, release date and seasons.</li>
+      <li>Browse upcoming releases and new seasons of shows already on the list.</li>
+      <li>Keep a personal list: why a title was added, who recommended it, whether it has been watched, and a rating afterwards.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>How TMDB data is used</h2>
+    <p>The phone never calls TMDB directly. The app talks only to the owner's private server, which makes the TMDB requests and passes the results back.</p>
+    <div class="flow">Android app <b>→</b> private server (holds the API key) <b>→</b> TMDB API</div>
+    <ul>
+      <li>The API key stays on the server and never ships inside the app.</li>
+      <li>Requests are made only when the owner searches or opens a title, so traffic is a handful of calls a day.</li>
+      <li>Responses are cached briefly to avoid repeat calls, and refreshed rather than kept as a copy of the database.</li>
+      <li>Posters and images load from TMDB's image service as provided.</li>
+      <li>No TMDB data is redistributed, resold, or shown to anyone other than the owner.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Attribution</h2>
+    <p>The app's About screen shows the TMDB logo and the required notice, and title pages credit TMDB as the source of their data.</p>
+  </section>
+
+  <p class="attrib">Contact: hello@lavignelabs.net<br>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+</main>
+</body>
+</html>
